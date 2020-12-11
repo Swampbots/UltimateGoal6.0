@@ -17,6 +17,7 @@ public class TestGamepadPlus extends OpMode {
     @Override
     public void init() {
         gp1 = new GamepadPlus(gamepad1);
+        gp1.resetTimer();
 
         telemetry.addData("gp type",gamepad1.type());
         telemetry.update();

@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode;
 import android.os.Build;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -19,13 +20,13 @@ import static com.qualcomm.robotcore.hardware.Gamepad.Type.SONY_PS4;
 
 public class GamepadPlus {
     private Gamepad gp;
-    private Date timer;
+    private ElapsedTime timer;
 
     //private ArrayList<String> indexHandler = new ArrayList<>();
     //private ArrayList<Long> timeActivated = new ArrayList<>();
 
-    private HashMap<String, Long> currentInputs;
-    private HashMap<String, Long> previousInputs;
+    private HashMap<String, Double> currentInputs;
+    private HashMap<String, Double> previousInputs;
 
     private static final float TRIGGER_THRESHOLD = 0.7f;
 
@@ -40,13 +41,13 @@ public class GamepadPlus {
 
         isPS4Controller = gp.type().equals(SONY_PS4);
 
-        currentInputs = new HashMap<String, Long>();
-        previousInputs = new HashMap<String, Long>();
+        currentInputs = new HashMap<String, Double>();
+        previousInputs = new HashMap<String, Double>();
 
         ltButton = false;
         rtButton = false;
 
-        timer = new Date();
+        timer = new ElapsedTime();
     }
 
     public GamepadPlus(@NotNull Gamepad gp, boolean makeTriggersButtons){
@@ -54,13 +55,13 @@ public class GamepadPlus {
 
         isPS4Controller = gp.type().equals(SONY_PS4);
 
-        currentInputs = new HashMap<String, Long>();
-        previousInputs = new HashMap<String, Long>();
+        currentInputs = new HashMap<String, Double>();
+        previousInputs = new HashMap<String, Double>();
 
         ltButton = makeTriggersButtons;
         rtButton = makeTriggersButtons;
 
-        timer = new Date();
+        timer = new ElapsedTime();
     }
 
     public GamepadPlus(@NotNull Gamepad gp, boolean makeLeftTriggerButton, boolean makeRightTriggerButton){
@@ -68,13 +69,13 @@ public class GamepadPlus {
 
         isPS4Controller = gp.type().equals(SONY_PS4);
 
-        currentInputs = new HashMap<String, Long>();
-        previousInputs = new HashMap<String, Long>();
+        currentInputs = new HashMap<String, Double>();
+        previousInputs = new HashMap<String, Double>();
 
         ltButton = makeLeftTriggerButton;
         rtButton = makeRightTriggerButton;
 
-        timer = new Date();
+        timer = new ElapsedTime();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -83,7 +84,7 @@ public class GamepadPlus {
             return;
         }*/
 
-        timer = new Date();             // Update the timer
+        //timer = new ElapsedTime();             // Update the timer
 
         // Run button updates
         if(isPS4Controller){ // Have to separate PS4 buttons
@@ -119,8 +120,8 @@ public class GamepadPlus {
         //return indexHandler.indexOf(convertButtonInputs(button)) != -1;
     }
 
-    public long howLongPressed(String button){
-        return currentInputs.containsKey(normalizeButtonInputs(button)) ? timer.getTime() - currentInputs.get(normalizeButtonInputs(button)) : -1;
+    public double howLongPressed(String button){
+        return currentInputs.containsKey(normalizeButtonInputs(button)) ? timer.milliseconds() - currentInputs.get(normalizeButtonInputs(button)) : -1;
         //if(!isPressed(button)) return 0;
 
         //return timer.getTime() - timeActivated.get(indexHandler.indexOf(convertButtonInputs(button)));
@@ -128,17 +129,17 @@ public class GamepadPlus {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public boolean wasJustPressed(String button){
-        return currentInputs.getOrDefault(normalizeButtonInputs(button),-1L) != -1L &&
-               previousInputs.getOrDefault(normalizeButtonInputs(button),-1L) == -1L;
+        return currentInputs.getOrDefault(normalizeButtonInputs(button),-1.0) != -1.0 &&
+               previousInputs.getOrDefault(normalizeButtonInputs(button),-1.0) == -1.0;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public boolean hasBeenPressed(String button){
-        return previousInputs.getOrDefault(normalizeButtonInputs(button),-1L) != -1;
+        return previousInputs.getOrDefault(normalizeButtonInputs(button),-1.0) != -1.0;
     }
 
-    public long getTimer(){
-        return timer.getTime();
+    public double getTimer(){
+        return timer.milliseconds();
     }
 
     /*public ArrayList<String> getIndexHandler(){
@@ -152,7 +153,7 @@ public class GamepadPlus {
         return currentInputs.keySet();
     }
 
-    public Collection<Long> getCurrentTimes(){
+    public Collection<Double> getCurrentTimes(){
         return currentInputs.values();
     }
 
@@ -160,15 +161,19 @@ public class GamepadPlus {
         return previousInputs.keySet();
     }
 
-    public Collection<Long> getPreviousTimes(){
+    public Collection<Double> getPreviousTimes(){
         return previousInputs.values();
     }
+
+    public void resetTimer(){timer.reset();}
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void updateButtonTime(boolean button, String name) {
         previousInputs.put(name,currentInputs.getOrDefault(name,-1L));
         currentInputs.put(name,button?timer.getTime():-1L);
+        previousInputs.put(name,currentInputs.getOrDefault(name,-1.0));
+        currentInputs.put(name,button ? timer.milliseconds() : -1.0);
         /*if (button) { // button clicked
             inputs.put(name,timer.getTime());
             if (indexHandler.indexOf(name) == -1) { // button not in (cycle 0)
