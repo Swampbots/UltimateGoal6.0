@@ -25,8 +25,8 @@ public class StrafeByEncoder implements Command {
     double heading;
     double error;
     double correction;
-    double newLeftPower;
-    double newRightPower;
+    double newFlRrPower;
+    double newFrRlPower;
 
     public StrafeByEncoder(Drive drive, int counts, double target, double power, double timeout){
         timer = new ElapsedTime();
@@ -60,7 +60,7 @@ public class StrafeByEncoder implements Command {
                 currentPos[3] + counts
         );
         drive.setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
-        drive.setPower(power,power);
+        drive.setDaigonalPower(power,power);
     }
 
     @Override
@@ -68,9 +68,9 @@ public class StrafeByEncoder implements Command {
         heading = drive.heading();
         error   = target - heading;
         correction = error * K_P;
-        newLeftPower = Math.min((power + correction), MAX_DRIVE_SPEED);
-        newRightPower = Math.min((power - correction), MAX_DRIVE_SPEED);
-        drive.setPower(newLeftPower,newRightPower);
+        newFlRrPower = Math.min((power + correction), MAX_DRIVE_SPEED);
+        newFrRlPower = Math.min((power - correction), MAX_DRIVE_SPEED);
+        drive.setPower(newFlRrPower, newFrRlPower);
     }
 
     @Override

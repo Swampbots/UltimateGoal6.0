@@ -121,6 +121,13 @@ public class Drive implements Subsystem {
         this.rrPower = rightPower;
     }
 
+    public void setDaigonalPower(double fl_rrPower, double fr_rlPower) {
+        this.flPower = fl_rrPower;
+        this.frPower = fr_rlPower;
+        this.rlPower = fr_rlPower;
+        this.rrPower = fl_rrPower;
+    }
+
     public void setMecanumPower(double drive, double strafe, double twist, boolean goSlow) {
         this.goSlow = goSlow ? SLOW : FAST;
         flPower = (drive + strafe + twist) * this.goSlow;
