@@ -14,7 +14,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
 
-public class Camera extends OpenCvPipeline implements Subsystem {
+public class Camera implements Subsystem {
     private HardwareMap hardwareMap;
 
     private OpenCvCamera webcam;
@@ -74,10 +74,5 @@ public class Camera extends OpenCvPipeline implements Subsystem {
     @Override
     public void periodic() {
 
-    }
-
-    @Override
-    public Mat processFrame(Mat input) {
-        return null;
     }
 }

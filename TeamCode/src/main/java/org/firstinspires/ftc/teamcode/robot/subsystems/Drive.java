@@ -39,6 +39,7 @@ public class Drive implements Subsystem {
     private boolean hasHeadingOffset;
     private Exception exception;
 
+    //private final SynchronousPID pid = new SynchronousPID
 
     // Constructor
     public Drive(HardwareMap hardwareMap, boolean initIMU) {

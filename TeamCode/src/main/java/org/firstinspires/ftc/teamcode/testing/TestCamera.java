@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Autonomous(name = "Test Cam",group = "Testing")
-public class TestCamera extends LinearOpMode {
+public class  TestCamera extends LinearOpMode {
 
     BasicDriveHardware hardware = new BasicDriveHardware();
 
