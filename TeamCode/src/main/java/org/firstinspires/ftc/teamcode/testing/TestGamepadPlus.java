@@ -23,6 +23,8 @@ public class TestGamepadPlus extends OpMode {
         telemetry.update();
     }
 
+
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void loop() {
@@ -58,7 +60,7 @@ public class TestGamepadPlus extends OpMode {
         telemetry.addData("Timer-1 list",gp1.getPreviousTimes());
         telemetry.addLine();
 
-        telemetry.addData("Sanity chack",gamepad1.a);
+        telemetry.addData("Sanity check",gamepad1.a);
         telemetry.update();
     }
 }
