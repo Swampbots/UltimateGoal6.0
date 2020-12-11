@@ -170,10 +170,22 @@ public class GamepadPlus {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void updateButtonTime(boolean button, String name) {
-        previousInputs.put(name,currentInputs.getOrDefault(name,-1L));
-        currentInputs.put(name,button?timer.getTime():-1L);
-        previousInputs.put(name,currentInputs.getOrDefault(name,-1.0));
-        currentInputs.put(name,button ? timer.milliseconds() : -1.0);
+        if(button){
+            if(!currentInputs.containsKey(name)){
+                currentInputs.put(name,timer.milliseconds());
+            } else if(!previousInputs.containsKey(name)) {
+                previousInputs.put(name,currentInputs.get(name));
+            }
+        } else {
+            if(currentInputs.containsKey(name)){
+                currentInputs.put(name,-1.0);
+            } else if(previousInputs.containsKey(name)){
+                previousInputs.put(name,-1.0);
+            }
+        }
+
+        //previousInputs.put(name,currentInputs.getOrDefault(name,-1.0));
+        //currentInputs.put(name,button ? timer.milliseconds() : -1.0);
         /*if (button) { // button clicked
             inputs.put(name,timer.getTime());
             if (indexHandler.indexOf(name) == -1) { // button not in (cycle 0)
