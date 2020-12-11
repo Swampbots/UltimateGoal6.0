@@ -18,7 +18,7 @@ public class Transfer implements Subsystem {
 
     @Override
     public void initHardware() {
-        hardwareMap.get(DcMotor.class, "transfer");
+        transfer = hardwareMap.get(DcMotor.class, "transfer");
     }
 
     @Override
