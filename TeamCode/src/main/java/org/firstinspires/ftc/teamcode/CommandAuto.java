@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.robot.commands.auto.DriveByTimer;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.GripSetState;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.KickerSetState;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.RunShooterForTime;
+import org.firstinspires.ftc.teamcode.robot.commands.auto.StrafeByEncoder;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.TurnByGyro;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drive;
@@ -22,6 +23,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Transfer;
 
 @Autonomous(name = "Command Auto", group = "Finalized")
 public class CommandAuto extends LinearOpMode implements DogeOpMode {
+    private boolean PS = false;
     @Override
     public void runOpMode() throws InterruptedException {
         DogeCommander commander = new DogeCommander(this);
@@ -46,8 +48,15 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
 
         // Run after init but before start
         while (!isStarted()){
+            if(gamepad1.a){
+                PS = true;
+            }
+            if(gamepad1.b){
+                PS = false;
+            }
             //TODO: Camera implementation
             telemetry.addLine("Ready!");
+            telemetry.addData("Power Shots?",PS);
             telemetry.addLine("Camera in progress...");
             telemetry.update();
         }
@@ -60,10 +69,18 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
 
         sleep(1000);
 
+        if(PS){
+            commander.runCommand(new StrafeByEncoder(drive,InchToCount(-5),0,.3,3));
+        }
+
         //Shot 1
         commander.runCommand(new KickerSetState(kicker,true,1));
         sleep(500);
         commander.runCommand(new KickerSetState(kicker,true,1));
+
+        if(PS){
+            commander.runCommand(new StrafeByEncoder(drive,InchToCount(-5),0,.3,3));
+        }
 
         //Shot 2
         sleep(500);
@@ -71,9 +88,17 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
         sleep(500);
         commander.runCommand(new KickerSetState(kicker,true,1));
 
+        if(PS){
+            commander.runCommand(new StrafeByEncoder(drive,InchToCount(-5),0,.3,3));
+        }
+
         //Shot 3
         sleep(500);
         commander.runCommand(new KickerSetState(kicker,true,1));
+
+        if(PS){
+            commander.runCommand(new StrafeByEncoder(drive,InchToCount(15),0,.3,3));
+        }
 
         commander.runCommandsParallel(
                 new RunShooterForTime(shooter,0,.3), // Turn off shooter
