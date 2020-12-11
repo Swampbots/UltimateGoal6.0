@@ -13,7 +13,7 @@ import androidx.annotation.RequiresApi;
 public class TestGamepadPlus extends OpMode {
 
     GamepadPlus gp1;
-
+    int timesButtonPressed = 0;
     @Override
     public void init() {
         gp1 = new GamepadPlus(gamepad1);
@@ -30,7 +30,9 @@ public class TestGamepadPlus extends OpMode {
     public void loop() {
         gp1.update();
 
-        String button = "a";
+        String button = GamepadPlus.BUTTONS.a.toString();
+        if(gp1.wasJustPressed(button)) timesButtonPressed++;
+
 
 
         //Should return 'true' while the button is pressed
@@ -45,6 +47,9 @@ public class TestGamepadPlus extends OpMode {
         telemetry.addData("Was "+button+" just pressed?",gp1.wasJustPressed(button));
         telemetry.addLine();
 
+        telemetry.addData("Times " + button + " presses", timesButtonPressed);
+        telemetry.addLine();
+
         telemetry.addData("Timer",gp1.getTimer());
         telemetry.addLine();
 
@@ -54,10 +59,10 @@ public class TestGamepadPlus extends OpMode {
         telemetry.addData("Timer list",gp1.getCurrentTimes());
         telemetry.addLine();
 
-        telemetry.addData("Index-1 List",gp1.getPreviousIndexes());
+        telemetry.addData("Index -1 List",gp1.getPreviousIndexes());
         telemetry.addLine();
 
-        telemetry.addData("Timer-1 list",gp1.getPreviousTimes());
+        telemetry.addData("Timer -1 list",gp1.getPreviousTimes());
         telemetry.addLine();
 
         telemetry.addData("Sanity check",gamepad1.a);

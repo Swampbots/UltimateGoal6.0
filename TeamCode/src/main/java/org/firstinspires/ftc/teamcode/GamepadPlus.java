@@ -34,6 +34,40 @@ public class GamepadPlus {
     private boolean ltButton;
     private boolean rtButton;
 
+    public enum BUTTONS{
+        a,b,x,y,
+        dpad_up,dpad_down,dpad_left,dpad_right,
+        left_bumper,right_bumper,left_trigger,right_trigger,
+        circle,cross,triangle,square;
+
+        public String toString(){
+            switch (this){
+                case a: return "a";
+                case b: return "b";
+                case x: return "x";
+                case y: return "y";
+
+                case dpad_down:     return "dd";
+                case dpad_left:     return "dl";
+                case dpad_right:    return "dr";
+                case dpad_up:       return "du";
+
+                case cross:     return "a";
+                case circle:    return "b";
+                case square:    return "x";
+                case triangle:  return "y";
+
+                case left_bumper:   return "bl";
+                case right_bumper:  return "br";
+
+                case left_trigger:  return "tl";
+                case right_trigger: return "tr";
+
+                default: return null;
+            }
+        }
+    }
+
 
 
     public GamepadPlus(@NotNull Gamepad gp) {
@@ -88,30 +122,30 @@ public class GamepadPlus {
 
         // Run button updates
         if(isPS4Controller){ // Have to separate PS4 buttons
-            updateButtonTime(gp.circle,"b");
-            updateButtonTime(gp.cross,"a");
-            updateButtonTime(gp.triangle,"y");
-            updateButtonTime(gp.square,"x");
+            updateButtonTime(gp.circle,     BUTTONS.circle.toString());
+            updateButtonTime(gp.cross,      BUTTONS.cross.toString());
+            updateButtonTime(gp.triangle,   BUTTONS.triangle.toString());
+            updateButtonTime(gp.square,     BUTTONS.square.toString());
         } else {
-            updateButtonTime(gp.a,"a");
-            updateButtonTime(gp.b,"b");
-            updateButtonTime(gp.x,"x");
-            updateButtonTime(gp.y,"y");
+            updateButtonTime(gp.a,  BUTTONS.a.toString());
+            updateButtonTime(gp.b,  BUTTONS.b.toString());
+            updateButtonTime(gp.x,  BUTTONS.x.toString());
+            updateButtonTime(gp.y,  BUTTONS.y.toString());
         }
 
-        updateButtonTime(gp.dpad_up,"dpad_up");
-        updateButtonTime(gp.dpad_down,"dpad_down");
-        updateButtonTime(gp.dpad_left,"dpad_left");
-        updateButtonTime(gp.dpad_right,"dpad_right");
+        updateButtonTime(gp.dpad_up,    BUTTONS.dpad_up.toString());
+        updateButtonTime(gp.dpad_down,  BUTTONS.dpad_down.toString());
+        updateButtonTime(gp.dpad_left,  BUTTONS.dpad_left.toString());
+        updateButtonTime(gp.dpad_right, BUTTONS.dpad_right.toString());
 
-        updateButtonTime(gp.left_bumper,"left_bumper");
-        updateButtonTime(gp.right_bumper,"right_bumper");
+        updateButtonTime(gp.left_bumper,    BUTTONS.left_bumper.toString());
+        updateButtonTime(gp.right_bumper,   BUTTONS.right_bumper.toString());
 
         if(ltButton){
-            updateButtonTime((gp.left_trigger > TRIGGER_THRESHOLD), "left_trigger");
+            updateButtonTime((gp.left_trigger > TRIGGER_THRESHOLD), BUTTONS.left_trigger.toString());
         }
         if(rtButton){
-            updateButtonTime((gp.right_trigger > TRIGGER_THRESHOLD),"right_trigger");
+            updateButtonTime((gp.right_trigger > TRIGGER_THRESHOLD), BUTTONS.right_trigger.toString());
         }
     }
 
@@ -170,6 +204,7 @@ public class GamepadPlus {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void updateButtonTime(boolean button, String name) {
+        // This will only fail if someone presses and then releases a button in consecutive cycles
         if(button){
             if(!currentInputs.containsKey(name)){
                 currentInputs.put(name,timer.milliseconds());
