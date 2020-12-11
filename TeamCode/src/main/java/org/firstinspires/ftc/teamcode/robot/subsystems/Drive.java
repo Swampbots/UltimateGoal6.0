@@ -39,6 +39,8 @@ public class Drive implements Subsystem {
     private boolean hasHeadingOffset;
     private Exception exception;
 
+    public static final double COUNTS_PER_INCH_EMPIRICAL = 1000/24.0; // 1000 Counts every 24 inches
+
     //private final SynchronousPID pid = new SynchronousPID
 
     // Constructor

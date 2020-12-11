@@ -19,7 +19,6 @@ public class DriveByEncoder implements Command {
 
     private final double DRIVE_SPEED = 0.6;
     private final double MAX_DRIVE_SPEED = Math.min(DRIVE_SPEED + 0.1, 1.0);
-    public static final double COUNTS_PER_INCH_EMPIRICAL = 1000/24.0; // 1000 Counts every 24 inches
     private final double K_P = 0.01; // Proportional coefficient for gyro-controlled driving
 
     double target;

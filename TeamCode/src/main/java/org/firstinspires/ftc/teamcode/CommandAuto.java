@@ -99,5 +99,5 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
         commander.stop();
     }
 
-    private int InchToCount(int count){return (int)(count*DriveByEncoder.COUNTS_PER_INCH_EMPIRICAL);}
+    private int InchToCount(int count){return (int)(count*Drive.COUNTS_PER_INCH_EMPIRICAL);}
 }
