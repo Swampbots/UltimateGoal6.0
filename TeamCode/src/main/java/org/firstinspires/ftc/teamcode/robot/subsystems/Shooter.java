@@ -20,7 +20,23 @@ public class Shooter implements Subsystem {
     private double      power = OFF;
     private boolean     reverse = false;
     private boolean     shoot = false;
+    
+    public enum POWER_LEVELS{
+        MAX,FAR,MEDIUM,SHORT,MIN,
+        ADJ;
 
+        public double getPower() {
+            switch (this){
+                case MAX: return 1.0;
+                case MIN: return 0.0;
+                case FAR: return 0.85;
+                case MEDIUM: return 0.75;
+                case SHORT: return 0.65;
+                case ADJ: return 0.70;
+                default: return 0.75;
+            }
+        }
+    }
 
     public Shooter(HardwareMap hardwareMap){
         this.hardwareMap = hardwareMap;
@@ -70,4 +86,6 @@ public class Shooter implements Subsystem {
     public boolean getShoot() {
         return shoot;
     }
+
+
 }

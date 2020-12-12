@@ -43,23 +43,6 @@ public class Drive implements Subsystem {
 
     //private final SynchronousPID pid = new SynchronousPID
 
-    public enum POWER_LEVELS{
-        MAX,FAR,MEDIUM,SHORT,MIN,
-        ADJ;
-
-        public double getPower() {
-            switch (this){
-                case MAX: return 1.0;
-                case MIN: return 0.0;
-                case FAR: return 0.85;
-                case MEDIUM: return 0.75;
-                case SHORT: return 0.65;
-                case ADJ: return 0.70;
-                default: return 0.75;
-            }
-        }
-    }
-
     // Constructor
     public Drive(HardwareMap hardwareMap, boolean initIMU) {
         this.hardwareMap = hardwareMap;
