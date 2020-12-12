@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.robot.commands.auto.GripSetState;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.KickerSetState;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.RunShooterForTime;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.StrafeByEncoder;
+import org.firstinspires.ftc.teamcode.robot.commands.auto.StrafeByTimer;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.TurnByGyro;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drive;
@@ -73,43 +74,44 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
         sleep(1000);
 
         if(PS){
-            commander.runCommand(new StrafeByEncoder(drive,InchToCount(-5),0,.3,3));
+            commander.runCommand(new StrafeByTimer(drive,1,0.3));
         }
 
         telemetry.addLine("Shot 1");
         telemetry.update();
 
         //Shot 1
+        sleep(2000);
         commander.runCommand(new KickerSetState(kicker,true,1));
-        sleep(500);
+        sleep(2000);
         commander.runCommand(new KickerSetState(kicker,true,1));
 
-        if(PS){
-            commander.runCommand(new StrafeByEncoder(drive,InchToCount(-5),0,.3,3));
+        if(PS) {
+            commander.runCommand(new StrafeByTimer(drive, 1, 0.3));
         }
 
-        telemetry.addLine("Shot 2");
+            telemetry.addLine("Shot 2");
         telemetry.update();
 
         //Shot 2
-        sleep(500);
+        sleep(2000);
         commander.runCommand(new KickerSetState(kicker,true,1));
-        sleep(500);
+        sleep(2000);
         commander.runCommand(new KickerSetState(kicker,true,1));
 
         if(PS){
-            commander.runCommand(new StrafeByEncoder(drive,InchToCount(-5),0,.3,3));
+            commander.runCommand(new StrafeByTimer(drive,1,0.3));
         }
 
         telemetry.addLine("Shot 3");
         telemetry.update();
 
         //Shot 3
-        sleep(500);
+        sleep(2000);
         commander.runCommand(new KickerSetState(kicker,true,1));
 
         if(PS){
-            commander.runCommand(new StrafeByEncoder(drive,InchToCount(15),0,.3,3));
+            commander.runCommand(new StrafeByTimer(drive,3,-.3));
         }
 
         telemetry.addLine("Go to Wobble Goal");
