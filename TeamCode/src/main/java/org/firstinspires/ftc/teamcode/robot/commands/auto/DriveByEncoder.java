@@ -67,12 +67,12 @@ public class DriveByEncoder implements Command {
 
     @Override
     public void periodic() {
-        heading = drive.heading();
-        error   = target - heading;
-        correction = error * K_P;
-        newLeftPower = Math.min((power + correction), MAX_DRIVE_SPEED);
-        newRightPower = Math.min((power - correction), MAX_DRIVE_SPEED);
-        drive.setPower(newLeftPower,newRightPower);
+//        heading = drive.heading();
+//        error   = target - heading;
+//        correction = error * K_P;
+//        newLeftPower = Math.min((power /*+ correction*/), MAX_DRIVE_SPEED);
+//        newRightPower = Math.min((power /*- correction*/), MAX_DRIVE_SPEED);
+//        drive.setPower(newLeftPower,newRightPower);
     }
 
     @Override
