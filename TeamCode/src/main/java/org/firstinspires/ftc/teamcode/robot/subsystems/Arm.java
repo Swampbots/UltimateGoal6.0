@@ -89,6 +89,7 @@ public class Arm implements Subsystem {
         return power;
     }
 
+    public boolean isBusy(){return arm.isBusy();}
 
 
 

@@ -40,6 +40,10 @@ public class ArmByEncoder implements Command {
         timer.reset();
 
         int currentPos = arm.getTargetPos();
+        prevRunMode = arm.getRunMode();
+        arm.setTargetPos(currentPos + counts);
+        arm.setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setPower(power);
 
     }
 
@@ -50,11 +54,12 @@ public class ArmByEncoder implements Command {
 
     @Override
     public void stop() {
-
+        arm.setRunMode(prevRunMode);
+        arm.setPower(0);
     }
 
     @Override
     public boolean isCompleted() {
-        return false;
+        return arm.isBusy() || timer.seconds() > timeout;
     }
 }
