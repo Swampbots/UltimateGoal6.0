@@ -24,14 +24,13 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Transfer;
 @Autonomous(name = "Command Auto", group = "Finalized")
 public class CommandAuto extends LinearOpMode implements DogeOpMode {
     private boolean PS = true;
-    private DcMotor shooterMotor;
     @Override
     public void runOpMode() throws InterruptedException {
         DogeCommander commander = new DogeCommander(this);
 
         Drive drive             = new Drive(hardwareMap,true);
         Kicker kicker           = new Kicker(hardwareMap);
-        //Shooter shooter         = new Shooter(hardwareMap);
+        Shooter shooter         = new Shooter(hardwareMap);
         Arm arm                 = new Arm(hardwareMap);
         Grip grip               = new Grip(hardwareMap);
         Intake intake           = new Intake(hardwareMap);
@@ -39,13 +38,12 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
 
         commander.registerSubsystem(drive);
         commander.registerSubsystem(kicker);
-        //commander.registerSubsystem(shooter);
+        commander.registerSubsystem(shooter);
         commander.registerSubsystem(arm);
         commander.registerSubsystem(grip);
         commander.registerSubsystem(intake);
         commander.registerSubsystem(transfer);
 
-        shooterMotor = hardwareMap.get(DcMotor.class,"shooter");
 
         commander.init();
 
@@ -64,10 +62,9 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
             telemetry.update();
         }
 
-        shooterMotor.setPower(Shooter.POWER_LEVELS.MEDIUM.getPower());
 
         commander.runCommandsParallel(
-                //new RunShooterForTime(shooter,false, Shooter.POWER_LEVELS.MEDIUM.getPower()),                              // Turn on shooter
+                new RunShooterForTime(shooter,false, Shooter.POWER_LEVELS.MEDIUM.getPower()),                              // Turn on shooter
                 new DriveByTimer(drive,2.7,-0.3),
                 //new DriveByEncoder(drive,InchToCount(55),0,.3,10),                 // Drive to line
                 new ArmByTimer(arm,1,.3),    // Bring wobble arm up
@@ -77,7 +74,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
         sleep(1000);
 
         if(PS){
-            commander.runCommand(new StrafeByTimer(drive,0.5,0.3));
+            commander.runCommand(new StrafeByTimer(drive,0.7,0.4));
         }
 
         telemetry.addLine("Shot 1");
@@ -90,7 +87,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
         commander.runCommand(new KickerSetState(kicker,true,1));
 
         if(PS) {
-            commander.runCommand(new StrafeByTimer(drive, 0.5, 0.3));
+            commander.runCommand(new StrafeByTimer(drive,0.7,0.4));
         }
 
             telemetry.addLine("Shot 2");
@@ -103,7 +100,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
         commander.runCommand(new KickerSetState(kicker,Kicker.TARGETS.IN.getTarget(),1));
 
         if(PS){
-            commander.runCommand(new StrafeByTimer(drive,0.5,0.3));
+            commander.runCommand(new StrafeByTimer(drive,0.7,0.4));
         }
 
         telemetry.addLine("Shot 3");
@@ -116,10 +113,10 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
         if(PS){
             commander.runCommandsParallel(
                     new StrafeByTimer(drive,2,-.4));//,
-                    //new RunShooterForTime(shooter,0,0));
+                    new RunShooterForTime(shooter,0,0));
         }
 
-        shooterMotor.setPower(0);
+
 
         telemetry.addLine("Go to Wobble Goal");
         telemetry.update();
