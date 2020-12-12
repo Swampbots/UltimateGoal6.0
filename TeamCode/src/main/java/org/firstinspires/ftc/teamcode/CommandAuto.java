@@ -28,7 +28,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
     public void runOpMode() throws InterruptedException {
         DogeCommander commander = new DogeCommander(this);
 
-        Drive drive             = new Drive(hardwareMap);
+        Drive drive             = new Drive(hardwareMap,true);
         Kicker kicker           = new Kicker(hardwareMap);
         Shooter shooter         = new Shooter(hardwareMap);
         Arm arm                 = new Arm(hardwareMap);
