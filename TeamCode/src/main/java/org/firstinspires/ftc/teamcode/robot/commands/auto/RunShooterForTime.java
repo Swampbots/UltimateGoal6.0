@@ -35,7 +35,7 @@ public class RunShooterForTime implements Command {
     @Override
     public void start() {
         timer.reset();
-        shooter.setPower(power);
+        shooter.setPower(-power);
         shooter.setShoot(true);
     }
 
