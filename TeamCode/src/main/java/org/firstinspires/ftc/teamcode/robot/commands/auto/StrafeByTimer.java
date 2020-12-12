@@ -23,7 +23,7 @@ public class StrafeByTimer implements Command {
     @Override
     public void start(){
         timer.reset();
-        drive.setDiagonalPower(power,power);
+        drive.setDiagonalPower(power,-power);
     }
 
     @Override
