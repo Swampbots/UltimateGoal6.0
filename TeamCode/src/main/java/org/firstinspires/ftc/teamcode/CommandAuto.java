@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Transfer;
 
 @Autonomous(name = "Command Auto", group = "Finalized")
 public class CommandAuto extends LinearOpMode implements DogeOpMode {
-    private boolean PS = false;
+    private boolean PS = true;
     @Override
     public void runOpMode() throws InterruptedException {
         DogeCommander commander = new DogeCommander(this);
@@ -111,26 +111,30 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
         commander.runCommand(new KickerSetState(kicker,true,1));
 
         if(PS){
-            commander.runCommand(new StrafeByTimer(drive,3,-.3));
+            commander.runCommandsParallel(
+                    new StrafeByTimer(drive,4,-.3),
+                    new RunShooterForTime(shooter,0,0));
         }
 
         telemetry.addLine("Go to Wobble Goal");
         telemetry.update();
 
-        commander.runCommandsParallel(
+        /*commander.runCommandsParallel(
                 new RunShooterForTime(shooter,0,.3), // Turn off shooter
                 new TurnByGyro(drive,30,.3,2) // Turn to face drop zone
-                );
+                );*/
+
         sleep(3000);
 
         // Drive in front of drop zone
         //commander.runCommand(new DriveByEncoder(drive,InchToCount(10),0,0.3,5));
-        commander.runCommand(new DriveByTimer(drive,1,-0.4));
+//        commander.runCommand(new DriveByTimer(drive,1,-0.4));
+//        sleep(1000);
+        commander.runCommand(new TurnByGyro(drive,180,0.4,5));
         sleep(1000);
-
         // Put arm out
         commander.runCommand(new ArmByEncoder(arm,Arm.TARGETS.OUT.getTarget(),0,.3,2));
-        sleep(200);
+        sleep(2000);
 
         // Open grip to drop Wobble Goal
         commander.runCommand(new GripSetState(grip,true));
