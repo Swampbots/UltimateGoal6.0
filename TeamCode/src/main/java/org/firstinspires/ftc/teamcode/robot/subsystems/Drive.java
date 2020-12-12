@@ -137,7 +137,7 @@ public class Drive implements Subsystem {
         this.rrPower = rightPower;
     }
 
-    public void setDaigonalPower(double fl_rrPower, double fr_rlPower) {
+    public void setDiagonalPower(double fl_rrPower, double fr_rlPower) {
         this.flPower = fl_rrPower;
         this.frPower = fr_rlPower;
         this.rlPower = fr_rlPower;
