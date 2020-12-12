@@ -46,26 +46,43 @@ public class TestAutoStrafe extends LinearOpMode implements DogeOpMode {
 
         waitForStart();
 
-        //commander.runCommand(new StrafeByTimer(drive,0.7,0.4));
-        commander.runCommand(new RunShooterForTime(shooter,false,.8));
-        sleep(3000);
+        telemetry.addData("Fl0",drive.getCurrentPositions()[0]);
+        telemetry.addData("Fr0",drive.getCurrentPositions()[1]);
+        telemetry.addData("Rl0",drive.getCurrentPositions()[2]);
+        telemetry.addData("Rr0",drive.getCurrentPositions()[3]);
+        telemetry.update();
 
-        commander.runCommand(new KickerSetState(kicker,1,2));
-        sleep(3000);
-        commander.runCommand(new KickerSetState(kicker,0,2));
-        sleep(3000);
+        telemetry.addData("Fl0",drive.getCurrentPositions()[0]);
+        telemetry.addData("Fr0",drive.getCurrentPositions()[1]);
+        telemetry.addData("Rl0",drive.getCurrentPositions()[2]);
+        telemetry.addData("Rr0",drive.getCurrentPositions()[3]);
+        telemetry.addLine();
+        commander.runCommand(new StrafeByTimer(drive,0.7,0.4));
 
-        commander.runCommand(new KickerSetState(kicker,1,2));
-        sleep(3000);
-        commander.runCommand(new KickerSetState(kicker,0,2));
-        sleep(3000);
-
-        commander.runCommand(new KickerSetState(kicker,1,2));
-        sleep(3000);
-        commander.runCommand(new KickerSetState(kicker,0,2));
-        sleep(1000);
-
-        commander.runCommand(new RunShooterForTime(shooter,0,0));
+        telemetry.addData("Fl0",drive.getCurrentPositions()[0]);
+        telemetry.addData("Fr0",drive.getCurrentPositions()[1]);
+        telemetry.addData("Rl0",drive.getCurrentPositions()[2]);
+        telemetry.addData("Rr0",drive.getCurrentPositions()[3]);
+        telemetry.update();
+//        commander.runCommand(new RunShooterForTime(shooter,false,.8));
+//        sleep(3000);
+//
+//        commander.runCommand(new KickerSetState(kicker,1,2));
+//        sleep(3000);
+//        commander.runCommand(new KickerSetState(kicker,0,2));
+//        sleep(3000);
+//
+//        commander.runCommand(new KickerSetState(kicker,1,2));
+//        sleep(3000);
+//        commander.runCommand(new KickerSetState(kicker,0,2));
+//        sleep(3000);
+//
+//        commander.runCommand(new KickerSetState(kicker,1,2));
+//        sleep(3000);
+//        commander.runCommand(new KickerSetState(kicker,0,2));
+//        sleep(1000);
+//
+//        commander.runCommand(new RunShooterForTime(shooter,0,0));
 
 
         commander.stop();
