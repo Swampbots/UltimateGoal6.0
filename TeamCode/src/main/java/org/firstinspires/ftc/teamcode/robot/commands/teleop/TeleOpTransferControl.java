@@ -22,14 +22,14 @@ public class TeleOpTransferControl implements Command {
 
     @Override
     public void periodic() {
-        transfer.setPower((gamepad.right_trigger > 0.3f ? 1 : 0));
+        transfer.setPower(gamepad.right_trigger > 0.3f ? 1 : gamepad.left_trigger > 0.3f ? -1 : 0);
 
-        if(gamepad.left_bumper){
+        /*if(gamepad.left_bumper){
             transfer.setReverse(false);
         }
         if(gamepad.right_bumper){
             transfer.setReverse(true);
-        }
+        }*/
     }
 
     @Override
