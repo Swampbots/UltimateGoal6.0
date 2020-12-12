@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.commands.auto.ArmByEncoder;
+import org.firstinspires.ftc.teamcode.robot.commands.auto.ArmByTimer;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.DriveByEncoder;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.DriveByTimer;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.GripSetState;
@@ -68,7 +69,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
                 new RunShooterForTime(shooter,false,Drive.POWER_LEVELS.MEDIUM.getPower()),                              // Turn on shooter
                 new DriveByTimer(drive,1.5,-0.3),
                 //new DriveByEncoder(drive,InchToCount(55),0,.3,10),                 // Drive to line
-                new ArmByEncoder(arm,Arm.TARGETS.UP.getTarget(),0,.3,2),    // Bring wobble arm up
+                new ArmByTimer(arm,1,.3),    // Bring wobble arm up
                 new GripSetState(grip,Grip.TARGETS.CLOSE.getTarget()));
 
         sleep(1000);
@@ -133,7 +134,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
         commander.runCommand(new TurnByGyro(drive,180,0.4,5));
         sleep(1000);
         // Put arm out
-        commander.runCommand(new ArmByEncoder(arm,Arm.TARGETS.OUT.getTarget(),0,.3,2));
+        commander.runCommand(new ArmByTimer(arm,1,-.3));  // Bring wobble arm up)
         sleep(2000);
 
         // Open grip to drop Wobble Goal
