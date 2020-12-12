@@ -4,6 +4,7 @@ import com.disnodeteam.dogecommander.DogeCommander;
 import com.disnodeteam.dogecommander.DogeOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.robot.commands.auto.ArmByEncoder;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.ArmByTimer;
@@ -26,6 +27,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Transfer;
 @Autonomous(name = "Command Auto", group = "Finalized")
 public class CommandAuto extends LinearOpMode implements DogeOpMode {
     private boolean PS = true;
+    private DcMotor shooterMotor;
     @Override
     public void runOpMode() throws InterruptedException {
         DogeCommander commander = new DogeCommander(this);
@@ -46,6 +48,8 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
         commander.registerSubsystem(intake);
         commander.registerSubsystem(transfer);
 
+        shooterMotor = hardwareMap.get(DcMotor.class,"shooter");
+
         commander.init();
 
         // Run after init but before start
@@ -63,10 +67,10 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
             telemetry.update();
         }
 
-
+        shooterMotor.setPower(Shooter.POWER_LEVELS.MEDIUM.getPower());
 
         commander.runCommandsParallel(
-                new RunShooterForTime(shooter,false, Shooter.POWER_LEVELS.MEDIUM.getPower()),                              // Turn on shooter
+                //new RunShooterForTime(shooter,false, Shooter.POWER_LEVELS.MEDIUM.getPower()),                              // Turn on shooter
                 new DriveByTimer(drive,2,-0.3),
                 //new DriveByEncoder(drive,InchToCount(55),0,.3,10),                 // Drive to line
                 new ArmByTimer(arm,1,.3),    // Bring wobble arm up
@@ -113,9 +117,11 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
 
         if(PS){
             commander.runCommandsParallel(
-                    new StrafeByTimer(drive,2,-.4),
-                    new RunShooterForTime(shooter,0,0));
+                    new StrafeByTimer(drive,2,-.4));//,
+                    //new RunShooterForTime(shooter,0,0));
         }
+
+        shooterMotor.setPower(0);
 
         telemetry.addLine("Go to Wobble Goal");
         telemetry.update();
