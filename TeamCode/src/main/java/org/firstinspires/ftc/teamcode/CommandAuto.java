@@ -67,7 +67,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
 
         commander.runCommandsParallel(
                 new RunShooterForTime(shooter,false, Shooter.POWER_LEVELS.MEDIUM.getPower()),                              // Turn on shooter
-                new DriveByTimer(drive,1,-0.3),
+                new DriveByTimer(drive,2,-0.3),
                 //new DriveByEncoder(drive,InchToCount(55),0,.3,10),                 // Drive to line
                 new ArmByTimer(arm,1,.3),    // Bring wobble arm up
                 new GripSetState(grip,Grip.TARGETS.CLOSE.getTarget()));
@@ -75,7 +75,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
         sleep(1000);
 
         if(PS){
-            commander.runCommand(new StrafeByTimer(drive,1,0.3));
+            commander.runCommand(new StrafeByTimer(drive,0.5,0.3));
         }
 
         telemetry.addLine("Shot 1");
@@ -88,7 +88,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
         commander.runCommand(new KickerSetState(kicker,true,1));
 
         if(PS) {
-            commander.runCommand(new StrafeByTimer(drive, 1, 0.3));
+            commander.runCommand(new StrafeByTimer(drive, 0.5, 0.3));
         }
 
             telemetry.addLine("Shot 2");
@@ -101,7 +101,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
         commander.runCommand(new KickerSetState(kicker,true,1));
 
         if(PS){
-            commander.runCommand(new StrafeByTimer(drive,1,0.3));
+            commander.runCommand(new StrafeByTimer(drive,0.5,0.3));
         }
 
         telemetry.addLine("Shot 3");
