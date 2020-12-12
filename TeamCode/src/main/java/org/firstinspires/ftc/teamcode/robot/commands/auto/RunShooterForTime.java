@@ -11,11 +11,23 @@ public class RunShooterForTime implements Command {
     private ElapsedTime timer;
     private double seconds;
     private double power;
+    private boolean stop;
 
     public RunShooterForTime(Shooter shooter, double seconds, double power){
         this.shooter = shooter;
         this.seconds = seconds;
         this.power = power;
+
+        stop = true;
+
+        timer = new ElapsedTime();
+    }
+
+    public RunShooterForTime(Shooter shooter, boolean stopAtEnd, double power){
+        this.shooter = shooter;
+        this.power = power;
+        seconds = 0;
+        stop = false;
 
         timer = new ElapsedTime();
     }
@@ -33,6 +45,7 @@ public class RunShooterForTime implements Command {
 
     @Override
     public void stop() {
+        if(stop)
         shooter.setPower(0);
     }
 
