@@ -28,7 +28,7 @@ public class TeleOpDriveControl implements Command {
     public void periodic() {
         double dri = -gamepad.left_stick_y;
         double str = gamepad.left_stick_x;
-        double twi = -gamepad.right_stick_x;
+        double twi = gamepad.right_stick_x;
         boolean goSlow = gamepad.left_trigger > TRIGGER_THRESHOLD;
 
 

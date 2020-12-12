@@ -26,12 +26,12 @@ public class TeleOpIntakeControl implements Command {
     public void periodic() {
         intake.setPower(gamepad.left_trigger > 0.3f ? 1 : 0);
 
-        if(gamepad.left_bumper){
-            intake.setReverse(false);
-        }
-        if(gamepad.right_bumper){
-            intake.setReverse(true);
-        }
+//        if(gamepad.left_bumper){
+//            intake.setReverse(false);
+//        }
+//        if(gamepad.right_bumper){
+//            intake.setReverse(true);
+//        }
     }
 
     @Override

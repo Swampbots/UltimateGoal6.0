@@ -24,7 +24,9 @@ public class TeleOpShooterControl implements Command {
     public void start() {
         shooter.setPower(0);
         shooter.setShoot(false);
-        shooter.reversePower(false);
+        shooter.reversePower(true);
+
+
     }
 
     @Override
@@ -42,18 +44,18 @@ public class TeleOpShooterControl implements Command {
             shooter.setPower(Drive.POWER_LEVELS.ADJ.getPower());
         }
 
-        if(gamepad.right_bumper && gamepad.left_bumper){
-            if(revCheck){
-                shooter.reverse();
-                revCheck = false;
-            }
-        } else {
-            revCheck = true;
+//        if(gamepad.right_bumper && gamepad.left_bumper){
+//            if(revCheck){
+//                shooter.reverse();
+//                revCheck = false;
+//            }
+//        } else {
+//            revCheck = true;
             if(gamepad.right_bumper) shooter.setShoot(false);
-            if(gamepad.left_bumper) shooter.setShoot(true);
-
-
-        }
+            else if(gamepad.left_bumper) shooter.setShoot(true);
+//
+//
+//        }
 
     }
 
