@@ -71,7 +71,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
                 new GripSetState(grip,Grip.TARGETS.CLOSE.getTarget()),
                 new KickerSetState(kicker, Kicker.TARGETS.IN.getTarget(),1));
 
-        sleep(1000);
+        sleep(2000);
 
         if(PS){
             commander.runCommand(new StrafeByTimer(drive,0.7,0.4));
@@ -95,9 +95,9 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
 
         //Shot 2
         sleep(2000);
-        commander.runCommand(new KickerSetState(kicker,Kicker.TARGETS.OUT.getTarget(),1));
+        commander.runCommand(new KickerSetState(kicker,true,1));
         sleep(2000);
-        commander.runCommand(new KickerSetState(kicker,Kicker.TARGETS.IN.getTarget(),1));
+        commander.runCommand(new KickerSetState(kicker,true,1));
 
         if(PS){
             commander.runCommand(new StrafeByTimer(drive,0.7,0.4));

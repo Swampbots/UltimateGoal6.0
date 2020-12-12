@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.robot.commands.auto.KickerSetState;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.RunShooterForTime;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.StrafeByTimer;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Arm;
@@ -24,7 +25,7 @@ public class TestAutoStrafe extends LinearOpMode implements DogeOpMode {
         DogeCommander commander = new DogeCommander(this);
 
         Drive drive = new Drive(hardwareMap, true);
-        //Kicker kicker = new Kicker(hardwareMap);
+        Kicker kicker = new Kicker(hardwareMap);
         Shooter shooter         = new Shooter(hardwareMap);
         //Arm arm = new Arm(hardwareMap);
         //Grip grip = new Grip(hardwareMap);
@@ -32,7 +33,7 @@ public class TestAutoStrafe extends LinearOpMode implements DogeOpMode {
         //Transfer transfer = new Transfer(hardwareMap);
 
         commander.registerSubsystem(drive);
-        //commander.registerSubsystem(kicker);
+        commander.registerSubsystem(kicker);
         commander.registerSubsystem(shooter);
         //commander.registerSubsystem(arm);
         //commander.registerSubsystem(grip);
@@ -45,8 +46,14 @@ public class TestAutoStrafe extends LinearOpMode implements DogeOpMode {
 
         waitForStart();
 
-        commander.runCommand(new StrafeByTimer(drive,0.7,0.4));
-        commander.runCommand(new RunShooterForTime(shooter,3,1));
+        //commander.runCommand(new StrafeByTimer(drive,0.7,0.4));
+        commander.runCommand(new RunShooterForTime(shooter,false,.8));
+        sleep(3000);
+        commander.runCommand(new KickerSetState(kicker,true,2));
+        sleep(3000);
+        commander.runCommand(new KickerSetState(kicker,true,2));
+        sleep(1000);
+        commander.runCommand(new RunShooterForTime(shooter,0,0));
 
 
         commander.stop();
