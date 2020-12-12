@@ -20,7 +20,7 @@ public class Shooter implements Subsystem {
     private double      power = OFF;
     private boolean     reverse = false;
     private boolean     shoot = false;
-    
+
     public enum POWER_LEVELS{
         MAX,FAR,MEDIUM,SHORT,MIN,
         ADJ;
