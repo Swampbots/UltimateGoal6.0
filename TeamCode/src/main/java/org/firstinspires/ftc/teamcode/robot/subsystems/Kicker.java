@@ -33,6 +33,7 @@ public class Kicker implements Subsystem {
     @Override
     public void initHardware() {
         kicker = hardwareMap.get(Servo.class, "kicker");
+        kicker.scaleRange(0.0,0.8);
     }
 
     @Override

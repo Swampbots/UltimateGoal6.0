@@ -64,7 +64,7 @@ public class TestAutoStrafe extends LinearOpMode implements DogeOpMode {
         sleep(3000);
         commander.runCommand(new KickerSetState(kicker,0,2));
         sleep(1000);
-        
+
         commander.runCommand(new RunShooterForTime(shooter,0,0));
 
 
