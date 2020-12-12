@@ -15,6 +15,10 @@ public class TurnByGyro implements Command {
 
     private double target;
 
+    private double newPower;
+
+    private final double K = 0.3;
+
     public TurnByGyro(Drive drive, double degrees, double power, double timeout){
         this.drive = drive;
         this.target = degrees;
@@ -31,9 +35,9 @@ public class TurnByGyro implements Command {
 
     @Override
     public void periodic() {
-        drive.setPower(
-                 power * (target - drive.heading() < 0 ? 1 : -1),
-                power * (target - drive.heading() > 0 ? 1 : -1));
+        newPower = power * (target-drive.heading()) * K;
+        newPower = Range.clip(newPower,-1,1);
+        drive.setPower(-newPower, newPower);
     }
 
     @Override
