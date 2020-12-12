@@ -60,7 +60,7 @@ public class StrafeByEncoder implements Command {
                 currentPos[3] + counts
         );
         drive.setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
-        drive.setDaigonalPower(power,power);
+        drive.setDiagonalPower(power,power);
     }
 
     @Override
