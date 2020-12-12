@@ -61,9 +61,11 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
             telemetry.update();
         }
 
+
+
         commander.runCommandsParallel(
                 new RunShooterForTime(shooter,-1,Drive.POWER_LEVELS.MEDIUM.getPower()),                              // Turn on shooter
-                new DriveByTimer(drive,3,.3),
+                new DriveByTimer(drive,1.5,-0.3),
                 //new DriveByEncoder(drive,InchToCount(55),0,.3,10),                 // Drive to line
                 new ArmByEncoder(arm,Arm.TARGETS.UP.getTarget(),0,.3,2),    // Bring wobble arm up
                 new GripSetState(grip,Grip.TARGETS.CLOSE.getTarget()));
@@ -121,7 +123,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
 
         // Drive in front of drop zone
         //commander.runCommand(new DriveByEncoder(drive,InchToCount(10),0,0.3,5));
-        commander.runCommand(new DriveByTimer(drive,1,.4));
+        commander.runCommand(new DriveByTimer(drive,1,-0.4));
         sleep(1000);
 
         // Put arm out
@@ -133,7 +135,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
         sleep(300);
 
         // Drive back to line
-        commander.runCommand(new DriveByTimer(drive,0.5,-.7));
+        commander.runCommand(new DriveByTimer(drive,0.5,0.7));
 
         commander.stop();
     }

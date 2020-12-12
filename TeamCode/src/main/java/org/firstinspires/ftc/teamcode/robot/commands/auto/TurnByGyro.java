@@ -32,8 +32,8 @@ public class TurnByGyro implements Command {
     @Override
     public void periodic() {
         drive.setPower(
-                 power * (target - drive.heading() > 0 ? 1 : -1),
-                power * (target - drive.heading() < 0 ? 1 : -1));
+                 power * (target - drive.heading() < 0 ? 1 : -1),
+                power * (target - drive.heading() > 0 ? 1 : -1));
     }
 
     @Override
@@ -44,6 +44,6 @@ public class TurnByGyro implements Command {
     @Override
     public boolean isCompleted() {
 
-        return Range.clip(drive.heading(),target+1,target-1) == drive.heading() || timer.seconds() > timeout;
+        return Range.clip(drive.heading(),target+1,target-1) == target || timer.seconds() > timeout;
     }
 }
