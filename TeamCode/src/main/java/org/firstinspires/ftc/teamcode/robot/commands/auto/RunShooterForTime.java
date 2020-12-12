@@ -16,6 +16,8 @@ public class RunShooterForTime implements Command {
         this.shooter = shooter;
         this.seconds = seconds;
         this.power = power;
+
+        timer = new ElapsedTime();
     }
 
     @Override

@@ -20,6 +20,8 @@ public class TurnByGyro implements Command {
         this.target = degrees;
         this.power = power;
         this.timeout = timeout;
+
+        timer = new ElapsedTime();
     }
 
     @Override

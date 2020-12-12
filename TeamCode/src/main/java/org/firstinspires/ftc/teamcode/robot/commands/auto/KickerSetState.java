@@ -16,6 +16,8 @@ public class KickerSetState implements Command {
         this.kicker = kicker;
         this.state = state;
         this.timeout = timeout;
+
+        timer = new ElapsedTime();
     }
 
     public KickerSetState(Kicker kicker, boolean toggle, double timeout){
@@ -24,6 +26,8 @@ public class KickerSetState implements Command {
         this.timeout = timeout;
 
         kicker.togglePos();
+
+        timer = new ElapsedTime();
     }
 
     @Override

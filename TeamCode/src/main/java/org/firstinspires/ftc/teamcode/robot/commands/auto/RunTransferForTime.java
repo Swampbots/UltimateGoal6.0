@@ -16,6 +16,8 @@ public class RunTransferForTime implements Command {
         this.transfer = transfer;
         this.seconds = seconds;
         this.power = power;
+
+        timer = new ElapsedTime();
     }
 
     @Override

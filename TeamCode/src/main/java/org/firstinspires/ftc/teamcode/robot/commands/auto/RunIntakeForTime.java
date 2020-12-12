@@ -16,6 +16,8 @@ public class RunIntakeForTime implements Command {
         this.intake = intake;
         this.seconds = seconds;
         this.power = power;
+
+        timer = new ElapsedTime();
     }
 
     @Override
