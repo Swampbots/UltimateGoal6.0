@@ -190,7 +190,14 @@ public class Drive implements Subsystem {
         return exception;
     }
 
+    public void reverseFlDrive(){
+        if(flDrive.getDirection() == DcMotorSimple.Direction.FORWARD){
+            flDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        } else {
+            flDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
 
+    }
 
 
 

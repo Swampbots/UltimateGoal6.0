@@ -73,6 +73,9 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
             commander.runCommand(new StrafeByEncoder(drive,InchToCount(-5),0,.3,3));
         }
 
+        telemetry.addLine("Shot 1");
+        telemetry.update();
+
         //Shot 1
         commander.runCommand(new KickerSetState(kicker,true,1));
         sleep(500);
@@ -81,6 +84,9 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
         if(PS){
             commander.runCommand(new StrafeByEncoder(drive,InchToCount(-5),0,.3,3));
         }
+
+        telemetry.addLine("Shot 2");
+        telemetry.update();
 
         //Shot 2
         sleep(500);
@@ -92,6 +98,9 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
             commander.runCommand(new StrafeByEncoder(drive,InchToCount(-5),0,.3,3));
         }
 
+        telemetry.addLine("Shot 3");
+        telemetry.update();
+
         //Shot 3
         sleep(500);
         commander.runCommand(new KickerSetState(kicker,true,1));
@@ -99,6 +108,9 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
         if(PS){
             commander.runCommand(new StrafeByEncoder(drive,InchToCount(15),0,.3,3));
         }
+
+        telemetry.addLine("Go to Wobble Goal");
+        telemetry.update();
 
         commander.runCommandsParallel(
                 new RunShooterForTime(shooter,0,.3), // Turn off shooter
