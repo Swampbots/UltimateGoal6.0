@@ -16,7 +16,7 @@ public class Drive implements Subsystem {
     // Hardware map
     private HardwareMap hardwareMap;
 
-    private final double SLOW = 0.6;
+    private final double SLOW = 0.4;
     private final double FAST = 1.0;
 
     // Components
