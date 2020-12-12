@@ -31,7 +31,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
 
         Drive drive             = new Drive(hardwareMap,true);
         Kicker kicker           = new Kicker(hardwareMap);
-        Shooter shooter         = new Shooter(hardwareMap);
+        //Shooter shooter         = new Shooter(hardwareMap);
         Arm arm                 = new Arm(hardwareMap);
         Grip grip               = new Grip(hardwareMap);
         Intake intake           = new Intake(hardwareMap);
@@ -39,7 +39,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
 
         commander.registerSubsystem(drive);
         commander.registerSubsystem(kicker);
-        commander.registerSubsystem(shooter);
+        //commander.registerSubsystem(shooter);
         commander.registerSubsystem(arm);
         commander.registerSubsystem(grip);
         commander.registerSubsystem(intake);
@@ -68,7 +68,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
 
         commander.runCommandsParallel(
                 //new RunShooterForTime(shooter,false, Shooter.POWER_LEVELS.MEDIUM.getPower()),                              // Turn on shooter
-                new DriveByTimer(drive,3,-0.3),
+                new DriveByTimer(drive,2.7,-0.3),
                 //new DriveByEncoder(drive,InchToCount(55),0,.3,10),                 // Drive to line
                 new ArmByTimer(arm,1,.3),    // Bring wobble arm up
                 new GripSetState(grip,Grip.TARGETS.CLOSE.getTarget()),
