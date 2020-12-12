@@ -66,7 +66,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
 
 
         commander.runCommandsParallel(
-                new RunShooterForTime(shooter,false,Drive.POWER_LEVELS.MEDIUM.getPower()),                              // Turn on shooter
+                new RunShooterForTime(shooter,false, Shooter.POWER_LEVELS.MEDIUM.getPower()),                              // Turn on shooter
                 new DriveByTimer(drive,1,-0.3),
                 //new DriveByEncoder(drive,InchToCount(55),0,.3,10),                 // Drive to line
                 new ArmByTimer(arm,1,.3),    // Bring wobble arm up

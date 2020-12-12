@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.robot.commands.teleop;
 import com.disnodeteam.dogecommander.Command;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.robot.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 
 
@@ -32,16 +31,16 @@ public class TeleOpShooterControl implements Command {
     @Override
     public void periodic() {
         if(gamepad.dpad_down){
-            shooter.setPower(Drive.POWER_LEVELS.SHORT.getPower());
+            shooter.setPower(Shooter.POWER_LEVELS.SHORT.getPower());
         }
         if(gamepad.dpad_up){
-            shooter.setPower(Drive.POWER_LEVELS.FAR.getPower());
+            shooter.setPower(Shooter.POWER_LEVELS.FAR.getPower());
         }
         if(gamepad.dpad_left){
-            shooter.setPower(Drive.POWER_LEVELS.MEDIUM.getPower());
+            shooter.setPower(Shooter.POWER_LEVELS.MEDIUM.getPower());
         }
         if(gamepad.dpad_right){
-            shooter.setPower(Drive.POWER_LEVELS.ADJ.getPower());
+            shooter.setPower(Shooter.POWER_LEVELS.ADJ.getPower());
         }
 
 //        if(gamepad.right_bumper && gamepad.left_bumper){
