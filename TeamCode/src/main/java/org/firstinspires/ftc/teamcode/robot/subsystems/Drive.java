@@ -111,8 +111,9 @@ public class Drive implements Subsystem {
         }
 
         // Reverse left side
-        flDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        rlDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        //flDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        //rlDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        rrDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
         flDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
