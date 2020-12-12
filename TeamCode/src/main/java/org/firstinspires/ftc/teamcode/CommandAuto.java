@@ -112,7 +112,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
 
         if(PS){
             commander.runCommandsParallel(
-                    new StrafeByTimer(drive,2,-.4));//,
+                    new StrafeByTimer(drive,2,-.4),//,
                     new RunShooterForTime(shooter,0,0));
         }
 
