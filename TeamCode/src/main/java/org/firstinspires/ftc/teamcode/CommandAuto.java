@@ -64,12 +64,12 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
 
 
         commander.runCommandsParallel(
-                new RunShooterForTime(shooter,false, Shooter.POWER_LEVELS.MEDIUM.getPower()),                              // Turn on shooter
+                new RunShooterForTime(shooter,false, 0.8),                              // Turn on shooter
                 new DriveByTimer(drive,2.7,-0.3),
                 //new DriveByEncoder(drive,InchToCount(55),0,.3,10),                 // Drive to line
                 new ArmByTimer(arm,1,.3),    // Bring wobble arm up
-                new GripSetState(grip,Grip.TARGETS.CLOSE.getTarget()),
-                new KickerSetState(kicker, Kicker.TARGETS.IN.getTarget(),1));
+                new GripSetState(grip,Grip.TARGETS.CLOSE.getTarget())
+                );
 
         sleep(2000);
 
@@ -82,9 +82,9 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
 
         //Shot 1
         sleep(2000);
-        commander.runCommand(new KickerSetState(kicker,true,1));
+        commander.runCommand(new KickerSetState(kicker,1,2));
         sleep(2000);
-        commander.runCommand(new KickerSetState(kicker,true,1));
+        commander.runCommand(new KickerSetState(kicker,0,2));
 
         if(PS) {
             commander.runCommand(new StrafeByTimer(drive,0.7,0.4));
@@ -95,9 +95,9 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
 
         //Shot 2
         sleep(2000);
-        commander.runCommand(new KickerSetState(kicker,true,1));
+        commander.runCommand(new KickerSetState(kicker,1,2));
         sleep(2000);
-        commander.runCommand(new KickerSetState(kicker,true,1));
+        commander.runCommand(new KickerSetState(kicker,0,2));
 
         if(PS){
             commander.runCommand(new StrafeByTimer(drive,0.7,0.4));
@@ -108,7 +108,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
 
         //Shot 3
         sleep(2000);
-        commander.runCommand(new KickerSetState(kicker,Kicker.TARGETS.OUT.getTarget(),1));
+        commander.runCommand(new KickerSetState(kicker,1,2));
 
         if(PS){
             commander.runCommandsParallel(
