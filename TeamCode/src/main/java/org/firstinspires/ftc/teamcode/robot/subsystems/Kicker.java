@@ -16,8 +16,8 @@ public class Kicker implements Subsystem {
 
         public double getTarget(){
             switch (this){
-                case IN:    return 0.0;
-                case OUT:   return 1.0;
+                case IN:    return 1.0;
+                case OUT:   return 0.0;
                 default:    return 0.0;
             }
         }
