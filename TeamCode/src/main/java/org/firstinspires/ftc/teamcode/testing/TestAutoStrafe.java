@@ -6,12 +6,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.robot.commands.auto.RunShooterForTime;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.StrafeByTimer;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Grip;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Kicker;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Transfer;
 
 @Autonomous
@@ -23,7 +25,7 @@ public class TestAutoStrafe extends LinearOpMode implements DogeOpMode {
 
         Drive drive = new Drive(hardwareMap, true);
         //Kicker kicker = new Kicker(hardwareMap);
-        //Shooter shooter         = new Shooter(hardwareMap);
+        Shooter shooter         = new Shooter(hardwareMap);
         //Arm arm = new Arm(hardwareMap);
         //Grip grip = new Grip(hardwareMap);
         //Intake intake = new Intake(hardwareMap);
@@ -31,7 +33,7 @@ public class TestAutoStrafe extends LinearOpMode implements DogeOpMode {
 
         commander.registerSubsystem(drive);
         //commander.registerSubsystem(kicker);
-        //commander.registerSubsystem(shooter);
+        commander.registerSubsystem(shooter);
         //commander.registerSubsystem(arm);
         //commander.registerSubsystem(grip);
         //commander.registerSubsystem(intake);
@@ -43,6 +45,10 @@ public class TestAutoStrafe extends LinearOpMode implements DogeOpMode {
 
         waitForStart();
 
-        commander.runCommand(new StrafeByTimer(drive,1,0.5));
+        commander.runCommand(new StrafeByTimer(drive,0.7,0.4));
+        commander.runCommand(new RunShooterForTime(shooter,3,1));
+
+
+        commander.stop();
     }
 }
