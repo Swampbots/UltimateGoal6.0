@@ -61,6 +61,9 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
             telemetry.update();
         }
 
+        commander.runCommand(new ArmByTimer(arm,1,.5));
+        commander.runCommand(new GripSetState(grip,Grip.TARGETS.CLOSE.getTarget()));
+        commander.runCommand(new ArmByTimer(arm,.8,.5));
 
         commander.runCommandsParallel(
                 new RunShooterForTime(shooter,false, 0.65),                              // Turn on shooter
@@ -133,15 +136,16 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
 //        commander.runCommand(new DriveByTimer(drive,1,-0.4));
 //        sleep(1000);
 
-        commander.runCommand(new TurnByGyro(drive,90,0.4,5));
+        commander.runCommand(new TurnByGyro(drive,180,0.4,5));
         sleep(500);
-//        // Put arm out
-//        commander.runCommand(new ArmByTimer(arm,1,-.3));  // Bring wobble arm up)
-//        sleep(2000);
-//
-//        // Open grip to drop Wobble Goal
-//        commander.runCommand(new GripSetState(grip,true));
-//        sleep(300);
+        
+        // Put arm out
+        commander.runCommand(new ArmByTimer(arm,1,-.3));
+        sleep(2000);
+
+        // Open grip to drop Wobble Goal
+        commander.runCommand(new GripSetState(grip,true));
+        sleep(300);
 //
 //        // Drive back to line
         //commander.runCommand(new DriveByTimer(drive,0.5,0.7));

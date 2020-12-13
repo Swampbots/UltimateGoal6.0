@@ -17,7 +17,7 @@ public class TurnByGyro implements Command {
 
     private double newPower;
 
-    private final double K = -0.3;
+    private final double K = -0.0003;
 
     public TurnByGyro(Drive drive, double degrees, double power, double timeout){
         this.drive = drive;
