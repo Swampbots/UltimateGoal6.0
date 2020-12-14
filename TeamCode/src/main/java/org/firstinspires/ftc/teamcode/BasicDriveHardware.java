@@ -46,8 +46,8 @@ public class BasicDriveHardware {
     public final double COUNTS_PER_INCH_EMPIRICAL = 1000 / 24.0;    // 1000 counts divided by 24.0 inches; determined through testing
 
     // Servo-specific variables
-    public static final double KICKER_SPEED_MAX = 1.0;
-    public static final double KICKER_SPEED_MIN = 0.0;
+    public static final double KICKER_SPEED_MAX = .8;
+    public static final double KICKER_SPEED_MIN = 0.2;
     public static final double SWEEPER_RANGE_MAX    = 1.0;
     public static final double SWEEPER_RANGE_MIN    = 0.0;
 

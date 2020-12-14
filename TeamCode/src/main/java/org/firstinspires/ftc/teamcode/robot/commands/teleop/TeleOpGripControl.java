@@ -23,9 +23,9 @@ public class TeleOpGripControl implements Command {
     @Override
     public void periodic() {
         if(gamepad.x){
-            grip.setTargetPos(Grip.TARGETS.CLOSE.getTarget());
-        } else {
             grip.setTargetPos(Grip.TARGETS.OPEN.getTarget());
+        } else {
+            grip.setTargetPos(Grip.TARGETS.CLOSE.getTarget());
         }
     }
 

@@ -16,9 +16,9 @@ public class Kicker implements Subsystem {
 
         public double getTarget(){
             switch (this){
-                case IN:    return 1.0;
-                case OUT:   return 0.0;
-                default:    return 0.0;
+                case IN:    return 0.6;
+                case OUT:   return 0.4;
+                default:    return 0.1;
             }
         }
     }
@@ -33,7 +33,7 @@ public class Kicker implements Subsystem {
     @Override
     public void initHardware() {
         kicker = hardwareMap.get(Servo.class, "kicker");
-        kicker.scaleRange(0.0,0.8);
+//        kicker.scaleRange(0,0.8); quote blake 12/12/2020: wtf
     }
 
     @Override
@@ -54,6 +54,6 @@ public class Kicker implements Subsystem {
     }
 
     public void togglePos(){ //   0 |----1----| .5 |----0----| 1
-        targetPos = Math.abs(targetPos- TARGETS.IN.getTarget()) < Math.abs(targetPos- TARGETS.OUT.getTarget()) ? TARGETS.OUT.getTarget() : TARGETS.OUT.getTarget();
+        targetPos = Math.abs(targetPos- TARGETS.IN.getTarget()) < Math.abs(targetPos- TARGETS.OUT.getTarget()) ? TARGETS.OUT.getTarget() : TARGETS.OUT.getTarget() /* <---- ???????! */;
     }
 }

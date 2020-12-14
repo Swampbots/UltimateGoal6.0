@@ -36,12 +36,12 @@ public class TeleOpShooterControl implements Command {
         if(gamepad.dpad_up){
             shooter.setPower(Shooter.POWER_LEVELS.FAR.getPower());
         }
-        if(gamepad.dpad_left){
-            shooter.setPower(Shooter.POWER_LEVELS.MEDIUM.getPower());
-        }
-        if(gamepad.dpad_right){
-            shooter.setPower(Shooter.POWER_LEVELS.ADJ.getPower());
-        }
+//        if(gamepad.dpad_left){
+//            shooter.setPower(Shooter.POWER_LEVELS.MEDIUM.getPower());
+//        }
+//        if(gamepad.dpad_right){
+//            shooter.setPower(Shooter.POWER_LEVELS.ADJ.getPower());
+//        }
 
 //        if(gamepad.right_bumper && gamepad.left_bumper){
 //            if(revCheck){

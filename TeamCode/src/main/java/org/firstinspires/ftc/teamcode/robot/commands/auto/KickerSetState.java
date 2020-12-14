@@ -12,6 +12,14 @@ public class KickerSetState implements Command {
     private double timeout;
     private ElapsedTime timer;
 
+    public KickerSetState(Kicker kicker, double state){
+        this.kicker = kicker;
+        this.state = state;
+        this.timeout = 0;
+
+        timer = new ElapsedTime();
+    }
+
     public KickerSetState(Kicker kicker, double state, double timeout){
         this.kicker = kicker;
         this.state = state;
@@ -22,7 +30,7 @@ public class KickerSetState implements Command {
 
     public KickerSetState(Kicker kicker, boolean toggle, double timeout){
         this.kicker = kicker;
-        this.state = -1;
+        this.state = -1;    // FIXME: make -1 into variable to improve readability of code
         this.timeout = timeout;
 
         kicker.togglePos();

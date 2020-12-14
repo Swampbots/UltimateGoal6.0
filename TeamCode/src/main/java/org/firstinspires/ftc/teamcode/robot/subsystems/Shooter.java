@@ -31,7 +31,7 @@ public class Shooter implements Subsystem {
                 case MIN: return 0.0;
                 case FAR: return 0.85;
                 case MEDIUM: return 0.75;
-                case SHORT: return 0.65;
+                case SHORT: return 0.60;
                 case ADJ: return 0.70;
                 default: return 0.75;
             }

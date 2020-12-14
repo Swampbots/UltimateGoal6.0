@@ -50,7 +50,7 @@ public class Arm implements Subsystem {
     public void periodic() {
         if(arm.getMode() == DcMotor.RunMode.RUN_TO_POSITION){
             arm.setTargetPosition(targetPos);
-        } else if(arm.getMode() == DcMotor.RunMode.RUN_WITHOUT_ENCODER){
+        } else /*if(arm.getMode() == DcMotor.RunMode.RUN_WITHOUT_ENCODER)*/{
             arm.setPower(power);
         }
 

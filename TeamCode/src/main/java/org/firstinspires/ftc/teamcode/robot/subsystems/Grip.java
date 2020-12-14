@@ -18,8 +18,8 @@ public class Grip implements Subsystem {
 
         public double getTarget(){
             switch (this){
-                case OPEN:  return 0;
-                case CLOSE: return 1;
+                case OPEN:  return 1;
+                case CLOSE: return 0;
                 default:    return 0;
             }
         }
