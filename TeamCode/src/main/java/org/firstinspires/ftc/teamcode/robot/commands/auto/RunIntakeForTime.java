@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot.commands.auto;
 
 import com.disnodeteam.dogecommander.Command;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
@@ -23,7 +24,7 @@ public class RunIntakeForTime implements Command {
     @Override
     public void start() {
         timer.reset();
-        intake.setReverse(false);
+        intake.setDirection(DcMotorSimple.Direction.FORWARD);
         intake.setPower(power);
     }
 
