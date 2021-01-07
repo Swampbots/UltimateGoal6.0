@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot.commands.teleop;
 
 import com.disnodeteam.dogecommander.Command;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.robot.subsystems.Transfer;
@@ -17,7 +18,7 @@ public class TeleOpTransferControl implements Command {
     @Override
     public void start() {
         transfer.setPower(0);
-        transfer.setReverse(false);
+        transfer.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override
