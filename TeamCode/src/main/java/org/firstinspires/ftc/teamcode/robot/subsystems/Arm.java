@@ -12,10 +12,11 @@ public class Arm implements Subsystem {
 
     public enum TARGETS {
         UP,
-        DOWN,
-        OUT;
+        OUT,
+        DOWN;
 
-        public int getTarget(){
+        //TODO: Confirm targets
+        public int getTarget() {
             switch (this){
                 case UP:    return 1000;
                 case OUT:   return 0;
@@ -28,13 +29,13 @@ public class Arm implements Subsystem {
     private double power = 0;
 
     private int targetPos;
-    private int targetOffset = 0;
 
-    public Arm(HardwareMap hardwareMap){
+    public Arm(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
+
+        initHardware();
     }
 
-    @Override
     public void initHardware() {
         arm = hardwareMap.get(DcMotor.class, "arm");
 
@@ -48,49 +49,44 @@ public class Arm implements Subsystem {
 
     @Override
     public void periodic() {
-        if(arm.getMode() == DcMotor.RunMode.RUN_TO_POSITION){
+        if(arm.getMode() == DcMotor.RunMode.RUN_TO_POSITION) {
             arm.setTargetPosition(targetPos);
-        } else /*if(arm.getMode() == DcMotor.RunMode.RUN_WITHOUT_ENCODER)*/{
-            arm.setPower(power);
         }
 
-    }
-
-    public void resetTargetPos(){
-        targetOffset = arm.getCurrentPosition() - targetOffset;
-    }
-
-    public void setTargetPos(int targetPos){
-        this.targetPos = targetPos - targetOffset;
-    }
-
-    public int getCurrentPos(){
-        return arm.getCurrentPosition() - targetOffset;
-    }
-
-    public int getTargetPos(){
-        return arm.getTargetPosition() - targetOffset;
-    }
-
-
-    public void setRunMode(DcMotor.RunMode runMode){
-        arm.setMode(runMode);
+        arm.setPower(power);
     }
 
     public DcMotor.RunMode getRunMode(){
         return arm.getMode();
     }
 
-    public void setPower(double power){
-        this.power = power;
-    }
-
     public double getPower(){
         return power;
     }
 
-    public boolean isBusy(){return arm.isBusy();}
+    public boolean isBusy() {return arm.isBusy();}
+
+    public void setRunMode(DcMotor.RunMode runMode){
+        arm.setMode(runMode);
+    }
+
+    public void setPower(double power){
+        this.power = power;
+    }
 
 
+    //TODO: Test out encoder functions
+    public void setTargetPos(int targetPos){
+        this.targetPos = targetPos;
+    }
+
+    public int getCurrentPos(){
+        return arm.getCurrentPosition();
+    }
+
+    public int getTargetPos(){
+        return arm.getTargetPosition();
+    }
 
 }
+
