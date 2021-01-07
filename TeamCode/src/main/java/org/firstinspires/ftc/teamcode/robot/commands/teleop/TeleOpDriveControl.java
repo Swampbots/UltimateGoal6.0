@@ -40,8 +40,6 @@ public class TeleOpDriveControl implements Command {
 
         drive.setMecanumPower(dri, str, twi, goSlow);
 
-        if(gamepad.dpad_up){
-            drive.getHeadingOffset();
         if(telemetry != null) {
             telemetry.addData("dri", dri);
             telemetry.addData("str", str);

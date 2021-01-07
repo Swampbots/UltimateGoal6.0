@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.teamcode.robot.commands.auto.SavePID;
 
 public class Drive implements Subsystem {
     // Hardware map
@@ -34,10 +33,6 @@ public class Drive implements Subsystem {
     private double goSlow = FAST;
     private boolean initIMU;
 
-    // Heading offset
-    private float headingOffset;
-    private boolean hasHeadingOffset;
-    private Exception exception;
 
     public static final double COUNTS_PER_INCH_EMPIRICAL = 1000/24.0; // 1000 Counts every 24 inches
 
@@ -54,10 +49,6 @@ public class Drive implements Subsystem {
         this.initIMU = false;
     }
 
-    public Drive(HardwareMap hardwareMap, boolean initIMU, boolean hasHeadingOffset) {
-        this.hardwareMap = hardwareMap;
-        this.initIMU = initIMU;
-        this.hasHeadingOffset = hasHeadingOffset;
     }
 
 
@@ -81,17 +72,6 @@ public class Drive implements Subsystem {
             imu.initialize(parameters);
         }
 
-        headingOffset = 0f;
-        if(hasHeadingOffset){
-            try {
-                headingOffset = new SavePID(this).getHeading();
-            } catch (Exception e){
-                headingOffset= 1234;
-                exception = e;
-            }
-        } else {
-            headingOffset = 4321f;
-        }
 
         // Reverse front right
         frDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -164,29 +144,4 @@ public class Drive implements Subsystem {
     public float heading(){
         return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
     }
-
-    public float getHeadingOffset(){
-        return headingOffset;
-    }
-
-    public Exception getException(){
-        return exception;
-    }
-
-    public void reverseFlDrive(){
-        if(flDrive.getDirection() == DcMotorSimple.Direction.FORWARD){
-            flDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        } else {
-            flDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        }
-
-    }
-
-
-
-
-
-
-
-
 }
