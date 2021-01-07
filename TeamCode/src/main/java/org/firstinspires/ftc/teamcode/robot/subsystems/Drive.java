@@ -39,18 +39,18 @@ public class Drive implements Subsystem {
     //private final SynchronousPID pid = new SynchronousPID
 
     // Constructor
-    public Drive(HardwareMap hardwareMap, boolean initIMU) {
+    public Drive(HardwareMap hardwareMap, boolean initIMU, boolean initCam){
         this.hardwareMap = hardwareMap;
         this.initIMU = initIMU;
     }
 
+    public Drive(HardwareMap hardwareMap, boolean initIMU) {
+       this(hardwareMap,initIMU,false);
+    }
+
     public Drive(HardwareMap hardwareMap) {
-        this.hardwareMap = hardwareMap;
-        this.initIMU = false;
+        this(hardwareMap, false, false);
     }
-
-    }
-
 
     @Override
     public void initHardware() {
