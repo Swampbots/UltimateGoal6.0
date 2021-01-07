@@ -17,15 +17,15 @@ public class TeleOpGripControl implements Command {
 
     @Override
     public void start() {
-        grip.setTargetPos(Grip.TARGETS.CLOSE.getTarget());
+        grip.close();
     }
 
     @Override
     public void periodic() {
         if(gamepad.x){
-            grip.setTargetPos(Grip.TARGETS.OPEN.getTarget());
+            grip.open();
         } else {
-            grip.setTargetPos(Grip.TARGETS.CLOSE.getTarget());
+            grip.close();
         }
     }
 
