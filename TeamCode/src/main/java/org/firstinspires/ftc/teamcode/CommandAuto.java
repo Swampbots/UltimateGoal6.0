@@ -46,10 +46,6 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
 
         commander.init();
 
-        // Run before start
-        commander.runCommand(new GripSetState(grip, Grip.TARGETS.CLOSE.getTarget()));
-        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.IN.getTarget(), 10.0));
-
         waitForStart();
 
 
