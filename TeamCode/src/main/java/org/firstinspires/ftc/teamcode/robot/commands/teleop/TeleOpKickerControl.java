@@ -16,16 +16,16 @@ public class TeleOpKickerControl implements Command {
 
     @Override
     public void start() {
-        kicker.setTargetPos(Kicker.TARGETS.IN.getTarget());
+        kicker.in();
     }
 
     @Override
     public void periodic() {
         if(gamepad.a){
-            kicker.setTargetPos(Kicker.TARGETS.IN.getTarget());
+            kicker.in();
         }
         if(gamepad.b){
-            kicker.setTargetPos(Kicker.TARGETS.OUT.getTarget());
+            kicker.out();
         }
     }
 
