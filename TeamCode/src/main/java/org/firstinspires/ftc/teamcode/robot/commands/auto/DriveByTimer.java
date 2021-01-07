@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.robot.commands.auto;
 import com.disnodeteam.dogecommander.Command;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Func;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drive;
 
 public class DriveByTimer implements Command {
@@ -11,13 +13,19 @@ public class DriveByTimer implements Command {
     private ElapsedTime timer;
     private double seconds;
     private double power;
+    private Telemetry telemetry;
 
-    public DriveByTimer(Drive drive, double seconds, double power){
+    public DriveByTimer(Drive drive, double seconds, double power, Telemetry telemetry){
         timer = new ElapsedTime();
 
         this.drive = drive;
         this.seconds = seconds;
         this.power = power;
+        this.telemetry = telemetry;
+    }
+
+    public DriveByTimer(Drive drive, double seconds, double power){
+        this(drive,seconds,power, null);
     }
 
     @Override
@@ -28,7 +36,12 @@ public class DriveByTimer implements Command {
 
     @Override
     public void periodic() {
+        if(telemetry != null) {
+            telemetry.addData("Timer", timer.seconds());
+            telemetry.addData("Seconds", seconds);
 
+            telemetry.update();
+        }
     }
 
     @Override
