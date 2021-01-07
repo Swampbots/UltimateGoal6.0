@@ -10,12 +10,14 @@ public class Kicker implements Subsystem {
 
     private Servo kicker;
 
-    public enum TARGETS{
+    private boolean in = true;
+
+    public enum TARGETS {
         IN,
         OUT;
 
-        public double getTarget(){
-            switch (this){
+        public double getTarget() {
+            switch (this) {
                 case IN:    return 0.6;
                 case OUT:   return 0.4;
                 default:    return 0.1;
@@ -23,37 +25,33 @@ public class Kicker implements Subsystem {
         }
     }
 
-
-    private double targetPos = TARGETS.IN.getTarget();
-
-    public Kicker(HardwareMap hardwareMap){
+    public Kicker(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
     }
 
     @Override
     public void initHardware() {
         kicker = hardwareMap.get(Servo.class, "kicker");
-//        kicker.scaleRange(0,0.8); quote blake 12/12/2020: wtf
     }
 
     @Override
     public void periodic() {
-        kicker.setPosition(targetPos);
-    }
-
-    public void setTargetPos(double targetPos){
-        this.targetPos = targetPos;
-    }
-
-    public double getTargetPos() {
-        return targetPos;
+        kicker.setPosition(in ? TARGETS.IN.getTarget() : TARGETS.OUT.getTarget());
     }
 
     public double getCurrentPos() {
         return kicker.getPosition();
     }
 
-    public void togglePos(){ //   0 |----1----| .5 |----0----| 1
-        targetPos = Math.abs(targetPos- TARGETS.IN.getTarget()) < Math.abs(targetPos- TARGETS.OUT.getTarget()) ? TARGETS.OUT.getTarget() : TARGETS.OUT.getTarget() /* <---- ???????! */;
+    public void in() {
+        in = true;
+    }
+
+    public void out() {
+        in = false;
+    }
+
+    public void togglePos() {
+        in = !in;
     }
 }
