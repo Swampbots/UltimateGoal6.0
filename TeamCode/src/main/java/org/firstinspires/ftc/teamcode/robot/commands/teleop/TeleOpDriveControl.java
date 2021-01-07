@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.robot.commands.teleop;
 import com.disnodeteam.dogecommander.Command;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drive;
 
 public class TeleOpDriveControl implements Command {
@@ -11,12 +12,18 @@ public class TeleOpDriveControl implements Command {
     // Input
     private Gamepad gamepad;
 
+    private Telemetry telemetry;
+
     private final double TRIGGER_THRESHOLD = 0.7;
 
     // Constructor
-    public TeleOpDriveControl(Drive drive, Gamepad gamepad) {
+    public TeleOpDriveControl(Drive drive, Gamepad gamepad, Telemetry telemetry) {
         this.drive = drive;
         this.gamepad = gamepad;
+        this.telemetry = telemetry;
+    }
+    public TeleOpDriveControl(Drive drive, Gamepad gamepad) {
+        this(drive ,gamepad, null);
     }
 
     @Override
@@ -31,12 +38,17 @@ public class TeleOpDriveControl implements Command {
         double twi = gamepad.right_stick_x;
         boolean goSlow = gamepad.left_bumper;
 
-
         drive.setMecanumPower(dri, str, twi, goSlow);
 
         if(gamepad.dpad_up){
             drive.getHeadingOffset();
+        if(telemetry != null) {
+            telemetry.addData("dri", dri);
+            telemetry.addData("str", str);
+            telemetry.addData("twi", twi);
+            telemetry.update();
         }
+
     }
 
     @Override
@@ -48,6 +60,7 @@ public class TeleOpDriveControl implements Command {
     public boolean isCompleted(){
         return false;
     }
+
 
 
 
