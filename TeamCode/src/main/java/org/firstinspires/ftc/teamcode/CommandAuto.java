@@ -59,18 +59,18 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
 
         telemetry.addLine("Shot 1");
         telemetry.update();
-        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.OUT.getTarget(),2.0));
+        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.OUT.getTarget()));
         sleep(500);
-        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.IN.getTarget(),2.0));
+        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.IN.getTarget()));
         sleep(500);
 
 
         telemetry.addLine("Shot 2");
         telemetry.update();
         sleep(1500);
-        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.OUT.getTarget(),2.0));
+        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.OUT.getTarget()));
         sleep(500);
-        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.IN.getTarget(),2.0));
+        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.IN.getTarget()));
 
 
         telemetry.addLine("Shot 3");
@@ -78,7 +78,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
         sleep(1500);
         commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.OUT.getTarget()));
         sleep(500);
-        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.IN.getTarget(),2.0));
+        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.IN.getTarget()));
         commander.runCommand(new RunShooterForTime(shooter, true, 0.0)); // Power down shooter
 
 
