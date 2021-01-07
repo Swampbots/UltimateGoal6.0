@@ -9,12 +9,12 @@ public class GripSetState implements Command {
 
     private double state;
 
-    public GripSetState(Grip grip, double state){
+    public GripSetState(Grip grip, double state) {
         this.grip = grip;
         this.state = state;
     }
 
-    public GripSetState(Grip grip, boolean toggle){
+    public GripSetState(Grip grip, boolean toggle) {
         this.grip = grip;
         this.state = -1;
 
@@ -23,7 +23,13 @@ public class GripSetState implements Command {
 
     @Override
     public void start() {
-        if(state != -1) grip.setTargetPos(state);
+        if(state == 0) {
+            grip.close();
+        }
+        if(state == 1) {
+            grip.open();
+        }
+
     }
 
     @Override
@@ -38,6 +44,6 @@ public class GripSetState implements Command {
 
     @Override
     public boolean isCompleted() {
-        return grip.getCurrentPos() == grip.getTargetPos();
+        return true;
     }
 }
