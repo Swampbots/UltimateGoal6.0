@@ -19,9 +19,9 @@ public class TestReadFileAfterAuto extends LinearOpMode implements DogeOpMode {
 
         commander.init();
 
-        float headingOffsets = drive.getHeadingOffset();
+//        float headingOffsets = drive.getHeadingOffset();
 
-        telemetry.addLine( "" + headingOffsets);
+//        telemetry.addLine( "" + headingOffsets);
 
        // telemetry.addLine(drive.getException().toString());
         telemetry.update();
