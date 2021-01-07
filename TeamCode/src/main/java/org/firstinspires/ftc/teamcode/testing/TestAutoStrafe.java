@@ -25,16 +25,16 @@ public class TestAutoStrafe extends LinearOpMode implements DogeOpMode {
         DogeCommander commander = new DogeCommander(this);
 
         Drive drive = new Drive(hardwareMap, true);
-        Kicker kicker = new Kicker(hardwareMap);
-        Shooter shooter         = new Shooter(hardwareMap);
+//        Kicker kicker = new Kicker(hardwareMap);
+//        Shooter shooter         = new Shooter(hardwareMap);
         //Arm arm = new Arm(hardwareMap);
         //Grip grip = new Grip(hardwareMap);
         //Intake intake = new Intake(hardwareMap);
         //Transfer transfer = new Transfer(hardwareMap);
 
         commander.registerSubsystem(drive);
-        commander.registerSubsystem(kicker);
-        commander.registerSubsystem(shooter);
+//        commander.registerSubsystem(kicker);
+//        commander.registerSubsystem(shooter);
         //commander.registerSubsystem(arm);
         //commander.registerSubsystem(grip);
         //commander.registerSubsystem(intake);
@@ -46,24 +46,24 @@ public class TestAutoStrafe extends LinearOpMode implements DogeOpMode {
 
         waitForStart();
 
-        telemetry.addData("Fl0",drive.getCurrentPositions()[0]);
-        telemetry.addData("Fr0",drive.getCurrentPositions()[1]);
-        telemetry.addData("Rl0",drive.getCurrentPositions()[2]);
-        telemetry.addData("Rr0",drive.getCurrentPositions()[3]);
-        telemetry.update();
+//        telemetry.addData("Fl0",drive.getCurrentPositions()[0]);
+//        telemetry.addData("Fr0",drive.getCurrentPositions()[1]);
+//        telemetry.addData("Rl0",drive.getCurrentPositions()[2]);
+//        telemetry.addData("Rr0",drive.getCurrentPositions()[3]);
+//        telemetry.update();
+//
+//        telemetry.addData("Fl0",drive.getCurrentPositions()[0]);
+//        telemetry.addData("Fr0",drive.getCurrentPositions()[1]);
+//        telemetry.addData("Rl0",drive.getCurrentPositions()[2]);
+//        telemetry.addData("Rr0",drive.getCurrentPositions()[3]);
+//        telemetry.addLine();
+        commander.runCommand(new StrafeByTimer(drive,0.7,0.3));
 
-        telemetry.addData("Fl0",drive.getCurrentPositions()[0]);
-        telemetry.addData("Fr0",drive.getCurrentPositions()[1]);
-        telemetry.addData("Rl0",drive.getCurrentPositions()[2]);
-        telemetry.addData("Rr0",drive.getCurrentPositions()[3]);
-        telemetry.addLine();
-        commander.runCommand(new StrafeByTimer(drive,0.7,0.4));
-
-        telemetry.addData("Fl0",drive.getCurrentPositions()[0]);
-        telemetry.addData("Fr0",drive.getCurrentPositions()[1]);
-        telemetry.addData("Rl0",drive.getCurrentPositions()[2]);
-        telemetry.addData("Rr0",drive.getCurrentPositions()[3]);
-        telemetry.update();
+//        telemetry.addData("Fl0",drive.getCurrentPositions()[0]);
+//        telemetry.addData("Fr0",drive.getCurrentPositions()[1]);
+//        telemetry.addData("Rl0",drive.getCurrentPositions()[2]);
+//        telemetry.addData("Rr0",drive.getCurrentPositions()[3]);
+//        telemetry.update();
 //        commander.runCommand(new RunShooterForTime(shooter,false,.8));
 //        sleep(3000);
 //
