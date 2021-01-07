@@ -52,7 +52,7 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
         // Drive to shooting position
         commander.runCommandsParallel(
                 new RunShooterForTime(shooter,false, 0.75),
-                new DriveByTimer(drive,3.75,-0.3)
+                new DriveByTimer(drive,3.75,-0.3, telemetry)
                 );
 
         sleep(2000);
