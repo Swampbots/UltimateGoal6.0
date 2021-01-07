@@ -92,7 +92,13 @@ public class Drive implements Subsystem {
         rrDrive.setPower(rrPower);
 
     }
-    // Interface methods
+
+    /**
+     * Sets power to the motors on opposite sides. Functions the same as normal drive.
+     *
+     * @param leftPower power for the left motors
+     * @param rightPower power for the right motors
+     */
     public void setPower(double leftPower, double rightPower) {
         this.flPower = leftPower;
         this.frPower = rightPower;
@@ -100,6 +106,12 @@ public class Drive implements Subsystem {
         this.rrPower = rightPower;
     }
 
+    /**
+     * Sets the power to motors diagonal from each other. Function the same as strafing.
+     *
+     * @param fl_rrPower power for the Front Left and Back Right motors
+     * @param fr_rlPower power for the Front Right and Back Left motors
+     */
     public void setDiagonalPower(double fl_rrPower, double fr_rlPower) {
         this.flPower = fl_rrPower;
         this.frPower = fr_rlPower;
@@ -107,6 +119,14 @@ public class Drive implements Subsystem {
         this.rrPower = fl_rrPower;
     }
 
+    /**
+     * Sets the appropriate power for Mecanum Drive.
+     *
+     * @param drive power for front and back movement
+     * @param strafe power for left and right movement
+     * @param twist power for turning
+     * @param goSlow sets the speed multiplier
+     */
     public void setMecanumPower(double drive, double strafe, double twist, boolean goSlow) {
         this.goSlow = goSlow ? SLOW : FAST;
         flPower = (drive + strafe + twist) * this.goSlow;
@@ -115,6 +135,14 @@ public class Drive implements Subsystem {
         rrPower = (drive + strafe - twist) * this.goSlow;
     }
 
+    /**
+     * Sets the targets for each motor
+     *
+     * @param flTarget target for Front Left motor
+     * @param frTarget target for Front Right motor
+     * @param rlTarget target for Back Left motor
+     * @param rrTarget target for Back Right motor
+     */
     public void setTargets(int flTarget, int frTarget, int rlTarget, int rrTarget) {
         flDrive.setTargetPosition(flTarget);
         frDrive.setTargetPosition(frTarget);
@@ -122,25 +150,60 @@ public class Drive implements Subsystem {
         rrDrive.setTargetPosition(rrTarget);
     }
 
-    public void setRunMode(DcMotor.RunMode runMode){
+    /**
+     * Sets the Run Mode for all four motors
+     *
+     * @param runMode the Run Mode
+     */
+    public void setRunMode(DcMotor.RunMode runMode) {
         flDrive.setMode(runMode);
         frDrive.setMode(runMode);
         rlDrive.setMode(runMode);
         rrDrive.setMode(runMode);
     }
 
-    public int[] getCurrentPositions(){
+    /**
+     * Stop all drive motors
+     */
+    public void stop() {
+        flDrive.setPower(0);
+        frDrive.setPower(0);
+        rlDrive.setPower(0);
+        rrDrive.setPower(0);
+    }
+
+    /**
+     * Gets the current positions of all drive motors
+     *
+     * @return an int[] of motor positions
+     */
+    public int[] getCurrentPositions() {
         return new int[]{flDrive.getCurrentPosition(), frDrive.getCurrentPosition(), rlDrive.getCurrentPosition(), rrDrive.getCurrentPosition()};
     }
 
-    public DcMotor.RunMode getRunMode(){
+    /**
+     * Gets the current Run Mode
+     *
+     * @return the current Run Mode of all motors
+     */
+    public DcMotor.RunMode getRunMode() {
         return flDrive.getMode();
     }
 
-    public boolean driveIsBusy(){
+    /**
+     * Check to see if all drive motor are finished running
+     *
+     * @return a boolean if all motors are finished running
+     */
+    public boolean driveIsBusy() {
         return flDrive.isBusy() || frDrive.isBusy() || rlDrive.isBusy() || rrDrive.isBusy();
     }
 
+    /**
+     * Gets the heading of the robot
+     *
+     * @return a float of the heading
+     */
     public float heading(){
         return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
     }
