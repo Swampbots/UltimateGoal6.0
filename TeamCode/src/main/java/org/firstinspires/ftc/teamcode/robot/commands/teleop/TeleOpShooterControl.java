@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot.commands.teleop;
 
 import com.disnodeteam.dogecommander.Command;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
@@ -23,9 +24,7 @@ public class TeleOpShooterControl implements Command {
     public void start() {
         shooter.setPower(0);
         shooter.setShoot(false);
-        shooter.reversePower(true);
-
-
+        shooter.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override
@@ -62,7 +61,7 @@ public class TeleOpShooterControl implements Command {
     public void stop() {
         shooter.setPower(0);
         shooter.setShoot(false);
-        shooter.reversePower(false);
+        shooter.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     @Override
