@@ -36,10 +36,9 @@ public class TeleOpShooterControl implements Command {
 
         //  FIXME: Finish logic for this
         if(gamepad.a && shootToggleCheck) {
-            shooter.setShoot(true);
+            shooter.shoot();
             shootToggleCheck = false;
-        } else if(!gamepad.a && shootToggleCheck) {
-            shooter.setShoot(false);
+        } else if(!gamepad.a && !shootToggleCheck) {
             shootToggleCheck = true;
         }
     }
