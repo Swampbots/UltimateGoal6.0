@@ -21,10 +21,9 @@ public class TeleOpKickerControl implements Command {
 
     @Override
     public void periodic() {
-        if(gamepad.a){
-            kicker.in();
-        }
         if(gamepad.b){
+            kicker.in();
+        } else {
             kicker.out();
         }
     }
