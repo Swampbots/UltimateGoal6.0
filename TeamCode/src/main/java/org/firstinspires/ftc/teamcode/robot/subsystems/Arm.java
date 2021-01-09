@@ -2,25 +2,25 @@ package org.firstinspires.ftc.teamcode.robot.subsystems;
 
 import com.disnodeteam.dogecommander.Subsystem;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 public class Arm implements Subsystem {
     // Hardware map
     private HardwareMap hardwareMap;
 
-    private DcMotor arm;
+    private DcMotorEx arm;
 
     public enum TARGETS {
         UP,
-        OUT,
-        DOWN;
+        OUT;
 
         //TODO: Confirm targets
         public int getTarget() {
             switch (this){
-                case UP:    return 1000;
-                case OUT:   return 0;
-                case DOWN:  return -1000;
+                case UP:    return 0;
+                case OUT:   return -1750;
                 default:    return 0;
             }
         }
@@ -37,7 +37,7 @@ public class Arm implements Subsystem {
     }
 
     public void initHardware() {
-        arm = hardwareMap.get(DcMotor.class, "arm");
+        arm = hardwareMap.get(DcMotorEx.class, "arm");
 
         targetPos = arm.getCurrentPosition();
 
@@ -45,6 +45,9 @@ public class Arm implements Subsystem {
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        arm.setPositionPIDFCoefficients(5.0);
+
     }
 
     @Override
@@ -74,8 +77,6 @@ public class Arm implements Subsystem {
         this.power = power;
     }
 
-
-    //TODO: Test out encoder functions
     public void setTargetPos(int targetPos){
         this.targetPos = targetPos;
     }
@@ -86,6 +87,16 @@ public class Arm implements Subsystem {
 
     public int getTargetPos(){
         return arm.getTargetPosition();
+    }
+
+    public void resetEncoder(){
+        DcMotor.RunMode currentRunMode = arm.getMode();
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(currentRunMode);
+    }
+
+    public PIDFCoefficients getPIDFCoefficients(){
+        return arm.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
 }
