@@ -4,27 +4,46 @@ import com.disnodeteam.dogecommander.Command;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Arm;
+
+import java.util.Date;
 
 import static org.firstinspires.ftc.teamcode.CommandDrive.TRIGGER_THRESHOLD;
 
 public class TeleOpArmControl implements Command {
     private Gamepad gamepad;
-
     private Arm wobble;
+    private Telemetry telemetry;
 
-    private final double POWER_SCALAR = 0.8;
+    private final double POWER_SCALAR = 0.7;
+    private final int TOLERANCE = 50;
+
+    public static boolean tellGripToToggle = false;
+    private boolean queueGripToOpen;
+    private long openTimeCount;
+
+    private boolean queueGripToClose;
+    private long closeTimeCount;
+    private final long CLOSE_TIME_THRESHOLD = 725L;
+
+    public TeleOpArmControl(Arm wobble, Gamepad gamepad, Telemetry telemetry){
+        this.gamepad = gamepad;
+        this.wobble = wobble;
+        this.telemetry = telemetry;
+    }
 
     public TeleOpArmControl(Arm wobble, Gamepad gamepad){
-        this.gamepad = gamepad;
-
-        this.wobble = wobble;
+        this(wobble, gamepad, null);
     }
 
     @Override
     public void start() {
         wobble.setRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         wobble.setPower(0);
+
+        queueGripToOpen  = false;
+        queueGripToClose = false;
     }
 
     @Override
@@ -32,18 +51,70 @@ public class TeleOpArmControl implements Command {
         // In (encoder): RT     Out (encoder): LT   Up (power): dUp     Down (power): dDown
         if(gamepad.left_trigger > TRIGGER_THRESHOLD || gamepad.right_trigger > TRIGGER_THRESHOLD) {
             wobble.setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
-            wobble.setPower(POWER_SCALAR);
+            wobble.setPower(1.0 + 0 * POWER_SCALAR);
 
-            if(gamepad.left_trigger > TRIGGER_THRESHOLD)        wobble.setTargetPos(Arm.TARGETS.OUT.getTarget());
-            else if(gamepad.right_trigger > TRIGGER_THRESHOLD)  wobble.setTargetPos(Arm.TARGETS.UP.getTarget());
+            if(gamepad.left_trigger > TRIGGER_THRESHOLD) {
+                wobble.setTargetPos(Arm.TARGETS.OUT.getTarget());
+                queueGripToOpen = true;
+                openTimeCount = new Date().getTime();
+            }
+            else if(gamepad.right_trigger > TRIGGER_THRESHOLD && !queueGripToClose) {
+                if(TeleOpGripControl.gripOpen) {
+                    queueGripToClose = true;
+                    closeTimeCount = new Date().getTime();
+                } else {
+                    wobble.setTargetPos(Arm.TARGETS.UP.getTarget());
+                }
+            }
+        }
+        if(gamepad.dpad_right){
+            wobble.resetEncoder();
         }
 
-        if(gamepad.dpad_up || gamepad.dpad_down) {
+        if(gamepad.dpad_up || gamepad.dpad_down || wobble.getRunMode().equals(DcMotor.RunMode.RUN_WITHOUT_ENCODER)) {
             wobble.setRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            if(gamepad.dpad_up)         wobble.setPower(POWER_SCALAR);
-            else if(gamepad.dpad_down)  wobble.setPower(-POWER_SCALAR);
-            }
+            if(gamepad.dpad_up)         wobble.setPower(1.0 * POWER_SCALAR);
+            else if(gamepad.dpad_down)  wobble.setPower(-1.0 * POWER_SCALAR);
+            else wobble.setPower(0);
+        }
+
+        if( queueGripToOpen &&
+            Math.abs(wobble.getCurrentPos() - wobble.getTargetPos()) < TOLERANCE &&
+            wobble.getRunMode().equals(DcMotor.RunMode.RUN_TO_POSITION) &&
+            !tellGripToToggle &&
+            (new Date().getTime() - openTimeCount > 100)
+        ) {
+            tellGripToToggle = true;
+            queueGripToOpen = false;
+        }
+        if(TeleOpGripControl.tellArmGipToggled) {
+            tellGripToToggle = false;
+        }
+
+        if(queueGripToClose && (new Date().getTime() - closeTimeCount) > CLOSE_TIME_THRESHOLD) {
+            wobble.setTargetPos(Arm.TARGETS.UP.getTarget());
+            queueGripToClose = false;
+            closeTimeCount = Long.MAX_VALUE;
+        }
+
+        if(telemetry != null) {
+            telemetry.addData("Target", wobble.getTargetPos());
+            telemetry.addData("Current", wobble.getCurrentPos());
+            telemetry.addData("Power",wobble.getPower());
+            telemetry.addData("Run Mode", wobble.getRunMode());
+            telemetry.addData("PIDF", wobble.getPIDFCoefficients());
+            telemetry.addData("isBusy()",wobble.isBusy());
+            telemetry.addData("tellGripToToggle",tellGripToToggle);
+            telemetry.addData("tellArmGripToggled",TeleOpGripControl.tellArmGipToggled);
+            telemetry.addData("|curr-target|", Math.abs(wobble.getCurrentPos() - wobble.getTargetPos()));
+            telemetry.addData("Tolerance",TOLERANCE);
+            telemetry.addData("Queue to close", queueGripToClose);
+            telemetry.addData("now - closeTimeCount", new Date().getTime() - closeTimeCount);
+            telemetry.addData("Close Threshold",CLOSE_TIME_THRESHOLD);
+            telemetry.addData("Grip Closed", TeleOpGripControl.gripOpen);
+            telemetry.update();
+        }
     }
 
     @Override
