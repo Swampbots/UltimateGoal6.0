@@ -13,8 +13,6 @@ public class TeleOpShooterControl implements Command {
 
     private boolean shootToggleCheck = true;
 
-
-
     public TeleOpShooterControl(Shooter shooter, Gamepad gamepad){
         this.shooter = shooter;
         this.gamepad = gamepad;
