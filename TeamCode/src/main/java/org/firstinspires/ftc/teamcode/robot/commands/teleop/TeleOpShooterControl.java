@@ -34,7 +34,6 @@ public class TeleOpShooterControl implements Command {
         if(gamepad.dpad_left)   shooter.setPower(Shooter.POWER_LEVELS.SHORT.getPower());
         if(gamepad.dpad_down)   shooter.setPower(Shooter.POWER_LEVELS.POWER_SHOT.getPower());
 
-        //  FIXME: Finish logic for this
         if(gamepad.a && shootToggleCheck) {
             shooter.shoot();
             shootToggleCheck = false;
