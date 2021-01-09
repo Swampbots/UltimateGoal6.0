@@ -23,6 +23,8 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Transfer;
 
 @TeleOp(name = "Command Drive", group = "TeleOp")
 public class CommandDrive extends LinearOpMode implements DogeOpMode {
+    public static final float TRIGGER_THRESHOLD = 0.7f;
+
     @Override
     public void runOpMode() throws InterruptedException {
         DogeCommander commander = new DogeCommander(this);
