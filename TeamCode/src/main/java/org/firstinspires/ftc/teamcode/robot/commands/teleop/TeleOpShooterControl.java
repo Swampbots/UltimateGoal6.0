@@ -11,7 +11,7 @@ public class TeleOpShooterControl implements Command {
     private Shooter shooter;
     private Gamepad gamepad;
 
-    private boolean revCheck;
+    private boolean shootToggleCheck = true;
 
 
 
@@ -29,32 +29,19 @@ public class TeleOpShooterControl implements Command {
 
     @Override
     public void periodic() {
-        if(gamepad.dpad_down){
-            shooter.setPower(Shooter.POWER_LEVELS.SHORT.getPower());
-        }
-        if(gamepad.dpad_up){
-            shooter.setPower(Shooter.POWER_LEVELS.FAR.getPower());
-        }
-//        if(gamepad.dpad_left){
-//            shooter.setPower(Shooter.POWER_LEVELS.MEDIUM.getPower());
-//        }
-//        if(gamepad.dpad_right){
-//            shooter.setPower(Shooter.POWER_LEVELS.ADJ.getPower());
-//        }
+        // Far: dUp, Short: dLeft, Power Shot: dDown, Shoot: a (toggle)
+        if(gamepad.dpad_up)     shooter.setPower(Shooter.POWER_LEVELS.FAR.getPower());
+        if(gamepad.dpad_left)   shooter.setPower(Shooter.POWER_LEVELS.SHORT.getPower());
+        if(gamepad.dpad_down)   shooter.setPower(Shooter.POWER_LEVELS.POWER_SHOT.getPower());
 
-//        if(gamepad.right_bumper && gamepad.left_bumper){
-//            if(revCheck){
-//                shooter.reverse();
-//                revCheck = false;
-//            }
-//        } else {
-//            revCheck = true;
-            if(gamepad.right_bumper) shooter.setShoot(false);
-            else if(gamepad.left_bumper) shooter.setShoot(true);
-//
-//
-//        }
-
+        //  FIXME: Finish logic for this
+        if(gamepad.a && shootToggleCheck) {
+            shooter.setShoot(true);
+            shootToggleCheck = false;
+        } else if(!gamepad.a && shootToggleCheck) {
+            shooter.setShoot(false);
+            shootToggleCheck = true;
+        }
     }
 
     @Override
