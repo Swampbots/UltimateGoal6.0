@@ -6,11 +6,14 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 
+import static org.firstinspires.ftc.teamcode.CommandDrive.TRIGGER_THRESHOLD;
+
 public class TeleOpIntakeControl implements Command {
     private Gamepad gamepad;
 
     private Intake intake;
 
+    private final double POWER_SCALAR = 1.0;
 
     public TeleOpIntakeControl(Intake intake, Gamepad gamepad) {
         this.intake = intake;
@@ -25,14 +28,12 @@ public class TeleOpIntakeControl implements Command {
 
     @Override
     public void periodic() {
-        intake.setPower(gamepad.right_trigger > 0.3f ? 1 : gamepad.left_trigger > 0.3f ? -1 : 0);
-
-//        if(gamepad.left_bumper){
-//            intake.setReverse(false);
-//        }
-//        if(gamepad.right_bumper){
-//            intake.setPower(-1);
-//        }
+        // In: RB, LT   Out: RT
+        intake.setPower(
+                (gamepad.left_bumper || gamepad.right_trigger > TRIGGER_THRESHOLD ?
+                        1 : gamepad.left_trigger > TRIGGER_THRESHOLD ?
+                        -1 : 0
+                ) * POWER_SCALAR);
     }
 
     @Override
