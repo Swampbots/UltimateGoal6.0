@@ -7,8 +7,9 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Grip;
 
 public class TeleOpGripControl implements Command {
     private Grip grip;
-
     private Gamepad gamepad;
+
+    private boolean gripToggleCheck;
 
     public TeleOpGripControl(Grip grip, Gamepad gamepad){
         this.gamepad = gamepad;
@@ -22,10 +23,11 @@ public class TeleOpGripControl implements Command {
 
     @Override
     public void periodic() {
-        if(gamepad.x){
-            grip.open();
-        } else {
-            grip.close();
+        if(gamepad.a && gripToggleCheck) {
+            grip.togglePos();
+            gripToggleCheck = false;
+        } else if(!gamepad.a && !gripToggleCheck){
+            gripToggleCheck = true;
         }
     }
 
