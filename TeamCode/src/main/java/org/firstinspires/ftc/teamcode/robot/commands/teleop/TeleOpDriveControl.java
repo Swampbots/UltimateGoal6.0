@@ -44,7 +44,13 @@ public class TeleOpDriveControl implements Command {
             telemetry.addData("dri", dri);
             telemetry.addData("str", str);
             telemetry.addData("twi", twi);
+            telemetry.addLine();
+            telemetry.addData("FL Target", drive.getCurrentPositions()[0]);
+            telemetry.addData("FR Target", drive.getCurrentPositions()[1]);
+            telemetry.addData("RL Target", drive.getCurrentPositions()[2]);
+            telemetry.addData("RR Target", drive.getCurrentPositions()[3]);
             telemetry.update();
+
         }
 
     }

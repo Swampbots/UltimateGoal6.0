@@ -21,9 +21,9 @@ public class Shooter implements Subsystem {
 
         public double getPower() {
             switch (this) {
-                case FAR: return 0.85;
-                case SHORT: return 0.75;
-                case POWER_SHOT: return 0.60;
+                case FAR: return 1.0;
+                case SHORT: return 0.95;
+                case POWER_SHOT: return 0.90;
                 default: return 0.85;
             }
         }

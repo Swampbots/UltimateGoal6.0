@@ -19,7 +19,7 @@ public class StrafeByEncoder implements Command {
 
     private final double DRIVE_SPEED = 0.6;
     private final double MAX_DRIVE_SPEED = Math.min(DRIVE_SPEED + 0.1, 1.0);
-    private final double K_P = 0.01; // Proportional coefficient for gyro-controlled driving
+    private final double K_P = 0.03; // Proportional coefficient for gyro-controlled driving
 
     double target;
     double heading;
@@ -50,7 +50,6 @@ public class StrafeByEncoder implements Command {
     public void start(){
         timer.reset();
 
-
         int[] currentPos = drive.getCurrentPositions();
         prevRunMode = drive.getRunMode();
         drive.setTargets(
@@ -70,11 +69,12 @@ public class StrafeByEncoder implements Command {
         correction = error * K_P;
         newFlRrPower = Math.min((power + correction), MAX_DRIVE_SPEED);
         newFrRlPower = Math.min((power - correction), MAX_DRIVE_SPEED);
-        drive.setPower(newFlRrPower, newFrRlPower);
+        //drive.setPower(newFlRrPower, newFrRlPower); Temp disable pid
     }
 
     @Override
     public void stop(){
+
         drive.setRunMode(prevRunMode);
         drive.setPower(0,0);
     }

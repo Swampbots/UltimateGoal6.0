@@ -20,7 +20,7 @@ public class Arm implements Subsystem {
         public int getTarget() {
             switch (this){
                 case UP:    return 0;
-                case OUT:   return -1750;
+                case OUT:   return -350; //-300: top of wobble, -530: bottob of wobble
                 default:    return 0;
             }
         }

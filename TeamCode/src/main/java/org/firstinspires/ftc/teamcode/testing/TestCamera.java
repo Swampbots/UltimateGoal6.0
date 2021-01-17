@@ -207,12 +207,12 @@ public class  TestCamera extends LinearOpMode {
             double contoursProportionRight = 0;
 
 
-            double leftBound = hardware.vision.getLeftBound();
-            double centerBound = hardware.vision.getCenterBound();
-
-            // Calculate left and center boundary lines for cropping rectangle
-            hardware.vision.setLeftBound(localRectLeft + Math.abs(localRectRight - localRectLeft) / 3.0)            /*leftBound = rectLeft + Math.abs((rectRight - rectLeft) / 3.0)*/;         // x position plus 1/3 of the width
-            hardware.vision.setCenterBound(localRectLeft + Math.abs(localRectRight - localRectLeft) * 2.0 / 3.0)    /*centerBound = rectLeft + Math.abs((rectRight - rectLeft) * 2.0 / 3.0)*/; // x position plus 2/3 of the width
+//            double leftBound = hardware.vision.getLeftBound();
+//            double centerBound = hardware.vision.getCenterBound();
+//
+//            // Calculate left and center boundary lines for cropping rectangle
+//            hardware.vision.setLeftBound(localRectLeft + Math.abs(localRectRight - localRectLeft) / 3.0)            /*leftBound = rectLeft + Math.abs((rectRight - rectLeft) / 3.0)*/;         // x position plus 1/3 of the width
+//            hardware.vision.setCenterBound(localRectLeft + Math.abs(localRectRight - localRectLeft) * 2.0 / 3.0)    /*centerBound = rectLeft + Math.abs((rectRight - rectLeft) * 2.0 / 3.0)*/; // x position plus 2/3 of the width
 
             // Create Point variable holding center coordinates of boundingRect
             Point rectCenter = new Point();
@@ -234,12 +234,13 @@ public class  TestCamera extends LinearOpMode {
                         // Now classify as left, center, or right
                         rectCenter.x = (2 * boundingRect.x + boundingRect.width) / 2.0;     // Get the center of the rectangle
                         rectCenter.y = (2 * boundingRect.y + boundingRect.height) / 2.0;
-                        if (rectCenter.x < leftBound)
-                            contoursProportionLeft += boundingRect.area(); // rectangle in left 1/3 of the screen
-                        else if (rectCenter.x < centerBound)
-                            contoursProportionCenter += boundingRect.area(); // rectangle in center 1/3 of the screen
-                        else
-                            contoursProportionRight += boundingRect.area(); // rectangle in right 1/3 of the screen
+//                        if (rectCenter.x < leftBound)
+//                            contoursProportionLeft += boundingRect.area(); // rectangle in left 1/3 of the screen
+//                        else if (rectCenter.x < centerBound)
+//                            contoursProportionCenter += boundingRect.area(); // rectangle in center 1/3 of the screen
+//                        else
+//                            contours
+//                            ProportionRight += boundingRect.area(); // rectangle in right 1/3 of the screen
                     }
                 }
             } catch (Exception e) {

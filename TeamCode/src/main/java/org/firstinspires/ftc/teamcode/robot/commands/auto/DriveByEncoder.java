@@ -4,7 +4,10 @@ import com.disnodeteam.dogecommander.Command;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drive;
+
+import java.util.Date;
 
 public class DriveByEncoder implements Command {
     private Drive drive;
@@ -14,7 +17,7 @@ public class DriveByEncoder implements Command {
     private int counts;
     private double timeout;
 
-    private final double DEFAULT_TIMEOUT = 5.0;
+    private static final double DEFAULT_TIMEOUT = 5.0;
     private DcMotor.RunMode prevRunMode;
 
     private final double DRIVE_SPEED = 0.6;
@@ -28,23 +31,30 @@ public class DriveByEncoder implements Command {
     double newLeftPower;
     double newRightPower;
 
+    private Telemetry telemetry;
 
-    public DriveByEncoder(Drive drive, int counts, double target, double power, double timeout){
+
+    public DriveByEncoder(Drive drive, int counts, double target, double power, double timeout, Telemetry telemetry){
         timer = new ElapsedTime();
 
         this.drive = drive;
-        this.power = power;
+        this.power = power; //* -1.0;  // Negate the power to drive the correct direction
         this.counts = counts;
+        this.target = target;
         this.timeout = timeout;
+        this.telemetry = telemetry;
     }
 
-    public DriveByEncoder(Drive drive, int counts, double target, double power){
-        timer = new ElapsedTime();
+    public DriveByEncoder(Drive drive, int counts, double target, double power) {
+        this(drive, counts, target, power, DEFAULT_TIMEOUT, null);
+    }
 
-        this.drive = drive;
-        this.power = power;
-        this.counts = counts;
-        this.timeout = DEFAULT_TIMEOUT;
+    public DriveByEncoder(Drive drive, int counts, double target, double power, double timeout) {
+        this(drive, counts, target, power, timeout, null);
+    }
+
+    public DriveByEncoder(Drive drive, int counts, double target, double power, Telemetry telemetry) {
+        this(drive, counts, target, power, DEFAULT_TIMEOUT, telemetry);
     }
 
     @Override
@@ -63,16 +73,38 @@ public class DriveByEncoder implements Command {
         );
         drive.setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
         drive.setPower(power,power);
+
+        if(telemetry != null) {
+            for(int i = 0; i < drive.getCurrentPositions().length; i++)
+                telemetry.addData("Target " + i, drive.getCurrentPositions()[i]);
+            telemetry.addData("Counts", counts);
+            telemetry.addData("Prev Run Mode", prevRunMode);
+            telemetry.addData("Curr Run Mode", drive.getRunMode());
+            telemetry.addData("Power", power);
+            telemetry.update();
+        }
     }
 
     @Override
     public void periodic() {
-//        heading = drive.heading();
-//        error   = target - heading;
-//        correction = error * K_P;
-//        newLeftPower = Math.min((power /*+ correction*/), MAX_DRIVE_SPEED);
-//        newRightPower = Math.min((power /*- correction*/), MAX_DRIVE_SPEED);
-//        drive.setPower(newLeftPower,newRightPower);
+        heading = drive.heading();
+        error   = target - heading;
+        correction = error * K_P;
+        newLeftPower = Math.min((power - correction), MAX_DRIVE_SPEED);
+        newRightPower = Math.min((power + correction), MAX_DRIVE_SPEED);
+        drive.setPower(newLeftPower,newRightPower);
+
+        if(telemetry != null) {
+            telemetry.addData("Timer", timer);
+            telemetry.addData("Heading", heading);
+            telemetry.addData("Target", target);
+            telemetry.addData("Error", error);
+            telemetry.addData("Correction", correction);
+            telemetry.addData("New Left", newLeftPower);
+            telemetry.addData("New Right", newRightPower);
+            telemetry.addData("Max Drive", MAX_DRIVE_SPEED);
+            telemetry.update();
+        }
     }
 
     @Override

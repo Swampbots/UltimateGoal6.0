@@ -74,7 +74,8 @@ public class Drive implements Subsystem {
 
 
         // Reverse front right
-        frDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        rlDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        flDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
         flDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -206,5 +207,17 @@ public class Drive implements Subsystem {
      */
     public float heading(){
         return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+    }
+
+    public void reverseAllMotors(){
+        for(DcMotor m : new DcMotor[]{flDrive, frDrive, rlDrive, rrDrive}){
+            if(m.getDirection() == DcMotorSimple.Direction.FORWARD) m.setDirection(DcMotorSimple.Direction.REVERSE);
+            else m.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
+    }
+
+    public void reverseFlDrive(){
+        if(flDrive.getDirection() == DcMotorSimple.Direction.FORWARD) flDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        else flDrive.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 }

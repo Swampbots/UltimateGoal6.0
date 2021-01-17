@@ -36,6 +36,8 @@ public class RingPatternPipeline extends OpenCvPipeline {
     private static double rectBot   = 506.0;
     private static double rectRight = 464.0;
 
+    private static double bound = 12.0;
+
     public static final double RECT_STEP = 0.04;
     public static final double RECT_MIN = 0.0;
 
@@ -44,9 +46,6 @@ public class RingPatternPipeline extends OpenCvPipeline {
 
     private static boolean returnHSV = true;
     private static boolean drawRect = true;
-
-    private static double leftBound = 0;
-    private static double centerBound = 0;
 
     public static final double RING_CONFIDENCE_THRESHOLD = 0.65;
 
@@ -74,23 +73,15 @@ public class RingPatternPipeline extends OpenCvPipeline {
                             rectBot),   // Bottom value
                     new Scalar(0, 255, 0), 4);
         }
+
         Imgproc.line(
                 input,
                 new Point(
-                        leftBound,
-                        rectBot),
-                new Point(
-                        leftBound,
+                        bound,
                         rectTop),
-                new Scalar(0, 0, 255), 4);
-        Imgproc.line(
-                input,
                 new Point(
-                        centerBound,
+                        bound,
                         rectBot),
-                new Point(
-                        centerBound,
-                        rectTop),
                 new Scalar(255, 0, 0), 4);
 
         double[] hsvThresholdHue =          hsvHue;
@@ -337,8 +328,7 @@ public class RingPatternPipeline extends OpenCvPipeline {
     public double getRectBot()      { return rectBot;}
     public double getRectRight()    { return rectRight;}
 
-    public double getLeftBound()    { return leftBound;}
-    public double getCenterBound()  { return centerBound;}
+    public double getBound()        { return bound;}
 
     public List<MatOfPoint> getFilteredContours()   {return filterContoursOutput;}
 
@@ -363,8 +353,7 @@ public class RingPatternPipeline extends OpenCvPipeline {
     public void setRectBot(double bot)      { rectBot   =     bot;}
     public void setRectRight(double right)  { rectRight =   right;}
 
-    public void setLeftBound(double lBound)     { leftBound     = lBound;}
-    public void setCenterBound(double cBound)   { centerBound   = cBound;}
+    public void setBound(double bound)     { this.bound     = bound;}
 
     public void setReturnHSV(boolean retHsv)    { returnHSV = retHsv;}
     public void setDrawRect(boolean draw)       { drawRect  = draw;}

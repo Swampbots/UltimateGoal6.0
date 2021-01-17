@@ -58,7 +58,7 @@ public class TurnByGyro implements Command {
 
     @Override
     public boolean isCompleted() {
-        return Range.clip(drive.heading(),target+1,target-1) == target || timer.seconds() > timeout;
+        return Range.clip(drive.heading(),target+1,target-1) == drive.heading() || timer.seconds() > timeout;
     }
 
 

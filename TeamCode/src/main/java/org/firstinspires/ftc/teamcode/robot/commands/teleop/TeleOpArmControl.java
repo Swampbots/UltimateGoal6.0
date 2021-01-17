@@ -39,6 +39,7 @@ public class TeleOpArmControl implements Command {
 
     @Override
     public void start() {
+        wobble.setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         wobble.setRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         wobble.setPower(0);
 

@@ -40,7 +40,7 @@ public class GripRingPipeline {
     public void process(Mat source0) {
         // Step Blur0:
         Mat blurInput = source0;
-        BlurType blurType = BlurType.get("Gaussian Blur");
+        BlurType blurType = BlurType.get("Box Blur");
         double blurRadius = 11;
         blur(blurInput, blurType, blurRadius, blurOutput);
 
