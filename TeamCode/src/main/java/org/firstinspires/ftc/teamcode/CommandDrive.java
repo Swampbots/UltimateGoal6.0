@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Transfer;
 public class CommandDrive extends LinearOpMode implements DogeOpMode {
     public static final float TRIGGER_THRESHOLD = 0.7f;
 
-    public static final boolean STOP_USING_GRIPPER = true;  // FIXME: Will stop all commands involving the gripper. Implemented b/c servo broke
+    public static final boolean STOP_USING_GRIPPER = false;  // FIXME: Will stop all commands involving the gripper. Implemented b/c servo broke
     public static final boolean ONE_PERSON_CONTROLS = true;
 
     @Override
