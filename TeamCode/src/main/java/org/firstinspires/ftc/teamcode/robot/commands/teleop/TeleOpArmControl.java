@@ -67,9 +67,6 @@ public class TeleOpArmControl implements Command {
                 }
             }
         }
-        if(gamepad.dpad_right){
-            wobble.resetEncoder();
-        }
 
         if(gamepad.dpad_up || gamepad.dpad_down || wobble.getRunMode().equals(DcMotor.RunMode.RUN_WITHOUT_ENCODER)) {
             wobble.setRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
