@@ -16,12 +16,23 @@ public class Arm implements Subsystem {
         UP,
         DOWN;
 
+        private int up      = 0;
+        private int down    = -700;
+
+        public void setUp(int pos) {
+            up = pos;
+        }
+
+        public void setDown(int pos) {
+            down = pos;
+        }
+
         //TODO: Confirm targets
         public int getTarget() {
             switch (this){
-                case UP:    return 350;
-                case DOWN:   return -350; //-300: top of wobble, -530: bottob of wobble
-                default:    return 0;
+                case UP:        return up;
+                case DOWN:      return down; //-300: top of wobble, -530: bottom of wobble
+                default:        return 0;
             }
         }
     }
@@ -94,6 +105,7 @@ public class Arm implements Subsystem {
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setMode(currentRunMode);
     }
+
 
     public PIDFCoefficients getPIDFCoefficients(){
         return arm.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION);

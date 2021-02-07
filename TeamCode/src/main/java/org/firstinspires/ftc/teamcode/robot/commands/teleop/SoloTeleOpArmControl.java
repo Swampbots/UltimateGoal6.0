@@ -11,12 +11,12 @@ import java.util.Date;
 
 import static org.firstinspires.ftc.teamcode.CommandDrive.TRIGGER_THRESHOLD;
 
-public class TeleOpArmControl implements Command {
+public class SoloTeleOpArmControl implements Command {
     private Gamepad gamepad;
     private Arm wobble;
     private Telemetry telemetry;
 
-    private final double POWER_SCALAR = 0.7;
+    private final double POWER_SCALAR = 0.3;
     private final int TOLERANCE = 50;
 
     public static boolean tellGripToToggle = false;
@@ -27,13 +27,13 @@ public class TeleOpArmControl implements Command {
     private long closeTimeCount;
     private final long CLOSE_TIME_THRESHOLD = 1200L;     // 1200 milliseconds
 
-    public TeleOpArmControl(Arm wobble, Gamepad gamepad, Telemetry telemetry){
+    public SoloTeleOpArmControl(Arm wobble, Gamepad gamepad, Telemetry telemetry){
         this.gamepad = gamepad;
         this.wobble = wobble;
         this.telemetry = telemetry;
     }
 
-    public TeleOpArmControl(Arm wobble, Gamepad gamepad){
+    public SoloTeleOpArmControl(Arm wobble, Gamepad gamepad){
         this(wobble, gamepad, null);
     }
 
@@ -49,16 +49,16 @@ public class TeleOpArmControl implements Command {
     @Override
     public void periodic() {
         // In (encoder): RT     Out (encoder): LT   Up (power): dUp     Down (power): dDown     Reset Encoder: dRight
-        if(gamepad.left_trigger > TRIGGER_THRESHOLD || gamepad.right_trigger > TRIGGER_THRESHOLD) {
+        if(gamepad.left_bumper || gamepad.right_bumper) {
             wobble.setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
             wobble.setPower(1.0 + 0 * POWER_SCALAR);
 
-            if(gamepad.left_trigger > TRIGGER_THRESHOLD) {
+            if(gamepad.left_bumper) {
                 wobble.setTargetPos(Arm.TARGETS.DOWN.getTarget());
                 queueGripToOpen = true;
                 openTimeCount = new Date().getTime();
             }
-            else if(gamepad.right_trigger > TRIGGER_THRESHOLD && !queueGripToClose) {
+            else if(gamepad.right_bumper && !queueGripToClose) {
                 if(TeleOpGripControl.gripOpen) {
                     queueGripToClose = true;
                     closeTimeCount = new Date().getTime();
