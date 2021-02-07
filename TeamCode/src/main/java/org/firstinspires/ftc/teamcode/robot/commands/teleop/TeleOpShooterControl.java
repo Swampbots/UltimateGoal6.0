@@ -22,8 +22,8 @@ public class TeleOpShooterControl implements Command {
 
     @Override
     public void start() {
-        shooter.setPower(0);
         shooter.setShoot(false);
+        shooter.setPower(0.85);     // Default Shooter Power
         shooter.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
