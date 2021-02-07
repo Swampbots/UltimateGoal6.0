@@ -25,7 +25,7 @@ public class TeleOpArmControl implements Command {
 
     private boolean queueGripToClose;
     private long closeTimeCount;
-    private final long CLOSE_TIME_THRESHOLD = 725L;     // 725 milliseconds
+    private final long CLOSE_TIME_THRESHOLD = 1200L;     // 1200 milliseconds
 
     public TeleOpArmControl(Arm wobble, Gamepad gamepad, Telemetry telemetry){
         this.gamepad = gamepad;
