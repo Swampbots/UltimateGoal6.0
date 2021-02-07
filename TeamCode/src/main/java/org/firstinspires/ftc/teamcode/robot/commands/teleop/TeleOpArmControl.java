@@ -16,7 +16,7 @@ public class TeleOpArmControl implements Command {
     private Arm wobble;
     private Telemetry telemetry;
 
-    private final double POWER_SCALAR = 0.7;
+    private final double POWER_SCALAR = 0.5;
     private final int TOLERANCE = 50;
 
     public static boolean tellGripToToggle = false;
@@ -98,12 +98,12 @@ public class TeleOpArmControl implements Command {
             closeTimeCount = Long.MAX_VALUE;
         }
 
-        if(gamepad.right_stick_button) {
-            Arm.TARGETS.DOWN.setDown(wobble.getCurrentPos());
+        if(gamepad.right_stick_button) { // Reset down pos
+            wobble.setDownPos(wobble.getCurrentPos());
         }
 
-        if(gamepad.left_stick_button) {
-            Arm.TARGETS.UP.setUp(wobble.getCurrentPos());
+        if(gamepad.left_stick_button) { // Reset up pos
+            wobble.resetEncoder();
         }
 
         if(telemetry != null) {

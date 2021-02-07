@@ -16,22 +16,17 @@ public class Arm implements Subsystem {
         UP,
         DOWN;
 
-        private int up      = 0;
-        private int down    = -700;
+        private int diff      = -500;   // difference between top and bottom setPosition
 
-        public void setUp(int pos) {
-            up = pos;
-        }
-
-        public void setDown(int pos) {
-            down = pos;
+        protected void setDiff(int diff) {
+            this.diff = diff;
         }
 
         //TODO: Confirm targets
         public int getTarget() {
             switch (this){
-                case UP:        return up;
-                case DOWN:      return down; //-300: top of wobble, -530: bottom of wobble
+                case UP:        return 0;
+                case DOWN:      return diff; //-300: top of wobble, -530: bottom of wobble
                 default:        return 0;
             }
         }
@@ -100,10 +95,14 @@ public class Arm implements Subsystem {
         return arm.getTargetPosition();
     }
 
-    public void resetEncoder(){
+    public void resetEncoder() {
         DcMotor.RunMode currentRunMode = arm.getMode();
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setMode(currentRunMode);
+    }
+
+    public void setDownPos(int pos) {
+        TARGETS.DOWN.setDiff(pos);
     }
 
 
