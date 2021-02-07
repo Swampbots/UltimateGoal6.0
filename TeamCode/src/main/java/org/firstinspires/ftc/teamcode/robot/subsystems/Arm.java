@@ -53,7 +53,6 @@ public class Arm implements Subsystem {
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         arm.setPositionPIDFCoefficients(5.0);
-
     }
 
     @Override
@@ -104,7 +103,6 @@ public class Arm implements Subsystem {
     public void setDownPos(int pos) {
         TARGETS.DOWN.setDiff(pos);
     }
-
 
     public PIDFCoefficients getPIDFCoefficients(){
         return arm.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION);

@@ -7,6 +7,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robot.commands.teleop.SoloTeleOpArmControl;
+import org.firstinspires.ftc.teamcode.robot.commands.teleop.SoloTeleOpDriveControl;
+import org.firstinspires.ftc.teamcode.robot.commands.teleop.SoloTeleOpGripControl;
+import org.firstinspires.ftc.teamcode.robot.commands.teleop.SoloTeleOpIntakeControl;
+import org.firstinspires.ftc.teamcode.robot.commands.teleop.SoloTeleOpKickerControl;
+import org.firstinspires.ftc.teamcode.robot.commands.teleop.SoloTeleOpTransferControl;
 import org.firstinspires.ftc.teamcode.robot.commands.teleop.TeleOpArmControl;
 import org.firstinspires.ftc.teamcode.robot.commands.teleop.TeleOpDriveControl;
 import org.firstinspires.ftc.teamcode.robot.commands.teleop.TeleOpGripControl;
@@ -54,15 +59,15 @@ public class CommandDrive extends LinearOpMode implements DogeOpMode {
         kicker.kicker.setPosition(Kicker.TARGETS.OUT.getTarget());
         waitForStart();
 
-        if(ONE_PERSON_CONTROLS) {       //TODO: Split solo and duo controller TeleOp commands
+        if(ONE_PERSON_CONTROLS) {
             commander.runCommandsParallel(
-                    new TeleOpDriveControl(drive,gamepad1, telemetry),
-                    new TeleOpKickerControl(kicker,gamepad1),
+                    new SoloTeleOpDriveControl(drive,gamepad1, telemetry),
+                    new SoloTeleOpKickerControl(kicker,gamepad1),
                     new TeleOpShooterControl(shooter,gamepad1),
                     new SoloTeleOpArmControl(arm,gamepad1),
-                    new TeleOpGripControl(grip,gamepad1),
-                    new TeleOpIntakeControl(intake,gamepad1),
-                    new TeleOpTransferControl(transfer,gamepad1)
+                    new SoloTeleOpGripControl(grip,gamepad1),
+                    new SoloTeleOpIntakeControl(intake,gamepad1),
+                    new SoloTeleOpTransferControl(transfer,gamepad1)
             );
         } else {
             commander.runCommandsParallel(

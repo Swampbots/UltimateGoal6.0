@@ -9,14 +9,14 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import static org.firstinspires.ftc.teamcode.CommandDrive.ONE_PERSON_CONTROLS;
 import static org.firstinspires.ftc.teamcode.CommandDrive.TRIGGER_THRESHOLD;
 
-public class TeleOpIntakeControl implements Command {
+public class SoloTeleOpIntakeControl implements Command {
     private Gamepad gamepad;
 
     private Intake intake;
 
     private final double POWER_SCALAR = 1.0;
 
-    public TeleOpIntakeControl(Intake intake, Gamepad gamepad) {
+    public SoloTeleOpIntakeControl(Intake intake, Gamepad gamepad) {
         this.intake = intake;
         this.gamepad = gamepad;
     }
@@ -29,12 +29,13 @@ public class TeleOpIntakeControl implements Command {
 
     @Override
     public void periodic() {
-        // Two Person Controls:
-        // In: RB, LT   Out: RT
+        // One Person Controls:
+        // In: RT  Out: LT
         intake.setPower(
-                (gamepad.right_bumper || gamepad.right_trigger > TRIGGER_THRESHOLD ? 1.0 :
-                                         gamepad.left_trigger > TRIGGER_THRESHOLD ? -1.0 : 0.0
-                ) * POWER_SCALAR);
+                (   gamepad.right_trigger > TRIGGER_THRESHOLD ? 1.0 : gamepad.left_trigger > TRIGGER_THRESHOLD ? -1.0 : 0.0
+                ) * POWER_SCALAR
+
+        );
     }
 
     @Override

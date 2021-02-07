@@ -4,42 +4,41 @@ import com.disnodeteam.dogecommander.Command;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Transfer;
 
 import static org.firstinspires.ftc.teamcode.CommandDrive.ONE_PERSON_CONTROLS;
 import static org.firstinspires.ftc.teamcode.CommandDrive.TRIGGER_THRESHOLD;
 
-public class TeleOpIntakeControl implements Command {
+public class SoloTeleOpTransferControl implements Command {
     private Gamepad gamepad;
-
-    private Intake intake;
+    private Transfer transfer;
 
     private final double POWER_SCALAR = 1.0;
 
-    public TeleOpIntakeControl(Intake intake, Gamepad gamepad) {
-        this.intake = intake;
+    public SoloTeleOpTransferControl(Transfer transfer, Gamepad gamepad){
+        this.transfer = transfer;
         this.gamepad = gamepad;
     }
 
     @Override
     public void start() {
-        intake.setPower(0);
-        intake.setDirection(DcMotorSimple.Direction.FORWARD);
+        transfer.setPower(0);
+        transfer.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override
     public void periodic() {
-        // Two Person Controls:
-        // In: RB, LT   Out: RT
-        intake.setPower(
-                (gamepad.right_bumper || gamepad.right_trigger > TRIGGER_THRESHOLD ? 1.0 :
-                                         gamepad.left_trigger > TRIGGER_THRESHOLD ? -1.0 : 0.0
-                ) * POWER_SCALAR);
+        // One Person Controls:
+        // In: LT  Out: RT
+        transfer.setPower(
+                (   gamepad.right_trigger > TRIGGER_THRESHOLD ? 1.0 : gamepad.left_trigger > TRIGGER_THRESHOLD ? -1.0 : 0.0
+                ) * POWER_SCALAR
+        );
     }
 
     @Override
     public void stop() {
-        intake.setPower(0);
+        transfer.setPower(0);
     }
 
     @Override
