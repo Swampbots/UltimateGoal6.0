@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.robot.commands.teleop.SoloTeleOpDriveContr
 import org.firstinspires.ftc.teamcode.robot.commands.teleop.SoloTeleOpGripControl;
 import org.firstinspires.ftc.teamcode.robot.commands.teleop.SoloTeleOpIntakeControl;
 import org.firstinspires.ftc.teamcode.robot.commands.teleop.SoloTeleOpKickerControl;
+import org.firstinspires.ftc.teamcode.robot.commands.teleop.SoloTeleOpShooterControl;
 import org.firstinspires.ftc.teamcode.robot.commands.teleop.SoloTeleOpTransferControl;
 import org.firstinspires.ftc.teamcode.robot.commands.teleop.TeleOpArmControl;
 import org.firstinspires.ftc.teamcode.robot.commands.teleop.TeleOpDriveControl;
@@ -63,7 +64,7 @@ public class CommandDrive extends LinearOpMode implements DogeOpMode {
             commander.runCommandsParallel(
                     new SoloTeleOpDriveControl(drive,gamepad1, telemetry),
                     new SoloTeleOpKickerControl(kicker,gamepad1),
-                    new TeleOpShooterControl(shooter,gamepad1),
+                    new SoloTeleOpShooterControl(shooter,gamepad1),
                     new SoloTeleOpArmControl(arm,gamepad1),
                     new SoloTeleOpGripControl(grip,gamepad1),
                     new SoloTeleOpIntakeControl(intake,gamepad1),
