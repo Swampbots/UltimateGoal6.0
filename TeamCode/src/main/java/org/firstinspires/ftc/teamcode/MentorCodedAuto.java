@@ -3,18 +3,16 @@ package org.firstinspires.ftc.teamcode;
 import com.disnodeteam.dogecommander.DogeCommander;
 import com.disnodeteam.dogecommander.DogeOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.commands.auto.ArmByEncoder;
-import org.firstinspires.ftc.teamcode.robot.commands.auto.ArmByTimer;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.DriveByEncoder;
-import org.firstinspires.ftc.teamcode.robot.commands.auto.DriveByTimer;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.GripSetState;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.KickerSetState;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.RunShooterForTime;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.StrafeByEncoder;
-import org.firstinspires.ftc.teamcode.robot.commands.auto.StrafeByTimer;
-import org.firstinspires.ftc.teamcode.robot.commands.auto.TurnByGyro;
+import org.firstinspires.ftc.teamcode.robot.commands.auto.TurnByGyroPID;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Grip;
@@ -23,8 +21,14 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Kicker;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Transfer;
 
-@Autonomous(name = "Command Auto", group = "Finalized")
-public class CommandAuto extends LinearOpMode implements DogeOpMode {
+/**
+ * Autonomous for meet 2
+ *
+ * @author Blake (Mentor-coded gang)
+ */
+@Disabled
+@Autonomous(name = "Autonomous (mentor-coded gang)", group = "_Competition")
+public class MentorCodedAuto extends LinearOpMode implements DogeOpMode {
     private boolean POWER_SHOT = false;
     @Override
     public void runOpMode() throws InterruptedException {
@@ -54,70 +58,66 @@ public class CommandAuto extends LinearOpMode implements DogeOpMode {
 
         waitForStart();
 
-        telemetry.addLine("Started");
-        telemetry.update();
 
-        // Drive to shooting position
+
+        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.OUT.getTarget()));
+        commander.runCommand(new GripSetState(grip, Grip.TARGETS.CLOSE.getTarget()));
+
+
+
+
+
+        telemetry.addLine("Driving to shooting line");
+        telemetry.update();
         commander.runCommandsParallel(
                 new RunShooterForTime(shooter,false, 0.85),
                 new DriveByEncoder(drive, InchToCount(60), 0, 0.5, telemetry)
                 );
-
         sleep(200);
 
-
-        telemetry.addLine("Shot 1");
+        telemetry.addLine("Turning and shooting");
         telemetry.update();
-        //commander.runCommand(new TurnByGyro(drive, 20, .5, 5, telemetry));
-        commander.runCommand(new StrafeByEncoder(drive, -InchToCount(16), 0,.35));
-        sleep(1200);
-//        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.OUT.getTarget()));
-//        sleep(500);
-//        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.IN.getTarget()));
-//        sleep(500);
+        double turnPower = 0.45;
+        commander.runCommand(new TurnByGyroPID(drive, telemetry, 10, turnPower));
+        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.IN.getTarget()));
+        sleep(1250);
+        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.OUT.getTarget()));
+        sleep(250);
 
-        telemetry.addLine("Shot 2");
+        commander.runCommand(new TurnByGyroPID(drive, telemetry, 15, turnPower));
+        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.IN.getTarget()));
+        sleep(1250);
+        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.OUT.getTarget()));
+        sleep(250);
+
+        commander.runCommand(new TurnByGyroPID(drive, telemetry, 20, turnPower));
+        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.IN.getTarget()));
+        sleep(1250);
+        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.OUT.getTarget()));
+        sleep(250);
+
+        telemetry.addLine("Powering down shooter");
         telemetry.update();
-        //commander.runCommand(new TurnByGyro(drive, 35, .3, 5, telemetry));
-        commander.runCommand(new StrafeByEncoder(drive, -InchToCount(7.5), 0,.3));
-        sleep(1200);
-//        sleep(1500);
-//        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.OUT.getTarget()));
-//        sleep(500);
-//        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.IN.getTarget()));
-
-
-        telemetry.addLine("Shot 3");
-        telemetry.update();
-//        commander.runCommand(new TurnByGyro(drive, 50, .3, 5, telemetry));
-        commander.runCommand(new StrafeByEncoder(drive, -InchToCount(6.5), 0,.3));
-        sleep(1200);
-//        sleep(1500);
-//        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.OUT.getTarget()));
-//        sleep(500);
-//        commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.IN.getTarget()));
         commander.runCommandsParallel(
                 new RunShooterForTime(shooter, true, 0.0),
-                new StrafeByEncoder(drive, InchToCount(40), 0,.4)); // Power down shooter
+                new StrafeByEncoder(drive, InchToCount(40), 0,.4));
 
-
-
-
-//        commander.runCommand(new TurnByGyro(drive, -50, .3, 5, telemetry));
-        sleep(500);
         // Put arm out
         telemetry.addLine("Wobble Goal");
         telemetry.update();
+        sleep(100); // Pause to settle before taking drive.heading() reading
 
-        commander.runCommand(new ArmByEncoder(arm, 0, Arm.TARGETS.OUT.getTarget(), 1.0));  // Bring wobble arm up)
-        sleep(2000);
+        commander.runCommand(new DriveByEncoder(drive, InchToCount(16.0), drive.heading(),  0.4));
+
+//        commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.DOWN.getTarget(), 1.0, 0.5));  // Bring wobble arm up)
+//        sleep(1000);
 
         // Open grip to drop Wobble Goal
         commander.runCommand(new GripSetState(grip,Grip.TARGETS.OPEN.getTarget()));
-        sleep(300);
+        sleep(500);
 
-        // Drive back to line
-        commander.runCommand(new DriveByTimer(drive, 0.5,0.3));
+//        commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.UP.getTarget(), 1.0, 0.5));  // Bring wobble arm up)
+//        sleep(1000);
 
         commander.stop();
     }

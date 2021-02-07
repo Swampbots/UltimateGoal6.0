@@ -17,15 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RingPatternPipeline extends OpenCvPipeline {
-
-    // HSV Threshold input variables
-    public static final double THRESHOLD_STEP = 1.0;
-
-    public static final double HUE_MAX = 180.0;
-    public static final double SAT_MAX = 255.0;
-    public static final double VAL_MAX = 255.0;
-    public static final double HSV_MIN = 0.0;
-
     private static double[] hsvHue = new double[]{80.0, 119.0};     // Starts with red outside of threshold (red is hue of 120)
     private static double[] hsvSat = new double[]{175.0, 255.0};
     private static double[] hsvVal = new double[]{50.0, 255.0};      // Testing showed 50 (min) to be enough to cut out most of the Skystone
@@ -38,16 +29,8 @@ public class RingPatternPipeline extends OpenCvPipeline {
 
     private static double bound = 12.0;
 
-    public static final double RECT_STEP = 0.04;
-    public static final double RECT_MIN = 0.0;
-
-    public static final int IMG_WIDTH = 480;
-    public static final int IMG_HEIGHT = 640;
-
     private static boolean returnHSV = true;
     private static boolean drawRect = true;
-
-    public static final double RING_CONFIDENCE_THRESHOLD = 0.65;
 
 
 
@@ -56,6 +39,8 @@ public class RingPatternPipeline extends OpenCvPipeline {
     private Mat hsvThresholdOutput = new Mat();
     private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
     private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
+
+    public static ArrayList<Point> rectCenters = new ArrayList<Point>();
 
     @Override
     public Mat processFrame(Mat input) {
@@ -71,18 +56,31 @@ public class RingPatternPipeline extends OpenCvPipeline {
                     new Point( // Bottom right corner
                             rectRight,  // Right value
                             rectBot),   // Bottom value
-                    new Scalar(0, 255, 0), 4);
-        }
+                    new Scalar(0, 255, 0), 10); // Increased thickness to make solid bound around rings
 
-        Imgproc.line(
-                input,
-                new Point(
-                        bound,
-                        rectTop),
-                new Point(
-                        bound,
-                        rectBot),
-                new Scalar(255, 0, 0), 4);
+            Imgproc.line(
+                    input,
+                    new Point(
+                            bound,
+                            rectTop ),
+                    new Point(
+                            bound,
+                            rectBot),
+                    new Scalar(40, 150, 190), 2);  // Changed color to roughly match rings
+
+            ArrayList<Point> tempCenters = rectCenters;
+
+            // Draw centers of Rectangles on screen
+            for (int i = 0; i < tempCenters.size(); i++) {
+                Imgproc.circle(
+                        input,
+                        tempCenters.get(i),
+                        5,
+                        new Scalar(0, 0, 255),
+                        3);
+
+            }
+        }
 
         double[] hsvThresholdHue =          hsvHue;
         double[] hsvThresholdSaturation =   hsvSat;
@@ -111,8 +109,8 @@ public class RingPatternPipeline extends OpenCvPipeline {
 
         // Step Filter_Contours0:
         ArrayList<MatOfPoint> filterContoursContours = findContoursOutput;
-        double filterContoursMinArea = 5000.0;
-        double filterContoursMinPerimeter = 1000.0;
+        double filterContoursMinArea = 500.0;
+        double filterContoursMinPerimeter = 100.0;
         double filterContoursMinWidth = 2.0;
         double filterContoursMaxWidth = 1000;
         double filterContoursMinHeight = 0.0; //0.0 => 0 & 1, 200.0 => 4

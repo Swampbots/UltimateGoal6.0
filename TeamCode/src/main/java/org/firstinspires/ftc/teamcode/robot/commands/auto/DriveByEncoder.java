@@ -111,7 +111,8 @@ public class DriveByEncoder implements Command {
     public void stop(){
         //drive.reverseFlDrive();
 
-        drive.setRunMode(prevRunMode);
+//        drive.setRunMode(prevRunMode);
+        drive.setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
         drive.setPower(0,0);
     }
 

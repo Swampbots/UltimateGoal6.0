@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.testing;
 
 import android.os.Build;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.GamepadPlus;
 
 import androidx.annotation.RequiresApi;
 
+@Disabled
 @TeleOp
 public class TestGamepadPlus extends OpMode {
 

@@ -25,7 +25,7 @@ public class TeleOpArmControl implements Command {
 
     private boolean queueGripToClose;
     private long closeTimeCount;
-    private final long CLOSE_TIME_THRESHOLD = 725L;
+    private final long CLOSE_TIME_THRESHOLD = 725L;     // 725 milliseconds
 
     public TeleOpArmControl(Arm wobble, Gamepad gamepad, Telemetry telemetry){
         this.gamepad = gamepad;
@@ -39,7 +39,6 @@ public class TeleOpArmControl implements Command {
 
     @Override
     public void start() {
-        wobble.setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         wobble.setRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         wobble.setPower(0);
 
@@ -49,13 +48,13 @@ public class TeleOpArmControl implements Command {
 
     @Override
     public void periodic() {
-        // In (encoder): RT     Out (encoder): LT   Up (power): dUp     Down (power): dDown
+        // In (encoder): RT     Out (encoder): LT   Up (power): dUp     Down (power): dDown     Reset Encoder: dRight
         if(gamepad.left_trigger > TRIGGER_THRESHOLD || gamepad.right_trigger > TRIGGER_THRESHOLD) {
             wobble.setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
             wobble.setPower(1.0 + 0 * POWER_SCALAR);
 
             if(gamepad.left_trigger > TRIGGER_THRESHOLD) {
-                wobble.setTargetPos(Arm.TARGETS.OUT.getTarget());
+                wobble.setTargetPos(Arm.TARGETS.DOWN.getTarget());
                 queueGripToOpen = true;
                 openTimeCount = new Date().getTime();
             }
@@ -97,6 +96,10 @@ public class TeleOpArmControl implements Command {
             wobble.setTargetPos(Arm.TARGETS.UP.getTarget());
             queueGripToClose = false;
             closeTimeCount = Long.MAX_VALUE;
+        }
+
+        if(gamepad.right_stick_button) {
+            wobble.resetEncoder();
         }
 
         if(telemetry != null) {

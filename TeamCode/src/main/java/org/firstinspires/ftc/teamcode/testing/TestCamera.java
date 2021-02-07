@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.BasicDriveHardware;
@@ -12,7 +13,8 @@ import org.opencv.imgproc.Imgproc;
 import java.util.List;
 import java.util.Locale;
 
-@Autonomous(name = "Test Cam",group = "Testing")
+@Disabled
+@Autonomous(name = "Test Cam",group = "testing")
 public class  TestCamera extends LinearOpMode {
 
     BasicDriveHardware hardware = new BasicDriveHardware();

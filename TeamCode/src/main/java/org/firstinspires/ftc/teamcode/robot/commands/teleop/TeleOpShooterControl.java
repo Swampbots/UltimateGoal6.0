@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 
+import static org.firstinspires.ftc.teamcode.CommandDrive.ONE_PERSON_CONTROLS;
+
 
 public class TeleOpShooterControl implements Command {
     private Shooter shooter;
@@ -27,6 +29,15 @@ public class TeleOpShooterControl implements Command {
 
     @Override
     public void periodic() {
+        if(ONE_PERSON_CONTROLS) {
+            if(gamepad.y && shootToggleCheck) {
+                shooter.shoot();
+                shootToggleCheck = false;
+            } else if(!gamepad.a && !shootToggleCheck) {
+                shootToggleCheck = true;
+            }
+            return;
+        }
         // Far: dUp, Short: dLeft, Power Shot: dDown, Shoot: a (toggle)
         if(gamepad.dpad_up)     shooter.setPower(Shooter.POWER_LEVELS.FAR.getPower());
         if(gamepad.dpad_left)   shooter.setPower(Shooter.POWER_LEVELS.SHORT.getPower());

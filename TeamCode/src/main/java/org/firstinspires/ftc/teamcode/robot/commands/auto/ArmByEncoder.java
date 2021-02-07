@@ -17,7 +17,7 @@ public class ArmByEncoder implements Command {
     private final double DEFAULT_TIMEOUT = 5.0;
     private DcMotor.RunMode prevRunMode;
 
-    public ArmByEncoder(Arm arm, int counts, double target, double power, double timeout){
+    public ArmByEncoder(Arm arm, int counts, double power, double timeout){
         timer = new ElapsedTime();
 
         this.arm = arm;
@@ -26,7 +26,7 @@ public class ArmByEncoder implements Command {
         this.timeout = timeout;
     }
 
-    public ArmByEncoder(Arm arm, int counts, double target, double power){
+    public ArmByEncoder(Arm arm, int counts, double power){
         timer = new ElapsedTime();
 
         this.arm = arm;

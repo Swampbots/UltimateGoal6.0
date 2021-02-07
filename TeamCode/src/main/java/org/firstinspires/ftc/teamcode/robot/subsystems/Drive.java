@@ -197,7 +197,9 @@ public class Drive implements Subsystem {
      * @return a boolean if all motors are finished running
      */
     public boolean driveIsBusy() {
-        return flDrive.isBusy() || frDrive.isBusy() || rlDrive.isBusy() || rrDrive.isBusy();
+        // If these are combined with || (ORs), then it waits for all four motors to finish. We are switching to && (ANDs) so that only one motor need finish
+//        return flDrive.isBusy() || frDrive.isBusy() || rlDrive.isBusy() || rrDrive.isBusy(); Edited by Blake on Jan 16 2021
+        return flDrive.isBusy() && frDrive.isBusy() && rlDrive.isBusy() && rrDrive.isBusy();
     }
 
     /**
@@ -207,6 +209,23 @@ public class Drive implements Subsystem {
      */
     public float heading(){
         return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+    }
+
+    /**
+     * Normalizes the input to be within the range (-180, 180]
+     *
+     * @author Blake
+     * @param angle the value to be normalized
+     * @return the normalized value
+     */
+    public double normalize180(double angle) {
+        while(angle > 180) {
+            angle -= 360;
+        }
+        while(angle <= -180) {
+            angle += 360;
+        }
+        return angle;
     }
 
     public void reverseAllMotors(){

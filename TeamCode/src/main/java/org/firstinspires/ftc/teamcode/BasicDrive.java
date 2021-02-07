@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -12,7 +13,8 @@ import static org.firstinspires.ftc.teamcode.BasicDriveHardware.SWEEPER_RANGE_MA
 import static org.firstinspires.ftc.teamcode.BasicDriveHardware.SWEEPER_RANGE_MIN;
 import static org.firstinspires.ftc.teamcode.BasicDriveHardware.TRANSFER_MAX_POWER;
 
-@TeleOp(name = "Mecanum Driver Control", group = "TeleOp")
+@Disabled
+@TeleOp(name = "Mecanum Driver Control", group = "old")
 public class BasicDrive extends OpMode {
     BasicDriveHardware hardware = new BasicDriveHardware();
 

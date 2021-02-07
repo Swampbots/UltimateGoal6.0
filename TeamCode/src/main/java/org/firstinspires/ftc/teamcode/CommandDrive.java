@@ -25,6 +25,9 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Transfer;
 public class CommandDrive extends LinearOpMode implements DogeOpMode {
     public static final float TRIGGER_THRESHOLD = 0.7f;
 
+    public static final boolean STOP_USING_GRIPPER = true;  // FIXME: Will stop all commands involving the gripper. Implemented b/c servo broke
+    public static final boolean ONE_PERSON_CONTROLS = true;
+
     @Override
     public void runOpMode() throws InterruptedException {
         DogeCommander commander = new DogeCommander(this);
@@ -46,17 +49,32 @@ public class CommandDrive extends LinearOpMode implements DogeOpMode {
         commander.registerSubsystem(transfer);
 
         commander.init();
+
+        kicker.kicker.setPosition(Kicker.TARGETS.OUT.getTarget());
         waitForStart();
 
-        commander.runCommandsParallel(
-                new TeleOpDriveControl(drive,gamepad1, telemetry),
-                new TeleOpKickerControl(kicker,gamepad1),
-                new TeleOpShooterControl(shooter,gamepad2),
-                new TeleOpArmControl(arm,gamepad1),
-                new TeleOpGripControl(grip,gamepad1),
-                new TeleOpIntakeControl(intake,gamepad2),
-                new TeleOpTransferControl(transfer,gamepad2)
-        );
+        if(ONE_PERSON_CONTROLS) {
+            commander.runCommandsParallel(
+                    new TeleOpDriveControl(drive,gamepad1, telemetry),
+                    new TeleOpKickerControl(kicker,gamepad1),
+                    new TeleOpShooterControl(shooter,gamepad1),
+                    new TeleOpArmControl(arm,gamepad1),
+                    new TeleOpGripControl(grip,gamepad1),
+                    new TeleOpIntakeControl(intake,gamepad1),
+                    new TeleOpTransferControl(transfer,gamepad1)
+            );
+        } else {
+            commander.runCommandsParallel(
+                    new TeleOpDriveControl(drive,gamepad1, telemetry),
+                    new TeleOpKickerControl(kicker,gamepad1),
+                    new TeleOpShooterControl(shooter,gamepad2),
+                    new TeleOpArmControl(arm,gamepad1),
+                    new TeleOpGripControl(grip,gamepad1),
+                    new TeleOpIntakeControl(intake,gamepad2),
+                    new TeleOpTransferControl(transfer,gamepad2)
+            );
+        }
+
 
         commander.stop();
     }

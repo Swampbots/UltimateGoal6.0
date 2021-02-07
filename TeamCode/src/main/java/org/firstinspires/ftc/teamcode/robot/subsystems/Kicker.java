@@ -8,7 +8,7 @@ public class Kicker implements Subsystem {
     // Hardware Map
     private HardwareMap hardwareMap;
 
-    private Servo kicker;
+    public Servo kicker;
 
     private boolean in = true;
 
@@ -18,8 +18,8 @@ public class Kicker implements Subsystem {
 
         public double getTarget() {
             switch (this) {
-                case IN:    return 0.6;
-                case OUT:   return 0.4;
+                case IN:    return 0.5;
+                case OUT:   return 1.0;
                 default:    return 0.1;
             }
         }

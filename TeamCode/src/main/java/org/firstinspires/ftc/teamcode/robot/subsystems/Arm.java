@@ -14,13 +14,13 @@ public class Arm implements Subsystem {
 
     public enum TARGETS {
         UP,
-        OUT;
+        DOWN;
 
         //TODO: Confirm targets
         public int getTarget() {
             switch (this){
-                case UP:    return 0;
-                case OUT:   return -350; //-300: top of wobble, -530: bottob of wobble
+                case UP:    return 350;
+                case DOWN:   return -350; //-300: top of wobble, -530: bottob of wobble
                 default:    return 0;
             }
         }

@@ -21,28 +21,21 @@ public class Camera {
     private OpenCvCamera webcam;
     private RingPatternPipeline vision;
 
-
     // HSV Threshold input variables
-    private static final double THRESHOLD_STEP = 1.0;
-
     private static final double HUE_MAX = 180.0;
     private static final double SAT_MAX = 255.0;
     private static final double VAL_MAX = 255.0;
     private static final double HSV_MIN = 0.0;
 
     // Initializes HSV values to the range used during testing
-    private static double[] hsvHue = new double[]{10.0, 25.0};
+    private static double[] hsvHue = new double[]{100.0, 120.0};
     private static double[] hsvSat = new double[]{153.0, 255.0};
     private static double[] hsvVal = new double[]{75.0, 207.0};
 
-
-    private static double rectTop   = 433.0;
-    private static double rectLeft  = 34.0;
-    private static double rectBot   = 506.0;
-    private static double rectRight = 464.0;
-
-    private static final double RECT_STEP = 0.04;
-    private static final double RECT_MIN = 0.0;
+    private static double rectTop   = 346.92;
+    private static double rectLeft  = 90.50;
+    private static double rectBot   = 494.09;
+    private static double rectRight = 220.70;
 
     private static final int IMG_WIDTH = 480;
     private static final int IMG_HEIGHT = 640;
@@ -51,10 +44,6 @@ public class Camera {
     private static boolean drawRect = true;
 
     private double bound;
-
-    private static final double RING_CONFIDENCE_THRESHOLD = 0.65;
-
-
 
     //Outputs
     private Mat blurOutput = new Mat();
@@ -93,6 +82,8 @@ public class Camera {
         vision.setHsvSatMax(hsvSat[1]);
         vision.setHsvValMin(hsvVal[0]);
         vision.setHsvValMax(hsvVal[1]);
+
+        filterContoursOutput = vision.filterContoursOutput();
     }
 
     public double[] getHsvHue() {
@@ -130,22 +121,12 @@ public class Camera {
         return rectLeft;
     }
 
-    public static double getRectMin() {
-        return RECT_MIN;
-    }
-
-
     public static double getRectRight() {
         return rectRight;
     }
 
-
     public static double getRectTop() {
         return rectTop;
-    }
-
-    public static double getThresholdStep() {
-        return THRESHOLD_STEP;
     }
 
     public void setHsvHueMin(double hueMin) {

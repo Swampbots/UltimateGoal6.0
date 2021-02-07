@@ -3,12 +3,14 @@ package org.firstinspires.ftc.teamcode.testing;
 import com.disnodeteam.dogecommander.DogeCommander;
 import com.disnodeteam.dogecommander.DogeOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.commands.auto.DriveByTimer;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.SavePID;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drive;
 
+@Disabled
 @Autonomous
 public class TestSaveHeadingInAuto extends LinearOpMode implements DogeOpMode {
     public void runOpMode(){

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.robot.subsystems.Transfer;
 
+import static org.firstinspires.ftc.teamcode.CommandDrive.ONE_PERSON_CONTROLS;
 import static org.firstinspires.ftc.teamcode.CommandDrive.TRIGGER_THRESHOLD;
 
 public class TeleOpTransferControl implements Command {
@@ -27,12 +28,24 @@ public class TeleOpTransferControl implements Command {
 
     @Override
     public void periodic() {
+        // One Person Controls:
+        if(ONE_PERSON_CONTROLS) {
+            transfer.setPower(
+                    (   gamepad.right_trigger > TRIGGER_THRESHOLD ? 1.0 :
+                        gamepad.left_trigger > TRIGGER_THRESHOLD ? -1.0 : 0.0
+                    ) * POWER_SCALAR
+
+            );
+            return;
+        }
+
+        // Two Person Controls
         // In: LB, RT   Out: LT
         transfer.setPower(
-                (gamepad.left_bumper || gamepad.right_trigger > TRIGGER_THRESHOLD ?
-                        1 : gamepad.left_trigger > TRIGGER_THRESHOLD ?
-                        -1 : 0
-        ) * POWER_SCALAR);
+                (gamepad.left_bumper || gamepad.right_trigger > TRIGGER_THRESHOLD ? 1 :
+                                        gamepad.left_trigger > TRIGGER_THRESHOLD ? -1 : 0
+                ) * POWER_SCALAR
+        );
 
     }
 

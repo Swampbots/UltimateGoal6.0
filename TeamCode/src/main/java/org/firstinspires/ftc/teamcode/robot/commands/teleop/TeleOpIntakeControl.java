@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 
+import static org.firstinspires.ftc.teamcode.CommandDrive.ONE_PERSON_CONTROLS;
 import static org.firstinspires.ftc.teamcode.CommandDrive.TRIGGER_THRESHOLD;
 
 public class TeleOpIntakeControl implements Command {
@@ -28,11 +29,22 @@ public class TeleOpIntakeControl implements Command {
 
     @Override
     public void periodic() {
+        // One Person Controls:
+        if(ONE_PERSON_CONTROLS) {
+            intake.setPower(
+                    (   gamepad.right_trigger > TRIGGER_THRESHOLD ? 1.0 :
+                        gamepad.left_trigger > TRIGGER_THRESHOLD ? -1.0 : 0.0
+                    ) * POWER_SCALAR
+
+            );
+            return;
+        }
+
+        // Two Person Controls:
         // In: RB, LT   Out: RT
         intake.setPower(
-                (gamepad.left_bumper || gamepad.right_trigger > TRIGGER_THRESHOLD ?
-                        1 : gamepad.left_trigger > TRIGGER_THRESHOLD ?
-                        -1 : 0
+                (gamepad.right_bumper || gamepad.right_trigger > TRIGGER_THRESHOLD ? 1.0 :
+                                         gamepad.left_trigger > TRIGGER_THRESHOLD ? -1.0 : 0.0
                 ) * POWER_SCALAR);
     }
 

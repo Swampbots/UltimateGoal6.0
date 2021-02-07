@@ -1,35 +1,30 @@
 package org.firstinspires.ftc.teamcode.robot.commands.auto;
 
-import com.disnodeteam.dogecommander.Command;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.GamepadCooldowns;
-import org.firstinspires.ftc.teamcode.R;
+import org.firstinspires.ftc.teamcode.RingPatternPipeline;
 import org.firstinspires.ftc.teamcode.RingPlacement;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Camera;
-import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
-import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 
-import static java.lang.Runtime.getRuntime;
 import static org.firstinspires.ftc.teamcode.CommandDrive.TRIGGER_THRESHOLD;
 import static org.firstinspires.ftc.teamcode.RingPlacement.FOUR_RINGS;
 import static org.firstinspires.ftc.teamcode.RingPlacement.ONE_RING;
-import static org.firstinspires.ftc.teamcode.RingPlacement.UNKNOWN;
 import static org.firstinspires.ftc.teamcode.RingPlacement.ZERO_RINGS;
 
 
-public class CameraControlAuto {
+public class AutoCameraControl {
     private Camera camera;
     private Gamepad gamepad1;
     private Gamepad gamepad2;
@@ -39,22 +34,12 @@ public class CameraControlAuto {
     private GamepadCooldowns gp2;
     private double runtime = 0.0;
     
-    public static final double THRESHOLD_STEP = 1.0;
+    public static final double THRESHOLD_STEP = 0.04;
 
     public static final double HUE_MAX = 180.0;
     public static final double SAT_MAX = 255.0;
     public static final double VAL_MAX = 255.0;
     public static final double HSV_MIN = 0.0;
-
-    // Initializes HSV values to the range used during testing
-    private static double[] hsvHue = new double[]{10.0, 25.0};
-    private static double[] hsvSat = new double[]{153.0, 255.0};
-    private static double[] hsvVal = new double[]{75.0, 207.0};
-
-    private static double rectTop   = 433.0;
-    private static double rectLeft  = 34.0;
-    private static double rectBot   = 506.0;
-    private static double rectRight = 464.0;
 
     public static final double RECT_STEP = 0.04;
     public static final double RECT_MIN = 0.0;
@@ -62,16 +47,11 @@ public class CameraControlAuto {
     public static final int IMG_WIDTH = 480;
     public static final int IMG_HEIGHT = 640;
 
-    private static boolean returnHSV = false;
-    private static boolean drawRect = true;
-
-    private static double bound = (rectTop - rectBot) / 4 + rectBot;
-
     private List<MatOfPoint> contours;
     private final double CONTOUR_THRESHOLD = 100;
     private RingPlacement placement;
 
-    public CameraControlAuto(Camera camera, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry){
+    public AutoCameraControl(Camera camera, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry){
         this.camera = camera;
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
@@ -82,7 +62,7 @@ public class CameraControlAuto {
 
     }
 
-    public CameraControlAuto(Camera camera, Gamepad gamepad1, Gamepad gamepad2) {
+    public AutoCameraControl(Camera camera, Gamepad gamepad1, Gamepad gamepad2) {
         this(camera, gamepad1, gamepad2, null);
     }
 
@@ -250,16 +230,25 @@ public class CameraControlAuto {
 
         // Bound is set to between left and right and controlled by dpad up and down
         if(gamepad2.dpad_up && gp2.dpUp.ready(runtime)) {
-            camera.setBound(Range.clip(localBound + RECT_STEP, localRectLeft, localRectRight));
+            localBound += RECT_STEP;
             gp2.dpUp.updateSnapshot(runtime);
         }
         if(gamepad2.dpad_down && gp2.dpDown.ready(runtime)) {
-            camera.setBound(Range.clip(localBound - RECT_STEP, localRectLeft, localRectBot));
+            localBound -= RECT_STEP;
+            gp2.dpDown.updateSnapshot(runtime);
         }
+        camera.setBound(Range.clip(localBound, localRectLeft, localRectRight)); // Updates at end for when bounding rect changes
 
         //camera.setBound(Range.clip(localBound + RECT_STEP * ((gamepad2.dpad_up ? 1 : 0) - (gamepad2.dpad_down ? 1 : 0)), localRectLeft, localRectRight));
 
-        camera.setReturnHSV(gamepad2.a)                /*returnHSV = gamepad2.a*/;
+        // ReturnHSV on toggle; Auto-hides bounding rect
+        if(gamepad2.a) {
+            camera.setReturnHSV(true);
+            camera.setDrawRect(false);
+        } else if (gamepad2.b) {
+            camera.setReturnHSV(false);
+            camera.setDrawRect(true);
+        }
         if (gamepad2.x) camera.setDrawRect(false)       /*drawRect = false*/;
         else if (gamepad2.y) camera.setDrawRect(true)   /*drawRect = true*/;
 
@@ -267,15 +256,6 @@ public class CameraControlAuto {
         contours = camera.getContoursOutput();
         double contoursTop = 0;
         double contoursBot = 0;
-
-        //double bound = camera.getBound();
-
-        // Calculate horizontal boundary line for cropping rectangle
-        //camera.changeBound(localRectBot + Math.abs(localRectTop - localRectBot) / 4.0);            /*leftBound = rectLeft + Math.abs((rectRight - rectLeft) / 3.0)*/;         // x position plus 1/3 of the width
-
-        // Create Point variable holding center coordinates of boundingRect
-        Point rectCenter = new Point();
-
 
         // Keep track of error while iterating through contours
         //boolean contourIterateError = false;
@@ -297,26 +277,53 @@ public class CameraControlAuto {
         store past 10-15 entries and determine path based on those
          */
 
+        // Create Point variable holding center coordinates of boundingRect
+        Point rectCenter = new Point();
+        double rectBoundCorrection = 0.95;  // correction factor to increase box size by a small amount to correct for contours spilling out
+
+        RingPatternPipeline.rectCenters.clear();
+
+        if(telemetry != null) {
+            telemetry.addData("contour count", contours.size());
+        }
         try {
             for (MatOfPoint c : contours) {
                 Rect contourRect = Imgproc.boundingRect(c);
 
+                // Telemetry data on contour location
+//                telemetry.addData("contour x", contourRect.x);
+//                telemetry.addData("contour y", contourRect.y);
+//                telemetry.addData("contour w", contourRect.width);
+//                telemetry.addData("contour h", contourRect.height);
+
                 // Ensure contour is inside bounding box
-                if(contourRect.x >= localRectLeft &&
-                        contourRect.y >= localRectTop &&
-                        contourRect.x + contourRect.width <= localRectRight &&
-                        contourRect.y + contourRect.height <= localRectBot) {
+                if(contourRect.x >= localRectLeft / rectBoundCorrection &&
+                        contourRect.y >= localRectTop / rectBoundCorrection &&
+                        contourRect.x + contourRect.width <= localRectRight * (2 - rectBoundCorrection) &&
+                        contourRect.y + contourRect.height <= localRectBot * (2 - rectBoundCorrection)) {
+
+
 
                     // Get the center of the contour
                     rectCenter.x = (2 * contourRect.x + contourRect.width) / 2.0;
                     rectCenter.y = (2 * contourRect.y + contourRect.height) / 2.0;
 
+
+                    RingPatternPipeline.rectCenters.add(rectCenter);
+                    if(telemetry != null) {
+                        telemetry.addLine("In box");
+                        telemetry.addData("rect center", rectCenter);
+                    }
+
                     // Check if contour is above the one ring line
-                    if(rectCenter.y > localBound) {
+                    if(rectCenter.x > localBound) {
                         contoursTop += contourRect.area();
                     } else {
                         contoursBot += contourRect.area();
                     }
+                }
+                if(telemetry != null){
+                    telemetry.addLine();
                 }
             }
         } catch (Exception e) {
@@ -382,24 +389,24 @@ public class CameraControlAuto {
         camera.periodic();
 
         if(telemetry != null) {
-            telemetry.addLine("Running");
+            telemetry.addLine("Running!");
             telemetry.addLine();
-            telemetry.addLine(String.format("Hue: [%s, %s]", localHsvHue[0], localHsvHue[1]));
-            telemetry.addLine(String.format("Sat: [%s, %s]", localHsvSat[0], localHsvSat[1]));
-            telemetry.addLine(String.format("Val: [%s, %s]", localHsvVal[0], localHsvVal[1]));
+            telemetry.addLine(String.format("Hue: [%.2f, %.2f]", localHsvHue[0], localHsvHue[1]));
+            telemetry.addLine(String.format("Sat: [%.2f, %.2f]", localHsvSat[0], localHsvSat[1]));
+            telemetry.addLine(String.format("Val: [%.2f, %.2f]", localHsvVal[0], localHsvVal[1]));
             telemetry.addLine();
             telemetry.addData("contoursTop", String.format(Locale.ENGLISH, "%.2f", contoursTop));
             telemetry.addData("contoursBot", String.format(Locale.ENGLISH, "%.2f", contoursBot));
             telemetry.addLine();
             telemetry.addData("placement", placement);
             telemetry.addLine();
-            telemetry.addData("Rect left",localRectLeft);
-            telemetry.addData("Rect top",localRectTop);
-            telemetry.addData("Rect right",localRectRight);
-            telemetry.addData("Rect bottom",localRectBot);
+            telemetry.addData("Rect left",String.format(Locale.ENGLISH, "%.2f", localRectLeft));
+            telemetry.addData("Rect top",String.format(Locale.ENGLISH, "%.2f", localRectTop));
+            telemetry.addData("Rect right",String.format(Locale.ENGLISH, "%.2f", localRectRight));
+            telemetry.addData("Rect bottom",String.format(Locale.ENGLISH, "%.2f", localRectBot));
+            telemetry.addData("Rect bound error", rectBoundCorrection);
             telemetry.addLine();
-            telemetry.addData("localBound",localBound);
-            telemetry.addData("bound",camera.getBound());
+            telemetry.addData("bound",String.format(Locale.ENGLISH, "%.2f", camera.getBound()));
             telemetry.addLine();
             telemetry.addData("showHSV",gamepad2.a);
             telemetry.addData("showRect",camera.isDrawRect());
@@ -412,12 +419,15 @@ public class CameraControlAuto {
 
     }
 
-
     public double largest(double ...arr){
         return Math.max(arr[0],Math.max(arr[1],arr[2]));
     }
 
     public double smallest(double ...arr) {
         return Math.min(arr[0],Math.min(arr[1],arr[2]));
+    }
+
+    public RingPlacement getPlacement() {
+        return placement;
     }
 }
