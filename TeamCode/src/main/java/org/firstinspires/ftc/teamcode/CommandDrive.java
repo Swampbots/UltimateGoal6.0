@@ -54,7 +54,7 @@ public class CommandDrive extends LinearOpMode implements DogeOpMode {
         kicker.kicker.setPosition(Kicker.TARGETS.OUT.getTarget());
         waitForStart();
 
-        if(ONE_PERSON_CONTROLS) {
+        if(ONE_PERSON_CONTROLS) {       //TODO: Split solo and duo controller TeleOp commands
             commander.runCommandsParallel(
                     new TeleOpDriveControl(drive,gamepad1, telemetry),
                     new TeleOpKickerControl(kicker,gamepad1),
