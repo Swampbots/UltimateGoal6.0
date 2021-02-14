@@ -23,7 +23,7 @@ public class SoloTeleOpShooterControl implements Command {
     @Override
     public void start() {
         shooter.setShoot(false);
-        shooter.setPower(0.95);     // Default Shooter Power
+        shooter.setPower(0.90);     // Default Shooter Power
         shooter.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
@@ -37,8 +37,8 @@ public class SoloTeleOpShooterControl implements Command {
         }
 
         // Far: dUp, Short: dLeft, Power Shot: dDown, Shoot: a (toggle)
-        if(gamepad.dpad_left)     shooter.setPower(Shooter.POWER_LEVELS.FAR.getPower());
-        if(gamepad.dpad_right)   shooter.setPower(Shooter.POWER_LEVELS.SHORT.getPower());
+        if(gamepad.dpad_left)     shooter.setPower(.95);
+        if(gamepad.dpad_right)   shooter.setPower(.9);
     }
 
     @Override
