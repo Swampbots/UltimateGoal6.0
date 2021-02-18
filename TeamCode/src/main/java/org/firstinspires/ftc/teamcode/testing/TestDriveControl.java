@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.testing;
 import com.disnodeteam.dogecommander.Command;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drive;
 
 public class TestDriveControl implements Command {
@@ -14,7 +13,8 @@ public class TestDriveControl implements Command {
 
     private TestTelemetryCommand telemetry;
 
-    private final double TRIGGER_THRESHOLD = 0.7;
+    // Telemetry Signature
+    private final String SIGN = "DC";
 
     // Constructor
     public TestDriveControl(Drive drive, Gamepad gamepad, TestTelemetryCommand telemetry) {
@@ -41,7 +41,21 @@ public class TestDriveControl implements Command {
         drive.setMecanumPower(dri, str, twi, goSlow);
 
         if(telemetry != null) {
-            telemetry.addSection(0).addLine("Test").addLine();
+            telemetry.sign(SIGN)
+                    .addSection(0)
+                    .addLine("Test")
+                    .addLine()
+                    .addData("dri", dri)
+                    .addData("str", str)
+                    .addData("twi", twi)
+                    .addLine()
+                    .addData("FL Target", drive.getCurrentPositions()[0])
+                    .addData("FR Target", drive.getCurrentPositions()[1])
+                    .addData("RL Target", drive.getCurrentPositions()[2])
+                    .addData("RR Target", drive.getCurrentPositions()[3])
+                    .push();
+
+
 //            telemetry.addData("dri", dri);
 //            telemetry.addData("str", str);
 //            telemetry.addData("twi", twi);
