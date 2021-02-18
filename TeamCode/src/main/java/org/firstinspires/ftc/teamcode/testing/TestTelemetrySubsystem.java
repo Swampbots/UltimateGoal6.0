@@ -5,13 +5,10 @@ import com.disnodeteam.dogecommander.Subsystem;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.jetbrains.annotations.NotNull;
 
-import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 
 public class TestTelemetrySubsystem implements Subsystem {
     protected Telemetry telemetry;
@@ -31,21 +28,21 @@ public class TestTelemetrySubsystem implements Subsystem {
     @Override
     public void periodic() {
         sortDataByKey();
-
+telemetry.addLine();
         for(List<TelemetryEntry> section : data.values()) {
             for(TelemetryEntry entry : section) {
                 switch (entry.getType()) {
                     case LINE:
-                        addLine(entry.getString());
+                        addLine(entry.getCaption());
                         break;
                     case DATA:
-                        addDataEntry(entry.getString(), entry.getData());
+                        addDataEntry(entry.getCaption(), entry.getData());
                         break;
                     case ACTION:
                         addAction(entry.getData());
                         break;
                     case DATA_LIST:
-                        addDataList(entry.getString(), entry.getFormat(), entry.getData());
+                        addDataList(entry.getCaption(), entry.getFormat(), entry.getData());
                         break;
                     default:
 
@@ -58,7 +55,14 @@ public class TestTelemetrySubsystem implements Subsystem {
         telemetry.update();
     }
 
-    public void addSection(List<TelemetryEntry> entries, int level) {
+    public void addSection(List<TelemetryEntry> entries, int level, String sign) {
+        int i = 0;
+        for(List<TelemetryEntry> entry : data.values()) {
+            if(entry.get(0).getType() == TestTelemetryCommand.TYPE.IGNORE && entry.get(0).getCaption() == sign && !sign.startsWith("_")) {
+               data.remove(data.keySet().toArray()[i]);
+            }
+            i++;
+        }
         data.put(level, entries);
     }
 
@@ -107,7 +111,7 @@ public class TestTelemetrySubsystem implements Subsystem {
         HashMap<Integer, List<TelemetryEntry>> out = new HashMap<>();
         int i = 0;
         for(List<TelemetryEntry> entry : data.values()) {
-            if(entry.get(0).getType() == TestTelemetryCommand.TYPE.IGNORE && entry.get(0).getString() == sign) {
+            if(entry.get(0).getType() == TestTelemetryCommand.TYPE.IGNORE && entry.get(0).getCaption() == sign) {
                 Object key = data.keySet().toArray()[i];
                 out.put((Integer) key, data.get(key));
                 break;

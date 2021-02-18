@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.testing;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.Format;
 
 public class TelemetryEntry {
@@ -8,25 +10,55 @@ public class TelemetryEntry {
     private String format;
     private Object data;
 
-    public TelemetryEntry(TestTelemetryCommand.TYPE type, String string, String format, Object data) {
+    /**
+     * Constructor for a Telemetry entry
+     *
+     * @param type Type of entry
+     * @see org.firstinspires.ftc.teamcode.testing.TestTelemetryCommand.TYPE
+     * @param caption Caption to be displayed
+     * @param format Format data lists should be displayed in
+     * @param data The data to pass in
+     */
+    public TelemetryEntry(@NotNull TestTelemetryCommand.TYPE type, String caption, String format, Object data) {
         this.type = type;
-        this.string = string;
+        this.string = caption;
         this.format = format;
         this.data = data;
     }
 
+    /**
+     * Gets the Entry's Type
+     *
+     * @return The Type
+     * @see org.firstinspires.ftc.teamcode.testing.TestTelemetryCommand.TYPE
+     */
     public TestTelemetryCommand.TYPE getType() {
         return type;
     }
 
-    public String getString() {
+    /**
+     * Gets the Entry's Caption
+     *
+     * @return The Caption
+     */
+    public String getCaption() {
         return string;
     }
 
+    /**
+     * Gets the Entry's Format
+     *
+     * @return The Format
+     */
     public String getFormat() {
         return format;
     }
 
+    /**
+     * Gets the Entry's Data
+     *
+     * @return The Data
+     */
     public Object getData() {
         return data;
     }
