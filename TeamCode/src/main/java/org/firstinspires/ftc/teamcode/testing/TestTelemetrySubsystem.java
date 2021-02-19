@@ -55,12 +55,17 @@ public class TestTelemetrySubsystem implements Subsystem {
                         break;
                 }
             }
-            addLine(null);
+            addLine(null);                      // Add new line for readability
         }
 
         telemetry.update();
     }
 
+    /**
+     * Adds a Section of Telemetry
+     *
+     * @param section The Section of Telemetry to add
+     */
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void addSection(TelemetrySection section) {
         // Removes old Sections if their Signatures match. This prevents the Section List from
@@ -70,22 +75,45 @@ public class TestTelemetrySubsystem implements Subsystem {
         sections.add(section);
     }
 
+    /**
+     * Adds a single line of Text to Telemetry
+     *
+     * @param caption The text to write
+     */
     private void addLine(String caption) {
         if(caption == null) telemetry.addLine();
         else telemetry.addLine(caption);
     }
 
+    /**
+     * Adds a single piece of data to Telemetry
+     *
+     * @param caption Caption for the Data
+     * @param data What the data to be added is
+     */
     private void addDataEntry(String caption, @NotNull Object data) {
         if(caption == null) telemetry.addData("", data);
         else telemetry.addData(caption, data);
     }
 
+    /**
+     * Adds a list of data to Telemetry
+     *
+     * @param caption Caption for the Data
+     * @param format How the data will be formatted
+     * @param data What the data to be added is
+     */
     private void addDataList(String caption, @NotNull String format, @NotNull Object... data) {
         if(caption == null) telemetry.addData("", String.valueOf(format), data);
         else telemetry.addData(caption, String.valueOf(format), data);
 
     }
 
+    /**
+     * Adds an Action to Telemetry
+     *
+     * @param action The Action to add
+     */
     private void addAction(@NotNull Object action) {
         try {
             telemetry.addAction((Runnable) action);
@@ -95,7 +123,10 @@ public class TestTelemetrySubsystem implements Subsystem {
     }
 
     /**
-     * Sort Data by Key value (level)
+     * Get an Entry from Sections based of Signature
+     *
+     * @param sign The Signature to search for
+     * @return The Section if the Signature exists. A new Section otherwise
      */
     public TelemetrySection getEntry(String sign) {
         for(TelemetrySection section : sections)
@@ -104,6 +135,9 @@ public class TestTelemetrySubsystem implements Subsystem {
         return new TelemetrySection();
     }
 
+    /**
+     * Sorts Sections based off level value, descending
+     */
     class SortByLevel implements Comparator<TelemetrySection> {
         @Override
         public int compare(TelemetrySection a, TelemetrySection b) {
