@@ -16,14 +16,12 @@ import java.util.Map;
 
 public class TestTelemetryCommand implements Command {
     private TestTelemetrySubsystem sub;
+    private TelemetrySection section;
 
-    private int level;
-    private List<TelemetryEntry> data;
-    private String sign;
 
 
     protected enum TYPE {
-        LINE, DATA, ACTION, DATA_LIST, IGNORE;
+        LINE, DATA, ACTION, DATA_LIST;
 
         public String getType() {
             return this.toString();
@@ -37,6 +35,7 @@ public class TestTelemetryCommand implements Command {
      */
     public TestTelemetryCommand(TestTelemetrySubsystem telemetry) {
         this.sub = telemetry;
+        section = new TelemetrySection();
     }
 
     @Override
@@ -67,7 +66,7 @@ public class TestTelemetryCommand implements Command {
      * @see org.firstinspires.ftc.robotcore.external.Telemetry#addLine(String lineCaption)
      */
     public TestTelemetryCommand addLine(String lineCaption) {
-        data.add(new TelemetryEntry(TYPE.LINE, lineCaption, null, null));
+        section.add(new TelemetryEntry(TYPE.LINE, lineCaption, null, null));
 
         return this;
     }
@@ -91,7 +90,7 @@ public class TestTelemetryCommand implements Command {
      * @see org.firstinspires.ftc.robotcore.external.Telemetry#addData(String caption, Object value)
      */
     public TestTelemetryCommand addData(String caption, Object value) {
-        data.add(new TelemetryEntry(TYPE.DATA, caption, null, value));
+        section.add(new TelemetryEntry(TYPE.DATA, caption, null, value));
 
         return this;
     }
@@ -116,7 +115,7 @@ public class TestTelemetryCommand implements Command {
      * @see org.firstinspires.ftc.robotcore.external.Telemetry#addData(String caption, String format, Object... args)
      */
     public TestTelemetryCommand addData(String caption, String format, Object... args) {
-        data.add(new TelemetryEntry(TYPE.DATA_LIST, caption, format, args));
+        section.add(new TelemetryEntry(TYPE.DATA_LIST, caption, format, args));
 
         return this;
     }
@@ -141,7 +140,7 @@ public class TestTelemetryCommand implements Command {
      * @see org.firstinspires.ftc.robotcore.external.Telemetry#addAction(Runnable action)
      */
     public TestTelemetryCommand addAction(Runnable action) {
-        data.add(new TelemetryEntry(TYPE.ACTION, "", null, action));
+        section.add(new TelemetryEntry(TYPE.ACTION, "", null, action));
 
         return this;
     }
@@ -156,10 +155,7 @@ public class TestTelemetryCommand implements Command {
      * @see TestTelemetryCommand#clearAll()
      */
     public TestTelemetryCommand clear(int index) {
-        try {
-            data.remove(index);
-        } catch (IndexOutOfBoundsException e) {
-        }
+        section.remove(index);
 
         return this;
     }
@@ -172,11 +168,7 @@ public class TestTelemetryCommand implements Command {
      * @see TestTelemetryCommand#clearAll()
      */
     public TestTelemetryCommand clear() {
-        // Cycle thru until the Type is not Ignore
-        int i = 0;
-        while(data.get(i).getType() == TYPE.IGNORE) i++;
-
-        return clear(i);
+        return clear(0);
     }
 
     /**
@@ -188,7 +180,7 @@ public class TestTelemetryCommand implements Command {
      * @see TestTelemetryCommand#clear(int index)
      */
     public TestTelemetryCommand clearAll() {
-        data.clear();
+        section.setEntries(new ArrayList<>());
 
         return this;
     }
@@ -202,7 +194,8 @@ public class TestTelemetryCommand implements Command {
      * @see TestTelemetryCommand#get(String sign)
      */
     public TestTelemetryCommand sign(String sign) {
-        data.add(new TelemetryEntry(TYPE.IGNORE, sign, null, null));
+        section.setSign(sign);
+        //data.add(new TelemetryEntry(TYPE.IGNORE, sign, null, null));
 
         return this;
     }
@@ -214,7 +207,8 @@ public class TestTelemetryCommand implements Command {
      * @return Itself
      */
     public TestTelemetryCommand addSection(int level) {
-        this.level = level;
+        section.setLevel(level);
+        //this.level = level;
 
         return this;
     }
@@ -225,10 +219,10 @@ public class TestTelemetryCommand implements Command {
      */
     public void push() {
         // Ensure that all parameters are initialized when being passed in
-        if((Object) level == null)  level = 0;
-        if(sign == null)            sign = String.valueOf(-System.currentTimeMillis()); // This will put all unsigned Sections at the bottom
+        if((Object) section.getLevel() == null)  section.setLevel(-(int) System.currentTimeMillis());          // This will put all unordered Sections at the bottom
+        if(section.getSign() == null)            section.setSign(String.valueOf(-System.currentTimeMillis())); // This will retain all unsigned Sections
 
-        sub.addSection(data, level, sign);
+        sub.addSection(section);
     }
 
     /**
@@ -240,10 +234,8 @@ public class TestTelemetryCommand implements Command {
      * @see TestTelemetrySubsystem
      */
     public TestTelemetryCommand get(String sign) {
-        HashMap<Integer, List<TelemetryEntry>> full = sub.getEntry(sign);
 
-        this.level = (int) full.entrySet().toArray()[0];
-        this.data = full.get(level);
+        section = sub.getEntry(sign);
 
         return this;
     }
