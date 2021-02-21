@@ -53,12 +53,11 @@ public class ArmByEncoder implements Command {
     public void start() {
         timer.reset();
 
-        int currentPos = arm.getTargetPos();
+        //int currentPos = arm.getTargetPos();
         prevRunMode = arm.getRunMode();
-        arm.setTargetPos(currentPos + counts);
         arm.setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
         arm.setPower(power);
-
+        arm.setTargetPos(counts);
     }
 
     @Override
@@ -75,8 +74,8 @@ public class ArmByEncoder implements Command {
 
     @Override
     public void stop() {
-        arm.setRunMode(prevRunMode);
-        arm.setPower(0);
+//        arm.setRunMode(prevRunMode);
+//        arm.setPower(0);
     }
 
     @Override
