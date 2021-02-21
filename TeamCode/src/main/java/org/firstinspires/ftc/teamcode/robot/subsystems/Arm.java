@@ -16,7 +16,7 @@ public class Arm implements Subsystem {
         UP,
         DOWN;
 
-        private int diff      = -500;   // difference between top and bottom setPosition
+        private int diff      = -450;   // difference between top and bottom setPosition
 
         protected void setDiff(int diff) {
             this.diff = diff;
