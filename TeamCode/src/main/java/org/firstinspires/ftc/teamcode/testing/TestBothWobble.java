@@ -42,7 +42,7 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
     private final int PATH_OVERRIDE = 6; // -1 => no override; 0,1,4 => their respective paths; 5 => only common path; 6 => manual selection
     private RingPlacement placement;
 
-    private final boolean RUN_SHOOTER = false;
+    private final boolean RUN_SHOOTER = true;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -189,9 +189,6 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
         }
 
 
-
-
-
         telemetry.addLine("Powering down shooter");
         telemetry.update();
         // Turn off shooter
@@ -220,7 +217,7 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
         telemetry.addLine("Place Wobble Goal");
         telemetry.update();
         // Put Arm out
-        commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.DOWN.getTarget(), 1.0, 3, telemetry));
+        commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.DOWN.getTarget(), 0.4, 3, telemetry));
         sleep(1000);
 
         // Drop Wobble Goal
@@ -232,17 +229,32 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
 
         commander.runCommandsParallel(
                 new DriveByEncoder(drive, InchToCount(44.0), drive.heading(), 0.4),
-                new ArmByEncoder(arm, Arm.TARGETS.DOWN.getTarget(), 1.0, 10, telemetry)
+                new ArmByEncoder(arm, Arm.TARGETS.DOWN.getTarget(), 1.0, 3, telemetry)
         );
         sleep(200);
 
         commander.runCommand(new GripSetState(grip, Grip.TARGETS.OPEN.getTarget()));
         sleep(500);
 
+        commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.UP.getTarget(), 0.4, 4, telemetry));
+        sleep(300);
+
         commander.runCommand(new TurnByGyroPID(drive, telemetry, -20, turnPower));
         sleep(100);
 
         commander.runCommand(new DriveByEncoder(drive, InchToCount(33.0), 0, 0.5));
+        sleep(100);
+
+        commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.DOWN.getTarget(), 0.4, 4, telemetry));
+        sleep(400);
+
+        commander.runCommand(new GripSetState(grip, Grip.TARGETS.CLOSE.getTarget()));
+        sleep(600);
+
+        commander.runCommandsParallel(new ArmByEncoder(arm, Arm.TARGETS.UP.getTarget(), 1.0, 2),
+                new StrafeByEncoder(drive, InchToCount(-25), 0, 0.4));
+
+        commander.runCommand(new DriveByEncoder(drive, InchToCount(10), 0, 0.8));
         // TODO: Tune grabbing wobble goal and park
     }
     private void runPath1() {
@@ -263,7 +275,7 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
         commander.runCommand(new DriveByEncoder(drive, InchToCount(16.0), drive.heading(),  0.4));
 
         // Put Arm out
-        commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.DOWN.getTarget(), 1.0, 0.5));
+        commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.DOWN.getTarget(), 0.4, 0.5));
         sleep(1000);
 
         // Release Wobble Goal
@@ -274,13 +286,30 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
         sleep(100);
 
         commander.runCommandsParallel(
-                new DriveByEncoder(drive, InchToCount(64.0), drive.heading(), 0.4),
-                new ArmByEncoder(arm, Arm.TARGETS.DOWN.getTarget(), 1.0, 10, telemetry)
+                new DriveByEncoder(drive, InchToCount(60.0), drive.heading(), 0.5),
+                new ArmByEncoder(arm, Arm.TARGETS.DOWN.getTarget(), 1.0, 3, telemetry)
         );
         sleep(200);
 
         commander.runCommand(new GripSetState(grip, Grip.TARGETS.OPEN.getTarget()));
-        sleep(500);
+        sleep(600);
+
+        commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.UP.getTarget(), 0.4, 4, telemetry));
+        sleep(300);
+
+        commander.runCommand(new TurnByGyroPID(drive, telemetry, 20, turnPower));
+        sleep(100);
+
+        commander.runCommand(new DriveByEncoder(drive, InchToCount(60.0), drive.heading(), 0.8));
+        sleep(200);
+
+        commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.DOWN.getTarget(), 1.0, 2, telemetry));
+        sleep(100);
+
+        commander.runCommand(new GripSetState(grip, Grip.TARGETS.CLOSE.getTarget()));
+        sleep(300);
+
+        commander.runCommand(new DriveByEncoder(drive, InchToCount(-10.0), 0, 0.8, telemetry));
 
         // TODO: Drive to and get second Wobble Goal
     }
