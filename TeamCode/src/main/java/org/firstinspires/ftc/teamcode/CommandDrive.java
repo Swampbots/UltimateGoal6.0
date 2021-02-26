@@ -33,7 +33,7 @@ public class CommandDrive extends LinearOpMode implements DogeOpMode {
     public static final float TRIGGER_THRESHOLD = 0.7f;
 
     public static final boolean STOP_USING_GRIPPER = false;  // FIXME: Will stop all commands involving the gripper. Implemented b/c servo broke
-    public static final boolean ONE_PERSON_CONTROLS = true;
+    public static final boolean ONE_PERSON_CONTROLS = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -74,9 +74,9 @@ public class CommandDrive extends LinearOpMode implements DogeOpMode {
             commander.runCommandsParallel(
                     new TeleOpDriveControl(drive,gamepad1, telemetry),
                     new TeleOpKickerControl(kicker,gamepad1),
-                    new TeleOpShooterControl(shooter,gamepad2),
-                    new TeleOpArmControl(arm,gamepad1),
-                    new TeleOpGripControl(grip,gamepad1),
+                    new TeleOpShooterControl(shooter,gamepad1),
+                    new TeleOpArmControl(arm,gamepad2),
+                    new TeleOpGripControl(grip,gamepad2),
                     new TeleOpIntakeControl(intake,gamepad2),
                     new TeleOpTransferControl(transfer,gamepad2)
             );

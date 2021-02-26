@@ -32,8 +32,8 @@ public class TeleOpIntakeControl implements Command {
         // Two Person Controls:
         // In: RB   Out: RT
         intake.setPower(
-                (       gamepad.left_bumper                        ? 1.0 :
-                        gamepad.left_trigger > TRIGGER_THRESHOLD   ? -1.0 : 0.0
+                (       gamepad.right_trigger > TRIGGER_THRESHOLD                        ? 1.0 :
+                        gamepad.left_bumper   ? -1.0 : 0.0
                 ) * POWER_SCALAR);
     }
 
