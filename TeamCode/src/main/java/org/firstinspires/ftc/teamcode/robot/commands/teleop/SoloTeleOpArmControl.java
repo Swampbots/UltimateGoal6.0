@@ -59,7 +59,7 @@ public class SoloTeleOpArmControl implements Command {
                 openTimeCount = new Date().getTime();
             }
             else if(gamepad.right_bumper && !queueGripToClose) {
-                if(TeleOpGripControl.gripOpen) {
+                if(SoloTeleOpGripControl.gripOpen) {
                     queueGripToClose = true;
                     closeTimeCount = new Date().getTime();
                 } else {
@@ -85,7 +85,7 @@ public class SoloTeleOpArmControl implements Command {
             tellGripToToggle = true;
             queueGripToOpen = false;
         }
-        if(TeleOpGripControl.tellArmGipToggled) {
+        if(SoloTeleOpGripControl.tellArmGipToggled) {
             tellGripToToggle = false;
         }
 

@@ -28,11 +28,11 @@ public class SoloTeleOpGripControl implements Command {
     public void periodic() {
         gripOpen = grip.getCurrentPos() == Grip.TARGETS.OPEN.getTarget();
 
-        if(TeleOpArmControl.tellGripToToggle && !tellArmGipToggled) {
+        if(SoloTeleOpArmControl.tellGripToToggle && !tellArmGipToggled) {
             grip.open();
             tellArmGipToggled = true;
         }
-        if(!TeleOpArmControl.tellGripToToggle) {
+        if(!SoloTeleOpArmControl.tellGripToToggle) {
             tellArmGipToggled = false;
         }
 
