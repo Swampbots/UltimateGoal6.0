@@ -48,17 +48,25 @@ public class TeleOpArmControl implements Command {
 
     @Override
     public void periodic() {
-        // In (encoder): RT     Out (encoder): LT   Up (power): dUp     Down (power): dDown     Reset Encoder: dRight
-        if(gamepad.left_trigger > TRIGGER_THRESHOLD || gamepad.right_trigger > TRIGGER_THRESHOLD) {
+        // In (encoder): X     Out (encoder): Y   Up (power): dUp     Down (power): dDown     Reset Encoder: RStickB, LStickB
+        boolean encoderIn           = gamepad.y;
+        boolean encoderOut          = gamepad.x;
+        boolean powerUp             = gamepad.dpad_up;
+        boolean powerDown           = gamepad.dpad_down;
+        boolean resetEncoder        = gamepad.left_stick_button;
+        boolean resetEncoderDiff    = gamepad.right_stick_button;
+
+        // Enter encoder based mode
+        if(encoderOut || encoderIn) {
             wobble.setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
             wobble.setPower(1.0 + 0 * POWER_SCALAR);
 
-            if(gamepad.left_trigger > TRIGGER_THRESHOLD) {
+            if(encoderOut) {
                 wobble.setTargetPos(Arm.TARGETS.DOWN.getTarget());
                 queueGripToOpen = true;
                 openTimeCount = new Date().getTime();
             }
-            else if(gamepad.right_trigger > TRIGGER_THRESHOLD && !queueGripToClose) {
+            else if(encoderIn && !queueGripToClose) {
                 if(TeleOpGripControl.gripOpen) {
                     queueGripToClose = true;
                     closeTimeCount = new Date().getTime();
@@ -68,11 +76,12 @@ public class TeleOpArmControl implements Command {
             }
         }
 
-        if(gamepad.dpad_up || gamepad.dpad_down || wobble.getRunMode().equals(DcMotor.RunMode.RUN_WITHOUT_ENCODER)) {
+        // Enter manual power mode
+        if(powerUp || powerDown || wobble.getRunMode().equals(DcMotor.RunMode.RUN_WITHOUT_ENCODER)) {
             wobble.setRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            if(gamepad.dpad_up)         wobble.setPower(1.0 * POWER_SCALAR);
-            else if(gamepad.dpad_down)  wobble.setPower(-1.0 * POWER_SCALAR);
+            if(powerUp)         wobble.setPower(1.0 * POWER_SCALAR);
+            else if(powerDown)  wobble.setPower(-1.0 * POWER_SCALAR);
             else wobble.setPower(0);
         }
 
@@ -95,11 +104,11 @@ public class TeleOpArmControl implements Command {
             closeTimeCount = Long.MAX_VALUE;
         }
 
-        if(gamepad.right_stick_button) { // Reset down pos
+        if(resetEncoderDiff) { // Reset down pos
             wobble.setDownPos(wobble.getCurrentPos());
         }
 
-        if(gamepad.left_stick_button) { // Reset up pos
+        if(resetEncoder) { // Reset up pos
             wobble.resetEncoder();
         }
 

@@ -29,12 +29,12 @@ public class TeleOpTransferControl implements Command {
     @Override
     public void periodic() {
         // Two Person Controls
-        // In: LB, RT   Out: LT
+        // In: RT   Out: RB
         transfer.setPower(
-                (gamepad.left_bumper || gamepad.right_trigger > TRIGGER_THRESHOLD ? 1 :
-                                        gamepad.left_trigger > TRIGGER_THRESHOLD ? -1 : 0
-                ) * POWER_SCALAR
-        );
+                (       gamepad.right_bumper                        ? 1.0 :
+                        gamepad.right_trigger > TRIGGER_THRESHOLD   ? -1.0 : 0.0
+                ) * POWER_SCALAR);
+
 
     }
 

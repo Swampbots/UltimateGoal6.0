@@ -26,6 +26,9 @@ public class TeleOpGripControl implements Command {
 
     @Override
     public void periodic() {
+        boolean toggleGrip = gamepad.a;
+        boolean encoderIn = gamepad.y;
+
         gripOpen = grip.getCurrentPos() == Grip.TARGETS.OPEN.getTarget();
 
         if(TeleOpArmControl.tellGripToToggle && !tellArmGipToggled) {
@@ -36,14 +39,14 @@ public class TeleOpGripControl implements Command {
             tellArmGipToggled = false;
         }
 
-        if(gamepad.right_trigger > CommandDrive.TRIGGER_THRESHOLD) {
+        if(encoderIn) {
             grip.close();
         }
 
-        if(gamepad.a && gripToggleCheck) {
+        if(toggleGrip && gripToggleCheck) {
             grip.togglePos();
             gripToggleCheck = false;
-        } else if(!gamepad.a && !gripToggleCheck){
+        } else if(!toggleGrip && !gripToggleCheck){
             gripToggleCheck = true;
         }
 
