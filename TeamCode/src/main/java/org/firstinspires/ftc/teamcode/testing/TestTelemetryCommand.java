@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.testing;
 
+import android.os.Build;
 import android.os.SystemClock;
+
+import androidx.annotation.RequiresApi;
 
 import com.disnodeteam.dogecommander.Command;
 
@@ -217,6 +220,7 @@ public class TestTelemetryCommand implements Command {
      * Push the section to Subsystem to be handed and displayed to the phone
      * @see TestTelemetrySubsystem
      */
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void push() {
         // Ensure that all parameters are initialized when being passed in
         if((Object) section.getLevel() == null)  section.setLevel(-(int) System.currentTimeMillis());          // This will put all unordered Sections at the bottom
