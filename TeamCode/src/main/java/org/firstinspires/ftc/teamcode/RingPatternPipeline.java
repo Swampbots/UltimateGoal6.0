@@ -124,7 +124,7 @@ public class RingPatternPipeline extends OpenCvPipeline {
 
 
 
-        return (returnHSV ? hsvThresholdOutput : input);
+        return (returnHSV ? hsvThresholdOutput : blurOutput);
     }
 
     /**
