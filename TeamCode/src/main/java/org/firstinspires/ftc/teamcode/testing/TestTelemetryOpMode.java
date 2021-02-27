@@ -41,6 +41,7 @@ public class TestTelemetryOpMode extends LinearOpMode implements DogeOpMode {
 //        Intake intake           = new Intake(hardwareMap);
 //        Transfer transfer       = new Transfer(hardwareMap);
         TestTelemetrySubsystem teleSub = new TestTelemetrySubsystem(telemetry);
+//        TestTelemetryCommand teleComm  = new TestTelemetryCommand(teleSub);
 
         commander.registerSubsystem(drive);
 //        commander.registerSubsystem(kicker);
@@ -56,15 +57,16 @@ public class TestTelemetryOpMode extends LinearOpMode implements DogeOpMode {
 //        kicker.kicker.setPosition(Kicker.TARGETS.OUT.getTarget());
         waitForStart();
 
+        //FIXME: Need to rewrite subsystem and command to pass a subsystem into DC and command into runCommandsParallel
         commander.runCommandsParallel(
-                new TeleOpDriveControl(drive,gamepad1, telemetry),
+                new TestTelemetryCommand(teleSub),
+                new TestDriveControl(drive,gamepad1, new TestTelemetryCommand(teleSub))
 //                new TeleOpKickerControl(kicker,gamepad1),
 //                new TeleOpShooterControl(shooter,gamepad2),
 //                new TeleOpArmControl(arm,gamepad1),
 //                new TeleOpGripControl(grip,gamepad1),
 //                new TeleOpIntakeControl(intake,gamepad2),
 //                new TeleOpTransferControl(transfer,gamepad2),
-                new TestTelemetryCommand(teleSub)
         );
 
 
