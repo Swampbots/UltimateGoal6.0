@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode.testing;
 
+import android.os.Build;
+
 import com.disnodeteam.dogecommander.Command;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.robot.subsystems.Drive;
+
+import androidx.annotation.RequiresApi;
 
 public class TestDriveControl implements Command {
     // Subsystem
@@ -31,6 +35,7 @@ public class TestDriveControl implements Command {
         drive.setPower(0,0);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void periodic() {
         double dri = -gamepad.left_stick_y;
