@@ -13,7 +13,7 @@ public class Grip implements Subsystem {
 
     private Servo grip;
 
-    private boolean open = true;
+    private boolean open = false;
 
     public enum TARGETS {
         OPEN,
@@ -21,8 +21,8 @@ public class Grip implements Subsystem {
 
         public double getTarget() {
             switch (this){
-                case OPEN:  return 0;
-                case CLOSE: return 1;
+                case OPEN:  return 1;
+                case CLOSE: return 0;
                 default:    return 0;
             }
         }
