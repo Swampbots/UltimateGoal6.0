@@ -64,6 +64,8 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
 
         AutoCameraControl cam = new AutoCameraControl(new Camera(hardwareMap), gamepad1, gamepad2, telemetry);
 
+        commander.init();
+
         if(PATH_OVERRIDE != 6) {
             while (!opModeIsActive()) {
                 cam.periodic();
@@ -80,7 +82,6 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
             }
         }
 
-        commander.init();
         waitForStart();
 
         // Select the path to run with
@@ -224,6 +225,9 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
         commander.runCommand(new GripSetState(grip, true));
         sleep(500);
 
+        commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.UP.getTarget(), 0.4, 3));
+        sleep(300);
+
         commander.runCommand(new TurnByGyroPID(drive, telemetry, -172, turnPower));
         sleep(100);
 
@@ -254,8 +258,8 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
         commander.runCommandsParallel(new ArmByEncoder(arm, Arm.TARGETS.UP.getTarget(), 1.0, 2),
                 new StrafeByEncoder(drive, InchToCount(-25), 0, 0.4));
 
-        commander.runCommand(new DriveByEncoder(drive, InchToCount(10), 0, 0.8));
-        // TODO: Tune grabbing wobble goal and park
+        commander.runCommand(new DriveByEncoder(drive, InchToCount(5), 0, 0.8));
+        // TODO: Tune grabbing wobble
     }
     private void runPath1() {
         telemetry.addLine("Rings = 1");
@@ -311,7 +315,7 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
 
         commander.runCommand(new DriveByEncoder(drive, InchToCount(-10.0), 0, 0.8, telemetry));
 
-        // TODO: Drive to and get second Wobble Goal
+        // TODO: Tune 2nd Wobble goal
     }
 
     private void runPath4() {
