@@ -20,7 +20,7 @@ public class Kicker implements Subsystem {
             switch (this) {
                 case IN:    return 0.5;
                 case OUT:   return 1.0;
-                default:    return 0.1;
+                default:    return 1.0;
             }
         }
     }

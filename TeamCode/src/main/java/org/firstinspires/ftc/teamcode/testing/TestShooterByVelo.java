@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.testing;
 
 import com.disnodeteam.dogecommander.DogeCommander;
 import com.disnodeteam.dogecommander.DogeOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -28,48 +27,56 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Kicker;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Transfer;
 
-@Disabled
-@TeleOp(name = "Test Telemetry", group = "testing")
-public class TestTelemetryOpMode extends LinearOpMode implements DogeOpMode {
+import static org.firstinspires.ftc.teamcode.CommandDrive.ONE_PERSON_CONTROLS;
+
+@TeleOp(name = "Test Shooter", group = "testing")
+public class TestShooterByVelo extends LinearOpMode implements DogeOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         DogeCommander commander = new DogeCommander(this);
 
         Drive drive             = new Drive(hardwareMap,true);
-//        Kicker kicker           = new Kicker(hardwareMap);
-//        Shooter shooter         = new Shooter(hardwareMap);
-//        Arm arm                 = new Arm(hardwareMap);
-//        Grip grip               = new Grip(hardwareMap);
-//        Intake intake           = new Intake(hardwareMap);
-//        Transfer transfer       = new Transfer(hardwareMap);
-        TestTelemetrySubsystem teleSub = new TestTelemetrySubsystem(telemetry);
-//        TestTelemetryCommand teleComm  = new TestTelemetryCommand(teleSub);
+        Kicker kicker           = new Kicker(hardwareMap);
+        Shooter shooter         = new Shooter(hardwareMap);
+        Arm arm                 = new Arm(hardwareMap);
+        Grip grip               = new Grip(hardwareMap);
+        Intake intake           = new Intake(hardwareMap);
+        Transfer transfer       = new Transfer(hardwareMap);
 
         commander.registerSubsystem(drive);
-//        commander.registerSubsystem(kicker);
-//        commander.registerSubsystem(shooter);
-//        commander.registerSubsystem(arm);
-//        commander.registerSubsystem(grip);
-//        commander.registerSubsystem(intake);
-//        commander.registerSubsystem(transfer);
-        commander.registerSubsystem(teleSub);
+        commander.registerSubsystem(kicker);
+        commander.registerSubsystem(shooter);
+        commander.registerSubsystem(arm);
+        commander.registerSubsystem(grip);
+        commander.registerSubsystem(intake);
+        commander.registerSubsystem(transfer);
 
         commander.init();
 
-//        kicker.kicker.setPosition(Kicker.TARGETS.OUT.getTarget());
+        kicker.kicker.setPosition(Kicker.TARGETS.OUT.getTarget());
         waitForStart();
 
-        //FIXME: Need to rewrite subsystem and command to pass a subsystem into DC and command into runCommandsParallel
-        commander.runCommandsParallel(
-                new TestTelemetryCommand(teleSub),
-                new TestDriveControl(drive,gamepad1, new TestTelemetryCommand(teleSub))
-//                new TeleOpKickerControl(kicker,gamepad1),
-//                new TeleOpShooterControl(shooter,gamepad2),
-//                new TeleOpArmControl(arm,gamepad1),
-//                new TeleOpGripControl(grip,gamepad1),
-//                new TeleOpIntakeControl(intake,gamepad2),
-//                new TeleOpTransferControl(transfer,gamepad2),
-        );
+        if(ONE_PERSON_CONTROLS) {
+            commander.runCommandsParallel(
+                    new SoloTeleOpDriveControl(drive,gamepad1, telemetry),
+                    new SoloTeleOpKickerControl(kicker,gamepad1),
+                    new SoloTeleOpShooterControl(shooter,gamepad1),
+                    new SoloTeleOpArmControl(arm,gamepad1),
+                    new SoloTeleOpGripControl(grip,gamepad1),
+                    new SoloTeleOpIntakeControl(intake,gamepad1),
+                    new SoloTeleOpTransferControl(transfer,gamepad1)
+            );
+        } else {
+            commander.runCommandsParallel(
+                    new TeleOpDriveControl(drive,gamepad1, telemetry),
+                    new TeleOpKickerControl(kicker,gamepad1),
+                    new TeleOpShooterControl(shooter,gamepad1, Shooter.MODE.VELOCITY),
+                    new TeleOpArmControl(arm,gamepad2),
+                    new TeleOpGripControl(grip,gamepad2),
+                    new TeleOpIntakeControl(intake,gamepad2),
+                    new TeleOpTransferControl(transfer,gamepad2)
+            );
+        }
 
 
         commander.stop();

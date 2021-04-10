@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.testing;
 
 import com.disnodeteam.dogecommander.DogeCommander;
 import com.disnodeteam.dogecommander.DogeOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -29,6 +30,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Transfer;
 
 import static org.firstinspires.ftc.teamcode.CommandDrive.ONE_PERSON_CONTROLS;
 
+@Disabled
 @TeleOp(name = "Test Arm Pos", group = "testing")
 public class TestArmPositions extends LinearOpMode implements DogeOpMode {
     @Override

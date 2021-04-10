@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.testing;
 
 
+import com.acmerobotics.dashboard.config.Config;
 import com.disnodeteam.dogecommander.DogeCommander;
 import com.disnodeteam.dogecommander.DogeOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.RingPlacement;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.ArmByEncoder;
@@ -25,6 +27,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Kicker;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Transfer;
 
+@Config
 @Autonomous(name = "Test Both Wobble", group = "testing")
 public class TestBothWobble extends LinearOpMode implements DogeOpMode {
     private DogeCommander commander = new DogeCommander(this);
@@ -39,10 +42,13 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
 
     private double turnPower = 0.45;
 
-    private final int PATH_OVERRIDE = 6; // -1 => no override; 0,1,4 => their respective paths; 5 => only common path; 6 => manual selection
+    public static int PS_WAIT_TIME1 = 1250;
+    public static int PS_WAIT_TIME2 = 250;
+
+    public static double PATH_OVERRIDE = -1; // -1 => no override; 0,1,4 => their respective paths; 5 => only common path; 6 => manual selection
     private RingPlacement placement;
 
-    private final boolean RUN_SHOOTER = true;
+    private final boolean RUN_SHOOTER = true;  //FIXME: Set true when kicker works
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -66,6 +72,8 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
 
         commander.init();
 
+        shooter.setDirection(DcMotorSimple.Direction.REVERSE);
+
         if(PATH_OVERRIDE != 6) {
             while (!opModeIsActive()) {
                 cam.periodic();
@@ -88,7 +96,7 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
         if(PATH_OVERRIDE == -1) {
             choosePath(cam);
         } else {
-            switch (PATH_OVERRIDE) {
+            switch ((int)PATH_OVERRIDE) {
                 case 0:
                     placement = RingPlacement.ZERO_RINGS;
                     break;
@@ -143,17 +151,19 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
 
         // Move Kicker out and close Gripper
         commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.OUT.getTarget()));
-        commander.runCommand(new GripSetState(grip, Grip.TARGETS.OPEN.getTarget())); //FIXME
+        commander.runCommand(new GripSetState(grip, Grip.TARGETS.CLOSE.getTarget())); //FIXME
 
 
         telemetry.addLine("Driving to shooting line");
         telemetry.update();
         commander.runCommandsParallel(
-                new RunShooterForTime(shooter, false, 0.85),                  // Turn on Shooter to .85 power
+                new RunShooterForTime(shooter, false, Shooter.VELO_LEVELS.POWER_SHOT.getVelo(), Shooter.MODE.VELOCITY),                  // Turn on Shooter to .85 power
                 new DriveByEncoder(drive, InchToCount(60), 0, 0.5, telemetry)   // Drive to Shooting line
         );
         sleep(200);
 
+//        transfer.setPower(-0.5);
+//        transfer.periodic();
 
         telemetry.addLine("Turning and shooting");
         telemetry.update();
@@ -163,9 +173,9 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
         if (RUN_SHOOTER) {
             // Shoot first Power Shot
             commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.IN.getTarget()));
-            sleep(1250);
+            sleep(PS_WAIT_TIME1);
             commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.OUT.getTarget()));
-            sleep(250);
+            sleep(PS_WAIT_TIME2);
         }
 
         // Turn to face second Power Shot
@@ -174,9 +184,9 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
         if (RUN_SHOOTER) {
             // Shoot second Power Shot
             commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.IN.getTarget()));
-            sleep(1250);
+            sleep(PS_WAIT_TIME1);
             commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.OUT.getTarget()));
-            sleep(250);
+            sleep(PS_WAIT_TIME2);
         }
             // Turn to face third Power Shot
             commander.runCommand(new TurnByGyroPID(drive, telemetry, 20, turnPower));
@@ -184,10 +194,13 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
         if (RUN_SHOOTER) {
             // Shoot third Power Shot
             commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.IN.getTarget()));
-            sleep(1250);
+            sleep(PS_WAIT_TIME1);
             commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.OUT.getTarget()));
-            sleep(250);
+            sleep(PS_WAIT_TIME2);
         }
+
+//        transfer.setPower(0);
+//        transfer.periodic();
 
 
         telemetry.addLine("Powering down shooter");
@@ -237,7 +250,7 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
         );
         sleep(200);
 
-        commander.runCommand(new GripSetState(grip, Grip.TARGETS.OPEN.getTarget()));
+        commander.runCommand(new GripSetState(grip, Grip.TARGETS.CLOSE.getTarget()));
         sleep(500);
 
         commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.UP.getTarget(), 0.4, 4, telemetry));
@@ -252,7 +265,7 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
         commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.DOWN.getTarget(), 0.4, 4, telemetry));
         sleep(400);
 
-        commander.runCommand(new GripSetState(grip, Grip.TARGETS.CLOSE.getTarget()));
+        commander.runCommand(new GripSetState(grip, Grip.TARGETS.OPEN.getTarget()));
         sleep(600);
 
         commander.runCommandsParallel(new ArmByEncoder(arm, Arm.TARGETS.UP.getTarget(), 1.0, 2),
@@ -295,7 +308,7 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
         );
         sleep(200);
 
-        commander.runCommand(new GripSetState(grip, Grip.TARGETS.OPEN.getTarget()));
+        commander.runCommand(new GripSetState(grip, Grip.TARGETS.CLOSE.getTarget()));
         sleep(600);
 
         commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.UP.getTarget(), 0.4, 4, telemetry));
@@ -310,7 +323,7 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
         commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.DOWN.getTarget(), 1.0, 2, telemetry));
         sleep(100);
 
-        commander.runCommand(new GripSetState(grip, Grip.TARGETS.CLOSE.getTarget()));
+        commander.runCommand(new GripSetState(grip, Grip.TARGETS.OPEN.getTarget()));
         sleep(300);
 
         commander.runCommand(new DriveByEncoder(drive, InchToCount(-10.0), 0, 0.8, telemetry));
