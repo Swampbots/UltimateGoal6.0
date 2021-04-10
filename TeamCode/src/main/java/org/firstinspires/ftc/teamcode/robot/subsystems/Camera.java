@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.disnodeteam.dogecommander.Subsystem;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -64,6 +65,8 @@ public class Camera {
         vision = new RingPatternPipeline();
         webcam.setPipeline(vision);
         webcam.startStreaming(640, 480, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+
+        FtcDashboard.getInstance().startCameraStream(webcam, 20);
     }
 
     public void periodic() {

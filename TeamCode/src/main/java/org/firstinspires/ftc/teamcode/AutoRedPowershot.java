@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.disnodeteam.dogecommander.DogeCommander;
 import com.disnodeteam.dogecommander.DogeOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.RingPlacement;
@@ -26,6 +27,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Transfer;
 
 import static org.firstinspires.ftc.teamcode.RingPlacement.ZERO_RINGS;
 
+@Disabled
 @Autonomous(name = "Command Auto", group = "finalized")
 public class AutoRedPowershot extends LinearOpMode implements DogeOpMode {
     private DogeCommander commander = new DogeCommander(this);
@@ -62,7 +64,7 @@ public class AutoRedPowershot extends LinearOpMode implements DogeOpMode {
 
         AutoCameraControl cam = new AutoCameraControl(new Camera(hardwareMap), gamepad1, gamepad2, telemetry);
 
-        while (!opModeIsActive()) {
+        while (!opModeIsActive() && !isStopRequested()) {
             cam.periodic();
         }
 
