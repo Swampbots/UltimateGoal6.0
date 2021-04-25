@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot.commands.auto;
 
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.Range;
 
@@ -28,12 +29,19 @@ public class AutoCameraControl {
     private Camera camera;
     private Gamepad gamepad1;
     private Gamepad gamepad2;
+    private MultipleTelemetry multiTelemetry;
     private Telemetry telemetry;
 
     private GamepadCooldowns gp1;
     private GamepadCooldowns gp2;
     private double runtime = 0.0;
-    
+
+    // Toggle for output overlays   [type, id, enabled?]
+    private String[][] toggle = {{"Blur", "0", "0"}, { "Bounding Rect", "1", "1"}, {"Point", "2", "1"}, {"Black & White", "3", "0"}};
+    private int togglePoint = 0;
+    // Cooldown in the order: a, b, x, y
+    private boolean[] buttonCooldown = {false, false, false, false};
+
     public static final double THRESHOLD_STEP = 0.04;
 
     public static final double HUE_MAX = 180.0;
@@ -50,6 +58,17 @@ public class AutoCameraControl {
     private List<MatOfPoint> contours;
     private final double CONTOUR_THRESHOLD = 100;
     private RingPlacement placement;
+
+    public AutoCameraControl(Camera camera, Gamepad gamepad1, Gamepad gamepad2, MultipleTelemetry multiTelemetry){
+        this.camera = camera;
+        this.gamepad1 = gamepad1;
+        this.gamepad2 = gamepad2;
+        this.multiTelemetry = multiTelemetry;
+
+        gp1 = new GamepadCooldowns();
+        gp2 = new GamepadCooldowns();
+
+    }
 
     public AutoCameraControl(Camera camera, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry){
         this.camera = camera;
@@ -108,7 +127,6 @@ public class AutoCameraControl {
             gp1.dpUp.updateSnapshot(runtime);
         }
 
-
         // HUE MAXIMUM
         if (gamepad1.y && gp1.y.ready(runtime)) {
             if (localHsvHue[1] < HUE_MAX)
@@ -125,7 +143,6 @@ public class AutoCameraControl {
                 camera.setHsvHueMax(localHsvHue[0])                    /*hsvHue[1] = hsvHue[0]*/;
             gp1.a.updateSnapshot(runtime);
         }
-
 
         // SAT MINIMUM
         if (gamepad1.dpad_left && gp1.dpLeft.ready(runtime)) {
@@ -144,7 +161,6 @@ public class AutoCameraControl {
             gp1.dpRight.updateSnapshot(runtime);
         }
 
-
         // SAT MAXIMUM
         if (gamepad1.b && gp1.b.ready(runtime)) {
             if (localHsvSat[1] < SAT_MAX)
@@ -161,7 +177,6 @@ public class AutoCameraControl {
                 camera.setHsvSatMax(localHsvSat[0])                    /*hsvSat[1] = hsvSat[0]*/;
             gp1.x.updateSnapshot(runtime);
         }
-
 
         // VAL MINIMUM
         if (gamepad1.left_trigger > TRIGGER_THRESHOLD && gp1.lt.ready(runtime)) {
@@ -180,7 +195,6 @@ public class AutoCameraControl {
             gp1.lb.updateSnapshot(runtime);
         }
 
-
         // VAL MAXIMUM
         if (gamepad1.right_trigger > TRIGGER_THRESHOLD && gp1.rt.ready(runtime)) {
             if (localHsvVal[1] > localHsvVal[0])
@@ -197,7 +211,6 @@ public class AutoCameraControl {
                 camera.setHsvValMax(VAL_MAX)                           /*hsvVal[1] = VAL_MAX*/;
             gp1.rb.updateSnapshot(runtime);
         }
-
 
         //--------------------------------------------------------------------------------------
         // END HSV THRESHOLD CONTROLS
@@ -241,24 +254,43 @@ public class AutoCameraControl {
 
         //camera.setBound(Range.clip(localBound + RECT_STEP * ((gamepad2.dpad_up ? 1 : 0) - (gamepad2.dpad_down ? 1 : 0)), localRectLeft, localRectRight));
 
-        // ReturnHSV on toggle; Auto-hides bounding rect
-        if(gamepad2.a) {
-            camera.setReturnHSV(true);
-            camera.setDrawRect(false);
-        } else if (gamepad2.b) {
-            camera.setReturnHSV(false);
-            camera.setDrawRect(true);
+        if(gamepad2.a && buttonCooldown[0]) {    // Convert String to int, then toggle between 1 and 0, then turn back into string
+            toggle[togglePoint][2] = ((Integer)((Integer.parseInt(toggle[togglePoint][2])+1)%2)).toString();
+        } else if(!gamepad2.a && !buttonCooldown[0])
+            buttonCooldown[0] = true;
+
+        if(gamepad2.b) {    // Disable all overlays
+            for(String[] s : toggle)
+                s[2] = "0";
         }
-        if (gamepad2.x) camera.setDrawRect(false)       /*drawRect = false*/;
-        else if (gamepad2.y) camera.setDrawRect(true)   /*drawRect = true*/;
+
+        if(gamepad2.x && buttonCooldown[2]) {
+            togglePoint = (--togglePoint) % toggle.length;
+        } else if(!gamepad2.x && !buttonCooldown[2])
+            buttonCooldown[2] = true;
+
+        if(gamepad2.y && buttonCooldown[3]){
+            togglePoint = (++togglePoint) % toggle.length;
+        } else if(!gamepad2.y && !buttonCooldown[3])
+            buttonCooldown[3] = true;
+
+        if((Integer)(Integer.parseInt(toggle[0][2])) == 1)
+
+        // ReturnHSV on toggle; Auto-hides bounding rect
+//        if(gamepad2.a) {
+//            camera.setReturnHSV(true);
+//            camera.setDrawRect(false);
+//        } else if (gamepad2.b) {
+//            camera.setReturnHSV(false);
+//            camera.setDrawRect(true);
+//        }
+//        if (gamepad2.x) camera.setDrawRect(false)       /*drawRect = false*/;
+//        else if (gamepad2.y) camera.setDrawRect(true)   /*drawRect = true*/;
 
 
         contours = camera.getContoursOutput();
         double contoursTop = 0;
         double contoursBot = 0;
-
-        // Keep track of error while iterating through contours
-        //boolean contourIterateError = false;
 
         /*
         loop thru contours
@@ -277,14 +309,17 @@ public class AutoCameraControl {
         store past 10-15 entries and determine path based on those
          */
 
-        // Create Point variable holding center coordinates of boundingRect
-        Point rectCenter = new Point();
+        // Create Point variable holding top-center coordinates of boundingRect
+        Point rectPoint = new Point();
         double rectBoundCorrection = 0.95;  // correction factor to increase box size by a small amount to correct for contours spilling out
 
-        RingPatternPipeline.rectCenters.clear();
+        RingPatternPipeline.rectPoints.clear();
 
         if(telemetry != null) {
             telemetry.addData("contour count", contours.size());
+        }
+        if(multiTelemetry != null) {
+            multiTelemetry.addData("Contour Count", contours.size());
         }
         try {
             for (MatOfPoint c : contours) {
@@ -305,30 +340,40 @@ public class AutoCameraControl {
 
 
                     // Get the center of the contour
-                    rectCenter.x = (2 * contourRect.x + contourRect.width) / 2.0;
-                    rectCenter.y = (2 * contourRect.y + contourRect.height) / 2.0;
+                    rectPoint.x = contourRect.width;
+                    rectPoint.y = (2 * contourRect.y + contourRect.height) / 2.0;
 
 
-                    RingPatternPipeline.rectCenters.add(rectCenter);
+                    RingPatternPipeline.rectPoints.add(rectPoint);
                     if(telemetry != null) {
                         telemetry.addLine("In box");
-                        telemetry.addData("rect center", rectCenter);
+                        telemetry.addData("rect point", rectPoint);
+                    }
+                    if(multiTelemetry != null) {
+                        multiTelemetry.addLine("In box");
+                        multiTelemetry.addData("Rect point", rectPoint);
                     }
 
                     // Check if contour is above the one ring line
-                    if(rectCenter.x > localBound) {
+                    if(rectPoint.x > localBound) {
                         contoursTop += contourRect.area();
                     } else {
                         contoursBot += contourRect.area();
                     }
                 }
-                if(telemetry != null){
+                if(telemetry != null) {
                     telemetry.addLine();
+                }
+                if(multiTelemetry != null) {
+                    multiTelemetry.addLine();
                 }
             }
         } catch (Exception e) {
             if(telemetry != null) {
                 telemetry.addLine("Error while iterating through contours!");
+            }
+            if(multiTelemetry != null) {
+                multiTelemetry.addLine("Error while iterating through contours!");
             }
 
             //contourIterateError = true;
@@ -415,6 +460,34 @@ public class AutoCameraControl {
 //            if (badData)
 //                telemetry.addLine("Confidence is below threshold or not a number. Keeping last placement decision.");
             telemetry.update();
+        }
+        if(multiTelemetry != null) {
+            multiTelemetry.addLine("Running!");
+            multiTelemetry.addLine();
+            multiTelemetry.addLine(String.format("Hue: [%.2f, %.2f]", localHsvHue[0], localHsvHue[1]));
+            multiTelemetry.addLine(String.format("Sat: [%.2f, %.2f]", localHsvSat[0], localHsvSat[1]));
+            multiTelemetry.addLine(String.format("Val: [%.2f, %.2f]", localHsvVal[0], localHsvVal[1]));
+            multiTelemetry.addLine();
+            multiTelemetry.addData("contoursTop", String.format(Locale.ENGLISH, "%.2f", contoursTop));
+            multiTelemetry.addData("contoursBot", String.format(Locale.ENGLISH, "%.2f", contoursBot));
+            multiTelemetry.addLine();
+            multiTelemetry.addData("placement", placement);
+            multiTelemetry.addLine();
+            multiTelemetry.addData("Rect left",String.format(Locale.ENGLISH, "%.2f", localRectLeft));
+            multiTelemetry.addData("Rect top",String.format(Locale.ENGLISH, "%.2f", localRectTop));
+            multiTelemetry.addData("Rect right",String.format(Locale.ENGLISH, "%.2f", localRectRight));
+            multiTelemetry.addData("Rect bottom",String.format(Locale.ENGLISH, "%.2f", localRectBot));
+            multiTelemetry.addData("Rect bound error", rectBoundCorrection);
+            multiTelemetry.addLine();
+            multiTelemetry.addData("bound",String.format(Locale.ENGLISH, "%.2f", camera.getBound()));
+            multiTelemetry.addLine();
+            multiTelemetry.addData("showHSV",gamepad2.a);
+            multiTelemetry.addData("showRect",camera.isDrawRect());
+//            telemetry.addLine();
+//            telemetry.addData("Confidence", String.format(Locale.ENGLISH, "%.2f", confidence));
+//            if (badData)
+//                telemetry.addLine("Confidence is below threshold or not a number. Keeping last placement decision.");
+            multiTelemetry.update();
         }
 
     }

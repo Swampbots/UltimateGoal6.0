@@ -40,7 +40,7 @@ public class RingPatternPipeline extends OpenCvPipeline {
     private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
     private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
 
-    public static ArrayList<Point> rectCenters = new ArrayList<Point>();
+    public static ArrayList<Point> rectPoints = new ArrayList<Point>();
 
     @Override
     public Mat processFrame(Mat input) {
@@ -68,13 +68,13 @@ public class RingPatternPipeline extends OpenCvPipeline {
                             rectBot),
                     new Scalar(40, 150, 190), 2);  // Changed color to roughly match rings
 
-            ArrayList<Point> tempCenters = rectCenters;
+            ArrayList<Point> tempPoints = rectPoints;
 
-            // Draw centers of Rectangles on screen
-            for (int i = 0; i < tempCenters.size(); i++) {
+            // Draw top points of Rectangles on screen
+            for (int i = 0; i < tempPoints.size(); i++) {
                 Imgproc.circle(
                         input,
-                        tempCenters.get(i),
+                        tempPoints.get(i),
                         5,
                         new Scalar(0, 0, 255),
                         3);

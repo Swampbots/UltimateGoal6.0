@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 
 @Config
 public class Shooter implements Subsystem {
@@ -22,11 +21,12 @@ public class Shooter implements Subsystem {
     private boolean     shoot = false;
     private MODE        mode  = MODE.POWER;
 
-    public static double TEST_ALTER_VELOS = 60;
-    public static double TEST_PIDF_P = 10.0;
-    public static double TEST_PIDF_I = 0;
-    public static double TEST_PIDF_D = 0;
-    public static double TEST_PIDF_F = 0;
+    public static double FAR_VELO = 55;
+    public static double POWER_SHOT_VELO = 47;
+    public static double PIDF0_P = 10.0;
+    public static double PIDF1_I = 0;
+    public static double PIDF2_D = 0;
+    public static double PIDF3_F = 0;
 
     public enum MODE {
         POWER,
@@ -59,9 +59,9 @@ public class Shooter implements Subsystem {
 
         public double getVelo() {
             switch (this) {
-                case FAR: return TEST_ALTER_VELOS;
-                case SHORT: return 55;
-                case POWER_SHOT: return 50;
+                case FAR: return FAR_VELO;
+                case SHORT: return 50;
+                case POWER_SHOT: return POWER_SHOT_VELO;
                 default: return 0.85;
             }
         }
@@ -75,7 +75,7 @@ public class Shooter implements Subsystem {
     public void initHardware() {
         shooter = hardwareMap.get(DcMotorEx.class, "shooter");
         shooter.setDirection(DcMotorSimple.Direction.FORWARD);
-        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(TEST_PIDF_P, TEST_PIDF_I, TEST_PIDF_D, TEST_PIDF_F));
+        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(PIDF0_P, PIDF1_I, PIDF2_D, PIDF3_F));
     }
 
     @Override

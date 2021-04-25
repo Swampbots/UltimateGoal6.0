@@ -50,7 +50,7 @@ public class RunShooterForTime implements Command {
         if(mode.getType())
             shooter.setPower(-power);
         else
-            shooter.setVelocity(power);
+            shooter.setVelocity(-power);
         shooter.setShoot(true);
     }
 

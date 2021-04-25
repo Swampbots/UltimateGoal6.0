@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.testing;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -13,21 +16,27 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.RingPlacement;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.ArmByEncoder;
+import org.firstinspires.ftc.teamcode.robot.commands.auto.AutoCameraControl;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.GripSetState;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.KickerSetState;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.RunShooterForTime;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Arm;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Camera;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Grip;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Kicker;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Transfer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
+@Config
 @Autonomous(name = "AAATest Roadrunner Path", group = "testing")
 public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
     private DogeCommander commander = new DogeCommander(this);
@@ -39,11 +48,17 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
     private Intake intake;
     private Transfer transfer;
 
-    private double shootingTurn = 3.0;  // Degrees
+
+    private double shootingTurn = 3;  // Degrees
+
+    public static double PATH_OVERRIDE = 0; // -1 => no override; 0,1,4 => their respective paths; 5 => only common path
 
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+        AutoCameraControl cam = new AutoCameraControl(new Camera(hardwareMap), gamepad1, gamepad2, telemetry);
 
         kicker           = new Kicker(hardwareMap);
         shooter         = new Shooter(hardwareMap);
@@ -63,42 +78,100 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
 
         drive.setPoseEstimate(startPose);
 
-        Trajectory commonPath = drive.trajectoryBuilder(startPose)
+        Trajectory common = drive.trajectoryBuilder(startPose)
                 .addTemporalMarker(0.3, ()->{
                     // Lock Arm in place
                     arm.setPower(1);
                     arm.setTargetPos(Arm.TARGETS.UP.getTarget());
                     arm.setRunMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-                    grip.close();
+                    grip.close(); // FIXME: Disabled gripper until fixed
                     kicker.out();
-                    commander.runCommand(new RunShooterForTime(shooter, false, 0.7));
+                    commander.runCommand(new RunShooterForTime(shooter, false, Shooter.VELO_LEVELS.POWER_SHOT.getVelo(), Shooter.MODE.VELOCITY));
                 })
-                .splineToLinearHeading(new Pose2d(-2,-53, Math.toRadians(40.0)), 0)
+                .splineToLinearHeading(new Pose2d(-2,-53, Math.toRadians(30.0)), 0)
+
+                .build();
+        // --------- Case 0 --------- \\
+        Trajectory zeroRingGet2 = drive.trajectoryBuilder(common.end().plus(new Pose2d(0, 0, Math.toRadians(-260))))
+                .splineToSplineHeading(new Pose2d(-31.8, -25.4, Math.toRadians(160)), Math.toRadians(160),
+                        new MinVelocityConstraint(Arrays.asList(
+                                new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL * 3/4),
+                                new MecanumVelocityConstraint(DriveConstants.MAX_VEL * 3/5, DriveConstants.TRACK_WIDTH)
+                        )),
+                        new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker((dist)->0.15*dist, ()->{
+                    grip.open(); // FIXME: Disabled gripper until fixed
+                    commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.DOWN.getTarget(), 0.4, 4));
+                })
+                .build();
+
+        Trajectory zeroRingDrop2 = drive.trajectoryBuilder(zeroRingGet2.end())
+                .splineToSplineHeading(new Pose2d(15, -42, Math.toRadians(-90)), Math.toRadians(-90))
+                .build();
+
+        Trajectory zeroRingToLine = drive.trajectoryBuilder(zeroRingDrop2.end())
+                .splineToSplineHeading(new Pose2d(15, -20, 0), Math.toRadians(90))
+                .build();
+
+        // --------- Case 1 --------- \\
+
+        Trajectory oneRingDrop1 = drive.trajectoryBuilder(common.end().plus(new Pose2d(0,0, Math.toRadians(2 * shootingTurn))))
+                .splineToSplineHeading(new Pose2d(27, -43, Math.toRadians(20)), Math.toRadians(30))
+                .build();
+
+        Trajectory oneRingGet2 = drive.trajectoryBuilder(oneRingDrop1.end())
+                .splineToSplineHeading(new Pose2d(0, -12, Math.toRadians(-160.5)), Math.toRadians(-160))
+                .addDisplacementMarker((dist)->0.2*dist, ()->{
+                    grip.open(); // FIXME: Disabled gripper until fixed
+                    commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.DOWN.getTarget(), 0.4, 4));
+                })
+
+                .splineToConstantHeading(new Vector2d(-31.1,-19.2), Math.toRadians(-160),
+                        new MinVelocityConstraint(Arrays.asList(
+                                new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
+                                new MecanumVelocityConstraint(15, DriveConstants.TRACK_WIDTH)
+                        )),
+                        new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
 
                 .build();
 
-        Trajectory fourRingsDrop1 = drive.trajectoryBuilder(commonPath.end().plus(new Pose2d(0,0, Math.toRadians(2 * shootingTurn))))
+        Trajectory oneRingDrop2 = drive.trajectoryBuilder(oneRingGet2.end())
+                .splineToSplineHeading(new Pose2d(24, -35, 0), Math.toRadians(-20))
+                .build();
+
+        Trajectory oneRingToLine = drive.trajectoryBuilder(oneRingDrop2.end())
+                .splineToConstantHeading(new Vector2d(15, -24), Math.toRadians(140))
+                .build();
+
+        // --------- Case 4 --------- \\
+
+        Trajectory fourRingDrop1 = drive.trajectoryBuilder(common.end().plus(new Pose2d(0,0, Math.toRadians(2 * shootingTurn))))
                 .splineToSplineHeading(new Pose2d(48, -58, 0), Math.toRadians(-50))
                 .build();
 
-        Trajectory fourRingsStrafeOffWall = drive.trajectoryBuilder(fourRingsDrop1.end())
+        Trajectory fourRingStrafeOffWall = drive.trajectoryBuilder(fourRingDrop1.end())
                 .strafeTo(new Vector2d(46,-53))
                 .build();
-
-        Trajectory fourRingsGet2 = drive.trajectoryBuilder(fourRingsStrafeOffWall.end().plus(new Pose2d(0,0, Math.toRadians(160))))
+//
+        Trajectory fourRingGet2 = drive.trajectoryBuilder(new Pose2d(46, -53, Math.toRadians(160)))
                 .splineToSplineHeading(new Pose2d(0, -12, Math.toRadians(11.5-180)), Math.toRadians(-160))
                 .addDisplacementMarker((dist)->0.2*dist, ()->{
-                    grip.open();
+                    grip.open(); // FIXME: Disabled gripper until fixed
                     commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.DOWN.getTarget(), 0.4, 4));
                 })
 //                .addDisplacementMarker(20, ()->{
-//                    commander.runCommandsParallel(
+//                    commander.runCommandsParallel(1
 //                            new ArmByEncoder(arm, Arm.TARGETS.DOWN.getTarget(), 0.4, 4, telemetry),
 //                            new GripSetState(grip, Grip.TARGETS.OPEN.getTarget())
 //                    );
 //                })
-                .lineTo(new Vector2d(-35.4641,-20.0924))
+                .splineToConstantHeading(new Vector2d(-31.1,-19.2), Math.toRadians(-160),
+                        new MinVelocityConstraint(Arrays.asList(
+                                new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
+                                new MecanumVelocityConstraint(15, DriveConstants.TRACK_WIDTH)
+                        )),
+                        new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
 
 //                .addDisplacementMarker(()->{
 //                    commander.runCommand(new GripSetState(grip, Grip.TARGETS.CLOSE.getTarget()));
@@ -108,69 +181,146 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
 //                })
             .build();
 
+        Trajectory fourRingDrop2 = drive.trajectoryBuilder(fourRingGet2.end())
+                .splineToSplineHeading(new Pose2d(44, -54, 0), Math.toRadians(-30))
+                .build();
+
+        Trajectory fourRingToLine = drive.trajectoryBuilder(fourRingDrop2.end())
+                .splineToSplineHeading(new Pose2d(15,-24, 0), Math.toRadians(140))
+                .build();
+
         telemetry.addLine("Ready!");
         telemetry.update();
 
-//        TelemetryPacket telemetryPacket = new TelemetryPacket();
-//        telemetryPacket.addLine("Ready");
-//        FtcDashboard.getInstance().sendTelemetryPacket(telemetryPacket);
 
         commander.init();
         waitForStart();
 
         if (isStopRequested()) return;
 
-
-
-        drive.followTrajectory(commonPath);
-
-        shoot();
-
-        drive.turn(Math.toRadians(shootingTurn));
-
-        shoot();
-
-        drive.turn(Math.toRadians(shootingTurn));
-
-       shoot();
-
-       commander.runCommand(new RunShooterForTime(shooter, 0,0));
-
-        drive.followTrajectory(fourRingsDrop1);
-
-        commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.DOWN.getTarget(), 1.0, 0.5));  // Bring wobble arm up
-        sleep(1000);
-
-        // Open grip to drop Wobble Goal
-        commander.runCommand(new GripSetState(grip,Grip.TARGETS.OPEN.getTarget()));
-        sleep(500);
-
-        commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.UP.getTarget(), 1.0, 0.5));  // Bring wobble arm up
-        sleep(500);
-
-
-        sleep(200);
-        drive.followTrajectory(fourRingsStrafeOffWall);    // Strafe off wall
-        drive.turn(Math.toRadians(160));
-
-        drive.followTrajectory(fourRingsGet2);
-
-        // Open grip to drop Wobble Goal
-        commander.runCommand(new GripSetState(grip,Grip.TARGETS.CLOSE.getTarget()));
-        sleep(500);
-
-        commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.UP.getTarget(), 1.0, 0.5));  // Bring wobble arm up
-        sleep(500);
+        switch ((int)PATH_OVERRIDE) {
+            case 0:
+                commonPath(drive, common);
+                zeroRingPath(drive, zeroRingGet2, zeroRingDrop2, zeroRingToLine);
+                break;
+            case 1:
+                commonPath(drive, common);
+                oneRingPath(drive, oneRingDrop1, oneRingGet2, oneRingDrop2, oneRingToLine);
+                break;
+            case 4:
+                commonPath(drive, common);
+                fourRingPath(drive, fourRingDrop1, fourRingStrafeOffWall, fourRingGet2, fourRingDrop2, fourRingToLine);
+                break;
+            case 5:
+                commonPath(drive, common);
+                break;
+            default:
+                break;
+        }
 
         commander.stop();
 
 
     }
 
-    private void shoot(){
+    private void commonPath(@NotNull SampleMecanumDrive drive, @NotNull Trajectory ...paths) {
+        drive.followTrajectory(paths[0]); // Common Path
+
+        shoot();
+
+        drive.turn(Math.toRadians(shootingTurn));
+
+        shoot();
+
+        drive.turn(Math.toRadians(shootingTurn));
+
+        shoot();
+
+        commander.runCommand(new RunShooterForTime(shooter, 0,0));
+    }
+
+    private void zeroRingPath(@NotNull SampleMecanumDrive drive, @NotNull Trajectory ...paths) {
+        drive.turn(Math.toRadians(-30 - 2 * shootingTurn));
+
+        place();
+
+        drive.turn(Math.toRadians(-230));
+
+        drive.followTrajectory(paths[0]); // Get 2
+
+        commander.runCommand(new GripSetState(grip,Grip.TARGETS.CLOSE.getTarget()));
+        sleep(500); //FIXME: Disabled gripper until fixed
+
+        commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.UP.getTarget(), 1.0, 0.5));  // Bring wobble arm up
+        sleep(500);
+
+        drive.followTrajectory(paths[1]); // Drop 2
+
+        place();
+
+        drive.followTrajectory(paths[2]); // Park
+    }
+
+    private void oneRingPath(@NotNull SampleMecanumDrive drive, @NotNull Trajectory ...paths) {
+        drive.followTrajectory(paths[0]); // Drop 1
+
+        place();
+
+        drive.followTrajectory(paths[1]); // Get 2
+
+        commander.runCommand(new GripSetState(grip,Grip.TARGETS.CLOSE.getTarget()));
+        sleep(500); //FIXME: Disabled gripper until fixed
+
+        commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.UP.getTarget(), 1.0, 0.5));  // Bring wobble arm up
+        sleep(500);
+
+        drive.followTrajectory(paths[2]); // Drop 2
+
+        place();
+
+        drive.followTrajectory(paths[3]); // Park
+    }
+
+    private void fourRingPath(@NotNull SampleMecanumDrive drive, @NotNull Trajectory ...paths) {
+        drive.followTrajectory(paths[0]);   // Drop 1
+
+        place();
+
+        drive.followTrajectory(paths[1]);    // Strafe off wall
+        drive.turn(Math.toRadians(160));
+
+        drive.followTrajectory(paths[2]); // Get 2
+
+        // Open grip to drop Wobble Goal
+        commander.runCommand(new GripSetState(grip,Grip.TARGETS.CLOSE.getTarget()));
+        sleep(500); //FIXME: Disabled gripper until fixed
+
+        commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.UP.getTarget(), 1.0, 0.5));  // Bring wobble arm up
+        sleep(500);
+
+        drive.followTrajectory(paths[3]);  // Drop 2
+
+        place();
+
+        drive.followTrajectory(paths[4]); // Park
+    }
+
+    private void shoot() {
         commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.IN.getTarget()));
         sleep(1250);
         commander.runCommand(new KickerSetState(kicker, Kicker.TARGETS.OUT.getTarget()));
         sleep(250);
+    }
+
+    private void place() {
+        commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.DOWN.getTarget(), 1.0, 0.5));  // Bring wobble arm up
+        sleep(1000);
+
+//         Open grip to drop Wobble Goal
+        commander.runCommand(new GripSetState(grip,Grip.TARGETS.OPEN.getTarget()));
+        sleep(500); //FIXME: Disabled gripper until fixed
+
+        commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.UP.getTarget(), 1.0, 0.5));  // Bring wobble arm up
+        sleep(500);
     }
 }
