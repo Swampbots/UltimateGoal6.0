@@ -278,7 +278,7 @@ public class AutoCameraControl {
         // Disable all overlays
         if(gamepad2.b)
             Arrays.fill(overlays, false);
-        
+
         // Move backward in queue
         if(gamepad2.x && buttonCooldown[2])
             togglePoint = (--togglePoint+overlays.length) % overlays.length;
@@ -318,20 +318,6 @@ public class AutoCameraControl {
         //--------------------------------------------------------------------------------------
         // END OVERLAY CONTROLS
         //--------------------------------------------------------------------------------------
-
-
-
-        // ReturnHSV on toggle; Auto-hides bounding rect
-//        if(gamepad2.a) {
-//            camera.setReturnHSV(true);
-//            camera.setDrawRect(false);
-//        } else if (gamepad2.b) {
-//            camera.setReturnHSV(false);
-//            camera.setDrawRect(true);
-//        }
-//        if (gamepad2.x) camera.setDrawRect(false)       /*drawRect = false*/;
-//        else if (gamepad2.y) camera.setDrawRect(true)   /*drawRect = true*/;
-
 
         contours = camera.getContoursOutput();
         double contoursTop = 0;
@@ -529,10 +515,10 @@ public class AutoCameraControl {
             multiTelemetry.addLine();
             multiTelemetry.addData("bound",String.format(Locale.ENGLISH, "%.2f", camera.getBound()));
             multiTelemetry.addLine(); telemetry.addLine("Visual Modifiers");
-            telemetry.addData((togglePoint == 0 ? "u\001B[1m" : "") + "Show Blur",  (togglePoint == 0 ? "u\001B[1m" : "") + overlays[0]);
-            telemetry.addData((togglePoint == 1 ? "u\001B[1m" : "") + "Show Rect",  (togglePoint == 1 ? "u\001B[1m" : "") + overlays[1]);
-            telemetry.addData((togglePoint == 2 ? "u\001B[1m" : "") + "Show Point", (togglePoint == 2 ? "u\001B[1m" : "") + overlays[2]);
-            telemetry.addData((togglePoint == 3 ? "u\001B[1m" : "") + "Show HSV",   (togglePoint == 3 ? "u\001B[1m" : "") + overlays[3]);
+            multiTelemetry.addData((togglePoint == 0 ? "u\001B[1m" : "") + "Show Blur",  (togglePoint == 0 ? "u\001B[1m" : "") + overlays[0]);
+            multiTelemetry.addData((togglePoint == 1 ? "u\001B[1m" : "") + "Show Rect",  (togglePoint == 1 ? "u\001B[1m" : "") + overlays[1]);
+            multiTelemetry.addData((togglePoint == 2 ? "u\001B[1m" : "") + "Show Point", (togglePoint == 2 ? "u\001B[1m" : "") + overlays[2]);
+            multiTelemetry.addData((togglePoint == 3 ? "u\001B[1m" : "") + "Show HSV",   (togglePoint == 3 ? "u\001B[1m" : "") + overlays[3]);
 //            telemetry.addLine();
 //            telemetry.addData("Confidence", String.format(Locale.ENGLISH, "%.2f", confidence));
 //            if (badData)
