@@ -26,7 +26,6 @@ import org.firstinspires.ftc.teamcode.robot.commands.auto.KickerSetState;
 import org.firstinspires.ftc.teamcode.robot.commands.auto.RunShooterForTime;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Camera;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Grip;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Kicker;
@@ -47,6 +46,8 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
     private Grip grip;
     private Intake intake;
     private Transfer transfer;
+
+    private RingPlacement placement;
 
 
     private double shootingTurn = 3;  // Degrees
@@ -78,7 +79,7 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
 
         drive.setPoseEstimate(startPose);
 
-        Trajectory common = drive.trajectoryBuilder(startPose)
+        Trajectory commonPath = drive.trajectoryBuilder(startPose)
                 .addTemporalMarker(0.3, ()->{
                     // Lock Arm in place
                     arm.setPower(1);
@@ -93,7 +94,7 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
 
                 .build();
         // --------- Case 0 --------- \\
-        Trajectory zeroRingGet2 = drive.trajectoryBuilder(common.end().plus(new Pose2d(0, 0, Math.toRadians(-260))))
+        Trajectory zeroRingGet2 = drive.trajectoryBuilder(commonPath.end().plus(new Pose2d(0, 0, Math.toRadians(-260))))
                 .splineToSplineHeading(new Pose2d(-31.8, -25.4, Math.toRadians(160)), Math.toRadians(160),
                         new MinVelocityConstraint(Arrays.asList(
                                 new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL * 3/4),
@@ -116,7 +117,7 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
 
         // --------- Case 1 --------- \\
 
-        Trajectory oneRingDrop1 = drive.trajectoryBuilder(common.end().plus(new Pose2d(0,0, Math.toRadians(2 * shootingTurn))))
+        Trajectory oneRingDrop1 = drive.trajectoryBuilder(commonPath.end().plus(new Pose2d(0,0, Math.toRadians(2 * shootingTurn))))
                 .splineToSplineHeading(new Pose2d(27, -43, Math.toRadians(20)), Math.toRadians(30))
                 .build();
 
@@ -146,7 +147,7 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
 
         // --------- Case 4 --------- \\
 
-        Trajectory fourRingDrop1 = drive.trajectoryBuilder(common.end().plus(new Pose2d(0,0, Math.toRadians(2 * shootingTurn))))
+        Trajectory fourRingDrop1 = drive.trajectoryBuilder(commonPath.end().plus(new Pose2d(0,0, Math.toRadians(2 * shootingTurn))))
                 .splineToSplineHeading(new Pose2d(48, -58, 0), Math.toRadians(-50))
                 .build();
 
@@ -194,25 +195,66 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
 
 
         commander.init();
+
+        if(PATH_OVERRIDE != 6) {
+            while (!opModeIsActive() && !isStopRequested()) {
+                cam.periodic();
+            }
+        } else {
+            while (!opModeIsActive() && !isStopRequested()) {
+                if(gamepad1.a) placement = RingPlacement.ZERO_RINGS;
+                if(gamepad1.b) placement = RingPlacement.ONE_RING;
+                if(gamepad1.x) placement = RingPlacement.FOUR_RINGS;
+                if(gamepad1.y) placement = RingPlacement.UNKNOWN;
+
+                telemetry.addData("Running placement", placement == RingPlacement.UNKNOWN ? "Common Path" : placement); // Unary if statement to write meaningful telemetry
+                telemetry.update();
+            }
+        }
         waitForStart();
 
         if (isStopRequested()) return;
 
-        switch ((int)PATH_OVERRIDE) {
-            case 0:
-                commonPath(drive, common);
+        // Select the path to run with
+        if(PATH_OVERRIDE == -1) {
+            choosePath(cam);
+        } else {
+            switch ((int)PATH_OVERRIDE) {
+                case 0:
+                    placement = RingPlacement.ZERO_RINGS;
+                    break;
+                case 1:
+                    placement = RingPlacement.ONE_RING;
+                    break;
+                case 4:
+                    placement = RingPlacement.FOUR_RINGS;
+                    break;
+                case 5:
+                    placement = RingPlacement.UNKNOWN;
+                    break;
+                case 6:
+                    break;
+                default:
+                    placement = RingPlacement.ZERO_RINGS;
+                    break;
+            }
+        }
+
+        switch (placement) {
+            case ZERO_RINGS:
+                runCommonPath(drive, commonPath);
                 zeroRingPath(drive, zeroRingGet2, zeroRingDrop2, zeroRingToLine);
                 break;
-            case 1:
-                commonPath(drive, common);
+            case ONE_RING:
+                runCommonPath(drive, commonPath);
                 oneRingPath(drive, oneRingDrop1, oneRingGet2, oneRingDrop2, oneRingToLine);
                 break;
-            case 4:
-                commonPath(drive, common);
+            case FOUR_RINGS:
+                runCommonPath(drive, commonPath);
                 fourRingPath(drive, fourRingDrop1, fourRingStrafeOffWall, fourRingGet2, fourRingDrop2, fourRingToLine);
                 break;
-            case 5:
-                commonPath(drive, common);
+            case UNKNOWN:
+                runCommonPath(drive, commonPath);
                 break;
             default:
                 break;
@@ -223,7 +265,7 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
 
     }
 
-    private void commonPath(@NotNull SampleMecanumDrive drive, @NotNull Trajectory ...paths) {
+    private void runCommonPath(@NotNull SampleMecanumDrive drive, @NotNull Trajectory ...paths) {
         drive.followTrajectory(paths[0]); // Common Path
 
         shoot();
@@ -322,5 +364,18 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
 
         commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.UP.getTarget(), 1.0, 0.5));  // Bring wobble arm up
         sleep(500);
+    }
+
+    /**
+     * Sets the correct placement of the Rings
+     *
+     * @param cam The Camera object to get the placement from
+     */
+    private void choosePath(AutoCameraControl cam) {
+        placement = cam.getPlacement();
+        if(placement == RingPlacement.UNKNOWN) {
+            cam.periodic();
+            choosePath(cam);
+        }
     }
 }

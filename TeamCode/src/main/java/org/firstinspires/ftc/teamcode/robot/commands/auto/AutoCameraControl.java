@@ -36,8 +36,9 @@ public class AutoCameraControl {
     private GamepadCooldowns gp2;
     private double runtime = 0.0;
 
-    // Toggle for output overlays   [type, id, enabled?]
-    private String[][] toggle = {{"Blur", "0", "0"}, { "Bounding Rect", "1", "1"}, {"Point", "2", "1"}, {"Black & White", "3", "0"}};
+    // Toggle for output overlays   [type, enabled?]
+    // Toggle for output overlays [Blur, Rect, Point, HSV]
+    private boolean[] overlays = {false, true, true, false};
     private int togglePoint = 0;
     // Cooldown in the order: a, b, x, y
     private boolean[] buttonCooldown = {false, false, false, false};
@@ -255,26 +256,50 @@ public class AutoCameraControl {
         //camera.setBound(Range.clip(localBound + RECT_STEP * ((gamepad2.dpad_up ? 1 : 0) - (gamepad2.dpad_down ? 1 : 0)), localRectLeft, localRectRight));
 
         if(gamepad2.a && buttonCooldown[0]) {    // Convert String to int, then toggle between 1 and 0, then turn back into string
-            toggle[togglePoint][2] = ((Integer)((Integer.parseInt(toggle[togglePoint][2])+1)%2)).toString();
+            overlays[togglePoint] = !overlays[togglePoint];
         } else if(!gamepad2.a && !buttonCooldown[0])
             buttonCooldown[0] = true;
 
         if(gamepad2.b) {    // Disable all overlays
-            for(String[] s : toggle)
-                s[2] = "0";
+            for(boolean b : overlays)
+                b = false;
         }
 
         if(gamepad2.x && buttonCooldown[2]) {
-            togglePoint = (--togglePoint) % toggle.length;
+            togglePoint = (--togglePoint) % overlays.length;
         } else if(!gamepad2.x && !buttonCooldown[2])
             buttonCooldown[2] = true;
 
         if(gamepad2.y && buttonCooldown[3]){
-            togglePoint = (++togglePoint) % toggle.length;
+            togglePoint = (++togglePoint) % overlays.length;
         } else if(!gamepad2.y && !buttonCooldown[3])
             buttonCooldown[3] = true;
 
-        if((Integer)(Integer.parseInt(toggle[0][2])) == 1)
+        // Blur
+        if(overlays[0])
+            camera.setShowBlur(true);
+        else
+            camera.setShowBlur(false);
+
+        // Rect
+        if(overlays[1])
+            camera.setDrawRect(true);
+        else
+            camera.setDrawRect(false);
+
+        // Point
+        if(overlays[2])
+            camera.setShowPoint(true);
+        else
+            camera.setShowPoint(false);
+
+        // Black & White
+        if(overlays[3])
+            camera.setReturnHSV(true);
+        else
+            camera.setReturnHSV(false);
+
+
 
         // ReturnHSV on toggle; Auto-hides bounding rect
 //        if(gamepad2.a) {
@@ -453,8 +478,11 @@ public class AutoCameraControl {
             telemetry.addLine();
             telemetry.addData("bound",String.format(Locale.ENGLISH, "%.2f", camera.getBound()));
             telemetry.addLine();
-            telemetry.addData("showHSV",gamepad2.a);
-            telemetry.addData("showRect",camera.isDrawRect());
+            telemetry.addLine("Visual Modifiers");
+            telemetry.addData((togglePoint == 0 ? "u\001B[1m" : "") + "Show Blur",  (togglePoint == 0 ? "u\001B[1m" : "") + overlays[0]);
+            telemetry.addData((togglePoint == 1 ? "u\001B[1m" : "") + "Show Rect",  (togglePoint == 1 ? "u\001B[1m" : "") + overlays[1]);
+            telemetry.addData((togglePoint == 2 ? "u\001B[1m" : "") + "Show Point", (togglePoint == 2 ? "u\001B[1m" : "") + overlays[2]);
+            telemetry.addData((togglePoint == 3 ? "u\001B[1m" : "") + "Show HSV",   (togglePoint == 3 ? "u\001B[1m" : "") + overlays[3]);
 //            telemetry.addLine();
 //            telemetry.addData("Confidence", String.format(Locale.ENGLISH, "%.2f", confidence));
 //            if (badData)
@@ -480,9 +508,11 @@ public class AutoCameraControl {
             multiTelemetry.addData("Rect bound error", rectBoundCorrection);
             multiTelemetry.addLine();
             multiTelemetry.addData("bound",String.format(Locale.ENGLISH, "%.2f", camera.getBound()));
-            multiTelemetry.addLine();
-            multiTelemetry.addData("showHSV",gamepad2.a);
-            multiTelemetry.addData("showRect",camera.isDrawRect());
+            multiTelemetry.addLine(); telemetry.addLine("Visual Modifiers");
+            telemetry.addData((togglePoint == 0 ? "u\001B[1m" : "") + "Show Blur",  (togglePoint == 0 ? "u\001B[1m" : "") + overlays[0]);
+            telemetry.addData((togglePoint == 1 ? "u\001B[1m" : "") + "Show Rect",  (togglePoint == 1 ? "u\001B[1m" : "") + overlays[1]);
+            telemetry.addData((togglePoint == 2 ? "u\001B[1m" : "") + "Show Point", (togglePoint == 2 ? "u\001B[1m" : "") + overlays[2]);
+            telemetry.addData((togglePoint == 3 ? "u\001B[1m" : "") + "Show HSV",   (togglePoint == 3 ? "u\001B[1m" : "") + overlays[3]);
 //            telemetry.addLine();
 //            telemetry.addData("Confidence", String.format(Locale.ENGLISH, "%.2f", confidence));
 //            if (badData)

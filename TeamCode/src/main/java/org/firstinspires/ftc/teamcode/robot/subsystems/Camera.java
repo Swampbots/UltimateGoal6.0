@@ -41,8 +41,10 @@ public class Camera {
     private static final int IMG_WIDTH = 480;
     private static final int IMG_HEIGHT = 640;
 
-    private static boolean returnHSV = true;
+    private static boolean returnHSV = false;
     private static boolean drawRect = true;
+    private static boolean showBlur = false;
+    private static boolean showPoint = true;
 
     private double bound;
 
@@ -181,6 +183,14 @@ public class Camera {
 
     public void setReturnHSV(boolean returnHSV){
         Camera.returnHSV = returnHSV;
+    }
+
+    public static void setShowBlur(boolean showBlur) {
+        Camera.showBlur = showBlur;
+    }
+
+    public static void setShowPoint(boolean showPoint) {
+        Camera.showPoint = showPoint;
     }
 
     public void setBound(double bound) {

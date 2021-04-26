@@ -61,8 +61,6 @@ public class DriveByEncoder implements Command {
     public void start(){
         timer.reset();
 
-        //drive.reverseFlDrive();
-
         int[] currentPos = drive.getCurrentPositions();
         prevRunMode = drive.getRunMode();
         drive.setTargets(

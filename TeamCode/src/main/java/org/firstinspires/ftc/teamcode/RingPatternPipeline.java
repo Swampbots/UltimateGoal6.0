@@ -29,8 +29,10 @@ public class RingPatternPipeline extends OpenCvPipeline {
 
     private static double bound = 12.0;
 
-    private static boolean returnHSV = true;
+    private static boolean returnHSV = false;
     private static boolean drawRect = true;
+    private static boolean showBlur = false;
+    private static boolean showPoint = true;
 
 
 
@@ -46,41 +48,6 @@ public class RingPatternPipeline extends OpenCvPipeline {
     public Mat processFrame(Mat input) {
 
         // Step HSV_Threshold0:
-
-        if(drawRect) {
-            Imgproc.rectangle(
-                    input,
-                    new Point(  // Top left corner
-                            rectLeft,   // Left value
-                            rectTop),   // Top value
-                    new Point( // Bottom right corner
-                            rectRight,  // Right value
-                            rectBot),   // Bottom value
-                    new Scalar(0, 255, 0), 10); // Increased thickness to make solid bound around rings
-
-            Imgproc.line(
-                    input,
-                    new Point(
-                            bound,
-                            rectTop ),
-                    new Point(
-                            bound,
-                            rectBot),
-                    new Scalar(40, 150, 190), 2);  // Changed color to roughly match rings
-
-            ArrayList<Point> tempPoints = rectPoints;
-
-            // Draw top points of Rectangles on screen
-            for (int i = 0; i < tempPoints.size(); i++) {
-                Imgproc.circle(
-                        input,
-                        tempPoints.get(i),
-                        5,
-                        new Scalar(0, 0, 255),
-                        3);
-
-            }
-        }
 
         double[] hsvThresholdHue =          hsvHue;
         double[] hsvThresholdSaturation =   hsvSat;
@@ -101,6 +68,7 @@ public class RingPatternPipeline extends OpenCvPipeline {
         //double[] hsvThresholdSaturation = {153.64208633093526, 255.0};
         //double[] hsvThresholdValue = {55.03597122302158, 207.13310580204777};
         hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, hsvThresholdOutput);
+
 
         // Step Find_Contours0:
         Mat findContoursInput = hsvThresholdOutput;
@@ -124,7 +92,53 @@ public class RingPatternPipeline extends OpenCvPipeline {
 
 
 
-        return (returnHSV ? hsvThresholdOutput : blurOutput);
+
+
+        if(returnHSV)
+            return drawExtras(hsvThresholdOutput);
+        if(showBlur)
+            return drawExtras(blurOutput);
+        return drawExtras(input);
+    }
+
+    private Mat drawExtras(Mat mat) {
+        if(drawRect) {
+            Imgproc.rectangle(
+                    mat,
+                    new Point(  // Top left corner
+                            rectLeft,   // Left value
+                            rectTop),   // Top value
+                    new Point( // Bottom right corner
+                            rectRight,  // Right value
+                            rectBot),   // Bottom value
+                    new Scalar(0, 255, 0), 10); // Increased thickness to make solid bound around rings
+
+            Imgproc.line(
+                    mat,
+                    new Point(
+                            bound,
+                            rectTop),
+                    new Point(
+                            bound,
+                            rectBot),
+                    new Scalar(40, 150, 190), 2);  // Changed color to roughly match rings
+        }
+
+        if(showPoint) {
+            ArrayList<Point> tempPoints = rectPoints;
+
+            // Draw top points of Rectangles on screen
+            for (int i = 0; i < tempPoints.size(); i++) {
+                Imgproc.circle(
+                        mat,
+                        tempPoints.get(i),
+                        5,
+                        new Scalar(0, 0, 255),
+                        3);
+            }
+        }
+
+        return mat;
     }
 
     /**

@@ -75,11 +75,11 @@ public class TestBothWobble extends LinearOpMode implements DogeOpMode {
         shooter.setDirection(DcMotorSimple.Direction.REVERSE);
 
         if(PATH_OVERRIDE != 6) {
-            while (!opModeIsActive()) {
+            while (!opModeIsActive() && !isStopRequested()) {
                 cam.periodic();
             }
         } else {
-            while (!opModeIsActive()) {
+            while (!opModeIsActive() && !isStopRequested()) {
                 if(gamepad1.a) placement = RingPlacement.ZERO_RINGS;
                 if(gamepad1.b) placement = RingPlacement.ONE_RING;
                 if(gamepad1.x) placement = RingPlacement.FOUR_RINGS;
