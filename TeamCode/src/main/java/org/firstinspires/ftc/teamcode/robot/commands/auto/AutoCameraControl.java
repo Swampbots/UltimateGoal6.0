@@ -14,6 +14,7 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -255,24 +256,39 @@ public class AutoCameraControl {
 
         //camera.setBound(Range.clip(localBound + RECT_STEP * ((gamepad2.dpad_up ? 1 : 0) - (gamepad2.dpad_down ? 1 : 0)), localRectLeft, localRectRight));
 
-        if(gamepad2.a && buttonCooldown[0]) {    // Convert String to int, then toggle between 1 and 0, then turn back into string
+        //--------------------------------------------------------------------------------------
+        // START OVERLAY CONTROLS
+        //--------------------------------------------------------------------------------------
+
+            /*
+                Controls:
+                gp2.a   Toggle Selected Overlay
+                gp2.b   Disable All Overlays
+                gp2.y   Move Forward in Overlay Selection
+                gp2.x   Move Backward in Overlay Selection
+
+             */
+
+        // Convert String to int, then toggle between 1 and 0, then turn back into string
+        if(gamepad2.a && buttonCooldown[0])
             overlays[togglePoint] = !overlays[togglePoint];
-        } else if(!gamepad2.a && !buttonCooldown[0])
+        else if(!gamepad2.a && !buttonCooldown[0])
             buttonCooldown[0] = true;
 
-        if(gamepad2.b) {    // Disable all overlays
-            for(boolean b : overlays)
-                b = false;
-        }
-
-        if(gamepad2.x && buttonCooldown[2]) {
-            togglePoint = (--togglePoint) % overlays.length;
-        } else if(!gamepad2.x && !buttonCooldown[2])
+        // Disable all overlays
+        if(gamepad2.b)
+            Arrays.fill(overlays, false);
+        
+        // Move backward in queue
+        if(gamepad2.x && buttonCooldown[2])
+            togglePoint = (--togglePoint+overlays.length) % overlays.length;
+        else if(!gamepad2.x && !buttonCooldown[2])
             buttonCooldown[2] = true;
 
-        if(gamepad2.y && buttonCooldown[3]){
+        // Move forward in queue
+        if(gamepad2.y && buttonCooldown[3])
             togglePoint = (++togglePoint) % overlays.length;
-        } else if(!gamepad2.y && !buttonCooldown[3])
+        else if(!gamepad2.y && !buttonCooldown[3])
             buttonCooldown[3] = true;
 
         // Blur
@@ -298,6 +314,10 @@ public class AutoCameraControl {
             camera.setReturnHSV(true);
         else
             camera.setReturnHSV(false);
+
+        //--------------------------------------------------------------------------------------
+        // END OVERLAY CONTROLS
+        //--------------------------------------------------------------------------------------
 
 
 

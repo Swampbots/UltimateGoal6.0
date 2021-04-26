@@ -52,7 +52,7 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
 
     private double shootingTurn = 3;  // Degrees
 
-    public static double PATH_OVERRIDE = 0; // -1 => no override; 0,1,4 => their respective paths; 5 => only common path
+    public static double PATH_OVERRIDE = 0; // -1 => no override; 0,1,4 => their respective paths; 5 => only common path; 6 => manual selection
 
     @Override
     public void runOpMode() throws InterruptedException {
