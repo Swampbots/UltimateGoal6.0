@@ -157,9 +157,7 @@ public class Camera {
         hsvVal[1] = Math.min(valMax, VAL_MAX);
     }
 
-    public static void setDrawRect(boolean drawRect) {
-        Camera.drawRect = drawRect;
-    }
+
 
     public static void setRectBot(double rectBot) {
         Camera.rectBot = rectBot;
@@ -185,12 +183,16 @@ public class Camera {
         Camera.returnHSV = returnHSV;
     }
 
-    public static void setShowBlur(boolean showBlur) {
+    public void setShowBlur(boolean showBlur) {
         Camera.showBlur = showBlur;
     }
 
-    public static void setShowPoint(boolean showPoint) {
+    public void setShowPoint(boolean showPoint) {
         Camera.showPoint = showPoint;
+    }
+
+    public void setDrawRect(boolean drawRect) {
+        Camera.drawRect = drawRect;
     }
 
     public void setBound(double bound) {

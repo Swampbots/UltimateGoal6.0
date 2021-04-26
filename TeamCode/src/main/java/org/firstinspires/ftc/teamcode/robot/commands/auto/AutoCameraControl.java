@@ -39,10 +39,10 @@ public class AutoCameraControl {
 
     // Toggle for output overlays   [type, enabled?]
     // Toggle for output overlays [Blur, Rect, Point, HSV]
-    private boolean[] overlays = {false, true, true, false};
+    private final boolean[] overlays = {false, true, true, false};
     private int togglePoint = 0;
     // Cooldown in the order: a, b, x, y
-    private boolean[] buttonCooldown = {false, false, false, false};
+    private final boolean[] buttonCooldown = {false, false, false, false};
 
     public static final double THRESHOLD_STEP = 0.04;
 
@@ -270,50 +270,31 @@ public class AutoCameraControl {
              */
 
         // Convert String to int, then toggle between 1 and 0, then turn back into string
-        if(gamepad2.a && buttonCooldown[0])
-            overlays[togglePoint] = !overlays[togglePoint];
-        else if(!gamepad2.a && !buttonCooldown[0])
-            buttonCooldown[0] = true;
+        if(gamepad2.a && buttonCooldown[0])         overlays[togglePoint] = !overlays[togglePoint];
+        else if(!gamepad2.a && !buttonCooldown[0])  buttonCooldown[0] = true;
 
         // Disable all overlays
-        if(gamepad2.b)
-            Arrays.fill(overlays, false);
+        if(gamepad2.b) Arrays.fill(overlays, false);
 
         // Move backward in queue
-        if(gamepad2.x && buttonCooldown[2])
-            togglePoint = (--togglePoint+overlays.length) % overlays.length;
-        else if(!gamepad2.x && !buttonCooldown[2])
-            buttonCooldown[2] = true;
+        if(gamepad2.x && buttonCooldown[2])         togglePoint = (--togglePoint+overlays.length) % overlays.length;
+        else if(!gamepad2.x && !buttonCooldown[2])  buttonCooldown[2] = true;
 
         // Move forward in queue
-        if(gamepad2.y && buttonCooldown[3])
-            togglePoint = (++togglePoint) % overlays.length;
-        else if(!gamepad2.y && !buttonCooldown[3])
-            buttonCooldown[3] = true;
+        if(gamepad2.y && buttonCooldown[3])         togglePoint = (++togglePoint) % overlays.length;
+        else if(!gamepad2.y && !buttonCooldown[3])  buttonCooldown[3] = true;
 
         // Blur
-        if(overlays[0])
-            camera.setShowBlur(true);
-        else
-            camera.setShowBlur(false);
+        camera.setShowBlur(overlays[0]);
 
         // Rect
-        if(overlays[1])
-            camera.setDrawRect(true);
-        else
-            camera.setDrawRect(false);
+        camera.setDrawRect(overlays[1]);
 
         // Point
-        if(overlays[2])
-            camera.setShowPoint(true);
-        else
-            camera.setShowPoint(false);
+        camera.setShowPoint(overlays[2]);
 
         // Black & White
-        if(overlays[3])
-            camera.setReturnHSV(true);
-        else
-            camera.setReturnHSV(false);
+        camera.setReturnHSV(overlays[3]);
 
         //--------------------------------------------------------------------------------------
         // END OVERLAY CONTROLS
@@ -467,9 +448,9 @@ public class AutoCameraControl {
         if(telemetry != null) {
             telemetry.addLine("Running!");
             telemetry.addLine();
-            telemetry.addLine(String.format("Hue: [%.2f, %.2f]", localHsvHue[0], localHsvHue[1]));
-            telemetry.addLine(String.format("Sat: [%.2f, %.2f]", localHsvSat[0], localHsvSat[1]));
-            telemetry.addLine(String.format("Val: [%.2f, %.2f]", localHsvVal[0], localHsvVal[1]));
+            telemetry.addLine(String.format(Locale.ENGLISH, "Hue: [%.2f, %.2f]", localHsvHue[0], localHsvHue[1]));
+            telemetry.addLine(String.format(Locale.ENGLISH, "Sat: [%.2f, %.2f]", localHsvSat[0], localHsvSat[1]));
+            telemetry.addLine(String.format(Locale.ENGLISH, "Val: [%.2f, %.2f]", localHsvVal[0], localHsvVal[1]));
             telemetry.addLine();
             telemetry.addData("contoursTop", String.format(Locale.ENGLISH, "%.2f", contoursTop));
             telemetry.addData("contoursBot", String.format(Locale.ENGLISH, "%.2f", contoursBot));
@@ -498,9 +479,9 @@ public class AutoCameraControl {
         if(multiTelemetry != null) {
             multiTelemetry.addLine("Running!");
             multiTelemetry.addLine();
-            multiTelemetry.addLine(String.format("Hue: [%.2f, %.2f]", localHsvHue[0], localHsvHue[1]));
-            multiTelemetry.addLine(String.format("Sat: [%.2f, %.2f]", localHsvSat[0], localHsvSat[1]));
-            multiTelemetry.addLine(String.format("Val: [%.2f, %.2f]", localHsvVal[0], localHsvVal[1]));
+            multiTelemetry.addLine(String.format(Locale.ENGLISH, "Hue: [%.2f, %.2f]", localHsvHue[0], localHsvHue[1]));
+            multiTelemetry.addLine(String.format(Locale.ENGLISH, "Sat: [%.2f, %.2f]", localHsvSat[0], localHsvSat[1]));
+            multiTelemetry.addLine(String.format(Locale.ENGLISH, "Val: [%.2f, %.2f]", localHsvVal[0], localHsvVal[1]));
             multiTelemetry.addLine();
             multiTelemetry.addData("contoursTop", String.format(Locale.ENGLISH, "%.2f", contoursTop));
             multiTelemetry.addData("contoursBot", String.format(Locale.ENGLISH, "%.2f", contoursBot));
