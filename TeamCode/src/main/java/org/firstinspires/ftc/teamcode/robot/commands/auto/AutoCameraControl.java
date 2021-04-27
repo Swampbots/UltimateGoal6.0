@@ -44,6 +44,9 @@ public class AutoCameraControl {
     // Cooldown in the order: a, b, x, y
     private final boolean[] buttonCooldown = {false, false, false, false};
 
+    private final String BOLD_MODIFIER = "\033[0;1m"; // \u001B[1m doesn't work     | still need to test \u001BE\u0001
+
+
     public static final double THRESHOLD_STEP = 0.04;
 
     public static final double HUE_MAX = 180.0;
@@ -496,10 +499,10 @@ public class AutoCameraControl {
             multiTelemetry.addLine();
             multiTelemetry.addData("bound",String.format(Locale.ENGLISH, "%.2f", camera.getBound()));
             multiTelemetry.addLine(); telemetry.addLine("Visual Modifiers");
-            multiTelemetry.addData((togglePoint == 0 ? "u\001B[1m" : "") + "Show Blur",  (togglePoint == 0 ? "u\001B[1m" : "") + overlays[0]);
-            multiTelemetry.addData((togglePoint == 1 ? "u\001B[1m" : "") + "Show Rect",  (togglePoint == 1 ? "u\001B[1m" : "") + overlays[1]);
-            multiTelemetry.addData((togglePoint == 2 ? "u\001B[1m" : "") + "Show Point", (togglePoint == 2 ? "u\001B[1m" : "") + overlays[2]);
-            multiTelemetry.addData((togglePoint == 3 ? "u\001B[1m" : "") + "Show HSV",   (togglePoint == 3 ? "u\001B[1m" : "") + overlays[3]);
+            multiTelemetry.addData((togglePoint == 0 ? BOLD_MODIFIER : "") + "Show Blur",  (togglePoint == 0 ? BOLD_MODIFIER : "") + overlays[0]);
+            multiTelemetry.addData((togglePoint == 1 ? BOLD_MODIFIER : "") + "Show Rect",  (togglePoint == 1 ? BOLD_MODIFIER : "") + overlays[1]);
+            multiTelemetry.addData((togglePoint == 2 ? BOLD_MODIFIER : "") + "Show Point", (togglePoint == 2 ? BOLD_MODIFIER : "") + overlays[2]);
+            multiTelemetry.addData((togglePoint == 3 ? BOLD_MODIFIER : "") + "Show HSV",   (togglePoint == 3 ? BOLD_MODIFIER : "") + overlays[3]);
 //            telemetry.addLine();
 //            telemetry.addData("Confidence", String.format(Locale.ENGLISH, "%.2f", confidence));
 //            if (badData)
