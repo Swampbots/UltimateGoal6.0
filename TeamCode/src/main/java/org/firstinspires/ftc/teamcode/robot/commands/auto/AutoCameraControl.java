@@ -365,7 +365,7 @@ public class AutoCameraControl {
 
 
                     // Get the center of the contour
-                    rectPoint.x = contourRect.width;
+                    rectPoint.x = contourRect.width + contourRect.x;
                     rectPoint.y = (2 * contourRect.y + contourRect.height) / 2.0;
 
 
