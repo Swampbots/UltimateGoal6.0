@@ -50,7 +50,10 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
     private RingPlacement placement;
 
 
-    private double shootingTurn = 3;  // Degrees
+    public static double shootingTurn1 = 7;  // Degrees
+    public static double shootingTurn12 = -5;  // Degrees
+    public static double shootingTurn2 = 7;  // Degrees
+    public static double shootingTurn22 = -5;  // Degrees
 
     public static double PATH_OVERRIDE = 0; // -1 => no override; 0,1,4 => their respective paths; 5 => only common path; 6 => manual selection
 
@@ -90,7 +93,7 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
                     kicker.out();
                     commander.runCommand(new RunShooterForTime(shooter, false, Shooter.VELO_LEVELS.POWER_SHOT.getVelo(), Shooter.MODE.VELOCITY));
                 })
-                .splineToLinearHeading(new Pose2d(-2,-53, Math.toRadians(30.0)), 0)
+                .splineToLinearHeading(new Pose2d(-2,-53, Math.toRadians(32.0)), 0)
 
                 .build();
         // --------- Case 0 --------- \\
@@ -117,7 +120,7 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
 
         // --------- Case 1 --------- \\
 
-        Trajectory oneRingDrop1 = drive.trajectoryBuilder(commonPath.end().plus(new Pose2d(0,0, Math.toRadians(2 * shootingTurn))))
+        Trajectory oneRingDrop1 = drive.trajectoryBuilder(commonPath.end().plus(new Pose2d(0,0, Math.toRadians(shootingTurn1 + shootingTurn12 + shootingTurn2 + shootingTurn22))))
                 .splineToSplineHeading(new Pose2d(27, -43, Math.toRadians(20)), Math.toRadians(30))
                 .build();
 
@@ -147,7 +150,7 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
 
         // --------- Case 4 --------- \\
 
-        Trajectory fourRingDrop1 = drive.trajectoryBuilder(commonPath.end().plus(new Pose2d(0,0, Math.toRadians(2 * shootingTurn))))
+        Trajectory fourRingDrop1 = drive.trajectoryBuilder(commonPath.end().plus(new Pose2d(0,0, Math.toRadians(shootingTurn1 + shootingTurn12 + shootingTurn2 + shootingTurn22))))
                 .splineToSplineHeading(new Pose2d(48, -58, 0), Math.toRadians(-50))
                 .build();
 
@@ -272,11 +275,13 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
 
         shoot();
 
-        drive.turn(Math.toRadians(shootingTurn));
+        drive.turn(Math.toRadians(shootingTurn1));
+        drive.turn(Math.toRadians(shootingTurn12));
 
         shoot();
 
-        drive.turn(Math.toRadians(shootingTurn));
+        drive.turn(Math.toRadians(shootingTurn2));
+        drive.turn(Math.toRadians(shootingTurn22));
 
         shoot();
 
@@ -284,7 +289,7 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
     }
 
     private void zeroRingPath(@NotNull SampleMecanumDrive drive, @NotNull Trajectory ...paths) {
-        drive.turn(Math.toRadians(-30 - 2 * shootingTurn));
+        drive.turn(Math.toRadians(-1 * (30 + shootingTurn1 + shootingTurn12 + shootingTurn2 + shootingTurn22)));
 
         place();
 
