@@ -25,6 +25,7 @@ import static org.firstinspires.ftc.teamcode.RingPlacement.FOUR_RINGS;
 import static org.firstinspires.ftc.teamcode.RingPlacement.ONE_RING;
 import static org.firstinspires.ftc.teamcode.RingPlacement.ZERO_RINGS;
 
+//bot 313.23    left 193.12 right 308.82    top 182.74  bound 253.48
 
 public class AutoCameraControl {
     private Camera camera;
@@ -44,7 +45,7 @@ public class AutoCameraControl {
     // Cooldown in the order: a, b, x, y
     private final boolean[] buttonCooldown = {false, false, false, false};
 
-    private final String BOLD_MODIFIER = "\033[0;1m"; // \u001B[1m doesn't work     | still need to test \u001BE\u0001
+    private final String BOLD_MODIFIER = "=>";// \033[0;1m & \u001B[1m doesn't work     | still need to test \u001BE\u0001
 
 
     public static final double THRESHOLD_STEP = 0.04;
@@ -273,18 +274,27 @@ public class AutoCameraControl {
              */
 
         // Convert String to int, then toggle between 1 and 0, then turn back into string
-        if(gamepad2.a && buttonCooldown[0])         overlays[togglePoint] = !overlays[togglePoint];
+        if(gamepad2.a && buttonCooldown[0]) {
+            overlays[togglePoint] = !overlays[togglePoint];
+            buttonCooldown[0] = false;
+        }
         else if(!gamepad2.a && !buttonCooldown[0])  buttonCooldown[0] = true;
 
         // Disable all overlays
         if(gamepad2.b) Arrays.fill(overlays, false);
 
         // Move backward in queue
-        if(gamepad2.x && buttonCooldown[2])         togglePoint = (--togglePoint+overlays.length) % overlays.length;
+        if(gamepad2.x && buttonCooldown[2]) {
+            togglePoint = (--togglePoint + overlays.length) % overlays.length;
+            buttonCooldown[2] = false;
+        }
         else if(!gamepad2.x && !buttonCooldown[2])  buttonCooldown[2] = true;
 
         // Move forward in queue
-        if(gamepad2.y && buttonCooldown[3])         togglePoint = (++togglePoint) % overlays.length;
+        if(gamepad2.y && buttonCooldown[3]) {
+            togglePoint = (++togglePoint) % overlays.length;
+            buttonCooldown[3] = false;
+        }
         else if(!gamepad2.y && !buttonCooldown[3])  buttonCooldown[3] = true;
 
         // Blur
@@ -469,10 +479,10 @@ public class AutoCameraControl {
             telemetry.addData("bound",String.format(Locale.ENGLISH, "%.2f", camera.getBound()));
             telemetry.addLine();
             telemetry.addLine("Visual Modifiers");
-            telemetry.addData((togglePoint == 0 ? "u\001B[1m" : "") + "Show Blur",  (togglePoint == 0 ? "u\001B[1m" : "") + overlays[0]);
-            telemetry.addData((togglePoint == 1 ? "u\001B[1m" : "") + "Show Rect",  (togglePoint == 1 ? "u\001B[1m" : "") + overlays[1]);
-            telemetry.addData((togglePoint == 2 ? "u\001B[1m" : "") + "Show Point", (togglePoint == 2 ? "u\001B[1m" : "") + overlays[2]);
-            telemetry.addData((togglePoint == 3 ? "u\001B[1m" : "") + "Show HSV",   (togglePoint == 3 ? "u\001B[1m" : "") + overlays[3]);
+            telemetry.addData((togglePoint == 0 ? BOLD_MODIFIER : "") + "Show Blur",  overlays[0]);
+            telemetry.addData((togglePoint == 1 ? BOLD_MODIFIER : "") + "Show Rect",  overlays[1]);
+            telemetry.addData((togglePoint == 2 ? BOLD_MODIFIER : "") + "Show Point", overlays[2]);
+            telemetry.addData((togglePoint == 3 ? BOLD_MODIFIER : "") + "Show HSV",   overlays[3]);
 //            telemetry.addLine();
 //            telemetry.addData("Confidence", String.format(Locale.ENGLISH, "%.2f", confidence));
 //            if (badData)
