@@ -61,12 +61,12 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
 
         AutoCameraControl cam = new AutoCameraControl(new Camera(hardwareMap), gamepad1, gamepad2, telemetry);
 
-        kicker           = new Kicker(hardwareMap);
-        shooter         = new Shooter(hardwareMap);
+        kicker              = new Kicker(hardwareMap);
+        shooter             = new Shooter(hardwareMap);
         arm                 = new Arm(hardwareMap);
-        grip               = new Grip(hardwareMap);
-        intake           = new Intake(hardwareMap);
-        transfer       = new Transfer(hardwareMap);
+        grip                = new Grip(hardwareMap);
+        intake              = new Intake(hardwareMap);
+        transfer            = new Transfer(hardwareMap);
 
         commander.registerSubsystem(kicker);
         commander.registerSubsystem(shooter);
