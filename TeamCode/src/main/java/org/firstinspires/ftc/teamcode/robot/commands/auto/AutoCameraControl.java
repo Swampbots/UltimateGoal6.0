@@ -46,6 +46,7 @@ public class AutoCameraControl {
     private final boolean[] buttonCooldown = {false, false, false, false};
 
     private final String BOLD_MODIFIER = "=>";// \033[0;1m & \u001B[1m doesn't work     | still need to test \u001BE\u0001
+    private final String[] sortOrder = {"!","#","$","%","^","&","*","+",",","-",".","|","~"};
 
 
     public static final double THRESHOLD_STEP = 0.04;
@@ -344,7 +345,7 @@ public class AutoCameraControl {
             telemetry.addData("contour count", contours.size());
         }
         if(multiTelemetry != null) {
-            multiTelemetry.addData("Contour Count", contours.size());
+            multiTelemetry.addData(sortOrder[1] + sortOrder[0] + "Contour Count", contours.size());
         }
         try {
             for (MatOfPoint c : contours) {
@@ -375,8 +376,8 @@ public class AutoCameraControl {
                         telemetry.addData("rect point", rectPoint);
                     }
                     if(multiTelemetry != null) {
-                        multiTelemetry.addLine("In box");
-                        multiTelemetry.addData("Rect point", rectPoint);
+                        multiTelemetry.addLine(sortOrder[1] + sortOrder[1] + "In box");
+                        multiTelemetry.addData(sortOrder[1] + sortOrder[2] + "Rect point", rectPoint);
                     }
 
                     // Check if contour is above the one ring line
@@ -390,7 +391,7 @@ public class AutoCameraControl {
                     telemetry.addLine();
                 }
                 if(multiTelemetry != null) {
-                    multiTelemetry.addLine();
+                    multiTelemetry.addLine(sortOrder[1]+sortOrder[12]);
                 }
             }
         } catch (Exception e) {
@@ -398,7 +399,7 @@ public class AutoCameraControl {
                 telemetry.addLine("Error while iterating through contours!");
             }
             if(multiTelemetry != null) {
-                multiTelemetry.addLine("Error while iterating through contours!");
+                multiTelemetry.addLine(sortOrder[6] + "Error while iterating through contours!");
             }
 
             //contourIterateError = true;
@@ -490,29 +491,30 @@ public class AutoCameraControl {
             telemetry.update();
         }
         if(multiTelemetry != null) {
-            multiTelemetry.addLine("Running!");
-            multiTelemetry.addLine();
-            multiTelemetry.addLine(String.format(Locale.ENGLISH, "Hue: [%.2f, %.2f]", localHsvHue[0], localHsvHue[1]));
-            multiTelemetry.addLine(String.format(Locale.ENGLISH, "Sat: [%.2f, %.2f]", localHsvSat[0], localHsvSat[1]));
-            multiTelemetry.addLine(String.format(Locale.ENGLISH, "Val: [%.2f, %.2f]", localHsvVal[0], localHsvVal[1]));
-            multiTelemetry.addLine();
-            multiTelemetry.addData("contoursTop", String.format(Locale.ENGLISH, "%.2f", contoursTop));
-            multiTelemetry.addData("contoursBot", String.format(Locale.ENGLISH, "%.2f", contoursBot));
-            multiTelemetry.addLine();
-            multiTelemetry.addData("placement", placement);
-            multiTelemetry.addLine();
-            multiTelemetry.addData("Rect left",String.format(Locale.ENGLISH, "%.2f", localRectLeft));
-            multiTelemetry.addData("Rect top",String.format(Locale.ENGLISH, "%.2f", localRectTop));
-            multiTelemetry.addData("Rect right",String.format(Locale.ENGLISH, "%.2f", localRectRight));
-            multiTelemetry.addData("Rect bottom",String.format(Locale.ENGLISH, "%.2f", localRectBot));
-            multiTelemetry.addData("Rect bound error", rectBoundCorrection);
-            multiTelemetry.addLine();
-            multiTelemetry.addData("bound",String.format(Locale.ENGLISH, "%.2f", camera.getBound()));
-            multiTelemetry.addLine(); telemetry.addLine("Visual Modifiers");
-            multiTelemetry.addData((togglePoint == 0 ? BOLD_MODIFIER : "") + "Show Blur",  (togglePoint == 0 ? BOLD_MODIFIER : "") + overlays[0]);
-            multiTelemetry.addData((togglePoint == 1 ? BOLD_MODIFIER : "") + "Show Rect",  (togglePoint == 1 ? BOLD_MODIFIER : "") + overlays[1]);
-            multiTelemetry.addData((togglePoint == 2 ? BOLD_MODIFIER : "") + "Show Point", (togglePoint == 2 ? BOLD_MODIFIER : "") + overlays[2]);
-            multiTelemetry.addData((togglePoint == 3 ? BOLD_MODIFIER : "") + "Show HSV",   (togglePoint == 3 ? BOLD_MODIFIER : "") + overlays[3]);
+            multiTelemetry.addLine(sortOrder[0] + "Running!");
+            multiTelemetry.addLine(sortOrder[0]+sortOrder[12]);
+            multiTelemetry.addLine(String.format(Locale.ENGLISH, "%s%sHue: [%.2f, %.2f]", sortOrder[7], sortOrder[0], localHsvHue[0], localHsvHue[1]));
+            multiTelemetry.addLine(String.format(Locale.ENGLISH, "%s%sSat: [%.2f, %.2f]", sortOrder[7], sortOrder[1], localHsvSat[0], localHsvSat[1]));
+            multiTelemetry.addLine(String.format(Locale.ENGLISH, "%s%sVal: [%.2f, %.2f]", sortOrder[7], sortOrder[2], localHsvVal[0], localHsvVal[1]));
+            multiTelemetry.addLine(sortOrder[7]+sortOrder[12]);
+            multiTelemetry.addData(sortOrder[8] + sortOrder[0] + "contoursTop", String.format(Locale.ENGLISH, "%.2f", contoursTop));
+            multiTelemetry.addData(sortOrder[8] + sortOrder[1] + "contoursBot", String.format(Locale.ENGLISH, "%.2f", contoursBot));
+            multiTelemetry.addLine(sortOrder[8]+sortOrder[12]);
+            multiTelemetry.addData(sortOrder[9] + "placement", placement);
+            multiTelemetry.addLine(sortOrder[9]+sortOrder[12]);
+            multiTelemetry.addData(sortOrder[10] + sortOrder[0] + "Rect left",String.format(Locale.ENGLISH, "%.2f", localRectLeft));
+            multiTelemetry.addData(sortOrder[10] + sortOrder[1] + "Rect top",String.format(Locale.ENGLISH, "%.2f", localRectTop));
+            multiTelemetry.addData(sortOrder[10] + sortOrder[2] + "Rect right",String.format(Locale.ENGLISH, "%.2f", localRectRight));
+            multiTelemetry.addData(sortOrder[10] + sortOrder[3] + "Rect bottom",String.format(Locale.ENGLISH, "%.2f", localRectBot));
+            multiTelemetry.addData(sortOrder[10] + sortOrder[4] + "Rect bound error", rectBoundCorrection);
+            multiTelemetry.addLine(sortOrder[10] + sortOrder[12]);
+            multiTelemetry.addData(sortOrder[11] + "bound",String.format(Locale.ENGLISH, "%.2f", camera.getBound()));
+            multiTelemetry.addLine(sortOrder[11] + sortOrder[12]);
+            telemetry.addLine(sortOrder[12]+sortOrder[0] + "Visual Modifiers");
+            multiTelemetry.addData(sortOrder[12]+sortOrder[1] + (togglePoint == 0 ? BOLD_MODIFIER : "") + "Show Blur",  overlays[0]);
+            multiTelemetry.addData(sortOrder[12]+sortOrder[2] + (togglePoint == 1 ? BOLD_MODIFIER : "") + "Show Rect",  overlays[1]);
+            multiTelemetry.addData(sortOrder[12]+sortOrder[3] + (togglePoint == 2 ? BOLD_MODIFIER : "") + "Show Point", overlays[2]);
+            multiTelemetry.addData(sortOrder[12]+sortOrder[4] + (togglePoint == 3 ? BOLD_MODIFIER : "") + "Show HSV",   overlays[3]);
 //            telemetry.addLine();
 //            telemetry.addData("Confidence", String.format(Locale.ENGLISH, "%.2f", confidence));
 //            if (badData)
