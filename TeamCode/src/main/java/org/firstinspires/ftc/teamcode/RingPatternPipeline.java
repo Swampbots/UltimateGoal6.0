@@ -20,14 +20,14 @@ public class RingPatternPipeline extends OpenCvPipeline {
     private static double[] hsvHue = new double[]{80.0, 119.0};     // Starts with red outside of threshold (red is hue of 120)
     private static double[] hsvSat = new double[]{105.0, 255.0};
     private static double[] hsvVal = new double[]{50.0, 255.0};      // Testing showed 50 (min) to be enough to cut out most of the Skystone
+//bot 313.23    left 193.12 right 308.82    top 182.74  bound 253.48
 
+    private static double rectTop   = 182.74;
+    private static double rectLeft  = 193.12;
+    private static double rectBot   = 313.23;
+    private static double rectRight = 308.82;
 
-    private static double rectTop   = 433.0;
-    private static double rectLeft  = 34.0;
-    private static double rectBot   = 506.0;
-    private static double rectRight = 464.0;
-
-    private static double bound = 12.0;
+    private static double bound = 253.48;
 
     private static boolean returnHSV = false;
     private static boolean drawRect = true;

@@ -32,11 +32,11 @@ public class Camera {
     private static double[] hsvHue = new double[]{100.0, 120.0};
     private static double[] hsvSat = new double[]{103.0, 255.0};
     private static double[] hsvVal = new double[]{75.0, 207.0};
-
-    private static double rectTop   = 346.92;
-    private static double rectLeft  = 90.50;
-    private static double rectBot   = 494.09;
-    private static double rectRight = 220.70;
+    //bot 313.23    left 193.12 right 308.82    top 182.74  bound 253.48
+    private static double rectTop   = 182.47;
+    private static double rectLeft  = 193.12;
+    private static double rectBot   = 313.23;
+    private static double rectRight = 308.82;
 
     private static final int IMG_WIDTH = 480;
     private static final int IMG_HEIGHT = 640;
