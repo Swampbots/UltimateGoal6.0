@@ -40,13 +40,14 @@ public class Shooter implements Subsystem {
     public enum POWER_LEVELS {
         FAR,
         SHORT,
-        POWER_SHOT;
+        POWER_SHOT, POWER_SHOT_FAR;
 
         public double getPower() {
             switch (this) {
                 case FAR: return 1.0;
                 case SHORT: return 0.90;
                 case POWER_SHOT: return 0.85;
+                case POWER_SHOT_FAR: return 0.87;
                 default: return 0.85;
             }
         }
@@ -55,13 +56,14 @@ public class Shooter implements Subsystem {
     public enum VELO_LEVELS {
         FAR,
         SHORT,
-        POWER_SHOT;
+        POWER_SHOT, POWER_SHOT_FAR;
 
         public double getVelo() {
             switch (this) {
                 case FAR: return FAR_VELO;
                 case SHORT: return 50;
                 case POWER_SHOT: return POWER_SHOT_VELO;
+                case POWER_SHOT_FAR: return POWER_SHOT_VELO + 1;
                 default: return 0.85;
             }
         }

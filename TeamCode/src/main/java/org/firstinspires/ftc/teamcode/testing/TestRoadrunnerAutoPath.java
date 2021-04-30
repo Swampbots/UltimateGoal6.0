@@ -51,11 +51,11 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
 
 
     public static double shootingTurn1 = 7;  // Degrees
-    public static double shootingTurn12 = -5;  // Degrees
+    public static double shootingTurn12 = -6;  // Degrees
     public static double shootingTurn2 = 7;  // Degrees
-    public static double shootingTurn22 = -5;  // Degrees
+    public static double shootingTurn22 = -4;  // Degrees
 
-    public static double PATH_OVERRIDE = 0; // -1 => no override; 0,1,4 => their respective paths; 5 => only common path; 6 => manual selection
+    public static double PATH_OVERRIDE = -1; // -1 => no override; 0,1,4 => their respective paths; 5 => only common path; 6 => manual selection
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -97,21 +97,27 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
 
                 .build();
         // --------- Case 0 --------- \\
-        Trajectory zeroRingGet2 = drive.trajectoryBuilder(commonPath.end().plus(new Pose2d(0, 0, Math.toRadians(-260))))
-                .splineToSplineHeading(new Pose2d(-31.8, -25.4, Math.toRadians(160)), Math.toRadians(160),
+        Trajectory zeroRingGet2 = drive.trajectoryBuilder(commonPath.end().plus(new Pose2d(0, 0, Math.toRadians(120))))
+                .splineToSplineHeading(new Pose2d(-53, -40, Math.toRadians(90)), Math.toRadians(90),
                         new MinVelocityConstraint(Arrays.asList(
                                 new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL * 3/4),
-                                new MecanumVelocityConstraint(DriveConstants.MAX_VEL * 3/5, DriveConstants.TRACK_WIDTH)
+                                new MecanumVelocityConstraint(DriveConstants.MAX_VEL * 7/11, DriveConstants.TRACK_WIDTH)
                         )),
                         new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker((dist)->0.15*dist, ()->{
                     grip.open(); // FIXME: Disabled gripper until fixed
                     commander.runCommand(new ArmByEncoder(arm, Arm.TARGETS.DOWN.getTarget(), 0.4, 4));
                 })
+                .splineToConstantHeading(new Vector2d(-53, -36.4), Math.toRadians(90),
+                        new MinVelocityConstraint(Arrays.asList(
+                            new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
+                            new MecanumVelocityConstraint(10, DriveConstants.TRACK_WIDTH)
+                        )),
+                        new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         Trajectory zeroRingDrop2 = drive.trajectoryBuilder(zeroRingGet2.end())
-                .splineToSplineHeading(new Pose2d(15, -42, Math.toRadians(-90)), Math.toRadians(-90))
+                .splineToSplineHeading(new Pose2d(8, -44, Math.toRadians(-90)), Math.toRadians(-90))
                 .build();
 
         Trajectory zeroRingToLine = drive.trajectoryBuilder(zeroRingDrop2.end())
@@ -134,7 +140,7 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
                 .splineToConstantHeading(new Vector2d(-31.1,-19.2), Math.toRadians(-160),
                         new MinVelocityConstraint(Arrays.asList(
                                 new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                                new MecanumVelocityConstraint(15, DriveConstants.TRACK_WIDTH)
+                                new MecanumVelocityConstraint(20, DriveConstants.TRACK_WIDTH)
                         )),
                         new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
 
@@ -173,7 +179,7 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
                 .splineToConstantHeading(new Vector2d(-31.1,-19.2), Math.toRadians(-160),
                         new MinVelocityConstraint(Arrays.asList(
                                 new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                                new MecanumVelocityConstraint(15, DriveConstants.TRACK_WIDTH)
+                                new MecanumVelocityConstraint(20, DriveConstants.TRACK_WIDTH)
                         )),
                         new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
 
@@ -186,10 +192,11 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
             .build();
 
         Trajectory fourRingDrop2 = drive.trajectoryBuilder(fourRingGet2.end())
-                .splineToSplineHeading(new Pose2d(44, -54, 0), Math.toRadians(-30))
+                .splineToSplineHeading(new Pose2d(44, -54, Math.toRadians(-30)), Math.toRadians(-30))
                 .build();
 
         Trajectory fourRingToLine = drive.trajectoryBuilder(fourRingDrop2.end())
+                .strafeTo(new Vector2d(40,-50))
                 .splineToSplineHeading(new Pose2d(15,-24, 0), Math.toRadians(140))
                 .build();
 
@@ -283,6 +290,9 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
         drive.turn(Math.toRadians(shootingTurn2));
         drive.turn(Math.toRadians(shootingTurn22));
 
+        commander.runCommand(new RunShooterForTime(shooter, false, Shooter.VELO_LEVELS.POWER_SHOT_FAR.getVelo(), Shooter.MODE.VELOCITY));
+        sleep(250);
+
         shoot();
 
         commander.runCommand(new RunShooterForTime(shooter, 0,0));
@@ -293,9 +303,11 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
 
         place();
 
-        drive.turn(Math.toRadians(-230));
+        drive.turn(Math.toRadians(150));
 
         drive.followTrajectory(paths[0]); // Get 2
+
+        sleep(400);
 
         commander.runCommand(new GripSetState(grip,Grip.TARGETS.CLOSE.getTarget()));
         sleep(500); //FIXME: Disabled gripper until fixed
@@ -316,6 +328,8 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
         place();
 
         drive.followTrajectory(paths[1]); // Get 2
+
+        sleep(400);
 
         commander.runCommand(new GripSetState(grip,Grip.TARGETS.CLOSE.getTarget()));
         sleep(500); //FIXME: Disabled gripper until fixed
@@ -339,6 +353,8 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
         drive.turn(Math.toRadians(160));
 
         drive.followTrajectory(paths[2]); // Get 2
+
+        sleep(400);
 
         // Open grip to drop Wobble Goal
         commander.runCommand(new GripSetState(grip,Grip.TARGETS.CLOSE.getTarget()));
