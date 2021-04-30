@@ -240,6 +240,8 @@ public class TestRoadrunnerAutoPath extends LinearOpMode implements DogeOpMode {
             }
         }
 
+        choosePath(cam);
+
         switch (placement) {
             case ZERO_RINGS:
                 runCommonPath(drive, commonPath);
